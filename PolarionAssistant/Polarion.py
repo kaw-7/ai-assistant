@@ -57,7 +57,8 @@ def polarionImport():
         create_total += (end_create - start_create)
         if new_issue is not None:
             start_move = time.perf_counter()
-            new_issue.moveToDocument(doc, heading_item)
+            with new_issue as wi:  # Buffers changes
+                wi.moveToDocument(doc, heading_item)
             end_move = time.perf_counter()
             move_total += (end_move - start_move)
         else:

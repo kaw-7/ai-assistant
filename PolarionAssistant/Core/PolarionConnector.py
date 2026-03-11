@@ -28,7 +28,7 @@ class PolarionConnector:
             self.client = polarion.Polarion(url, username, password)
             print("✅ Connection successful!")
             return self.client
-        except Exception as e:
+        except Exception:
             full_error = traceback.format_exc()
             print(f"❌ Connection failed: {full_error}")
             return None
