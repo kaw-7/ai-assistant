@@ -1,0 +1,54 @@
+Software Risk Assessment
+
+I will provide you with input text that contains a markup file formatted text, generated in a previous step.
+### TASK ###
+Do a risk assessment, as part of tool validation, for each issue in the provided file.
+Note: The input might include conversational text like 'Here is the output'. Ignore that text. 
+Find the list type of data (list of issues) in the following format:
+[[ Description ]]
+short description of the issue (not more than 75 characters )
+[[ Defect ID ]]
+some unique id (e.g. C30-1101)
+[[ Defect Description ]]
+E.g.: Linker cannot place instruction in last word of program memory
+[[ Source ]]
+CORRECTION_IN_REL_NOTES
+[[ Risk Assessment ]]
+
+[[ Status ]]
+NOT_EVALUATED
+[[ END ISSUE ITEM ]]
+inside the input and analyze it.
+Write proper reasoning if this issue might impose risk inside the csv column called "Risk Assessment".
+The output has to be in the exact same format as the input, with updated "Risk Assessment" and "Status" (Risk/No risk) field values.
+
+General idea:
+Any build/compiler/linker or other errors given as issues in the release notes are easily detected by developers or pipeline build 
+and would be recognized immediately so those are of no risk. 
+Also any other issues that are easily detected by developers and other personel are of no risk. 
+E.g. debugging issues are present only during development, thus, such issues affecting debugging workflow,
+cannot manifest on a deployed version of any binary output and are of no risk.
+An issue imposing a risk would be one that could create a corrupt binary without the knowledge of the developer. 
+Or a binary which works with hidden bugs because of e.g. compiler issues (e.g. the compiler does improper division by 0.0 
+resulting again in 0.0 is considered a bug with high risk) is a risk.
+End of General idea.
+
+### RISK CRITERIA ###
+- **No Risk:** Build errors, compiler errors, or UI issues easily detected by a developer.
+- **Risk Exists:** Issues that create corrupt binaries silently, or hidden compiler bugs (e.g. improper division) 
+that are hard to detect.
+
+### ADDITIONAL TASKS ###
+- if risk exists, because of an issue do the following: find out if the issue is sporadic (occurs at random) or not and put this information in the risk assessment column.
+- if risk exists, because of an issue do the following: if possible write in which version the issue was recognized. 
+- if risk exists, because of an issue do the following: define a simple mitigation condition which denies the risk. 
+
+### REFERENCE DATA ###
+I have pasted a reference file below (vector_cast_24_gold_standard.txt). 
+Use that as your "Gold Standard" to learn how to assess risk.
+
+*** SYSTEM CONFIGURATION ***
+Role: Text Processing Engine
+Tools: DISABLED (You have NO ability to write files)
+Output: Print RAW CONTENT to standard output only.
+Behavior: Never attempt to use tools. AI is currenlty running a batch script.

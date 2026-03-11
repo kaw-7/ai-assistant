@@ -1,0 +1,52 @@
+Convert free text format file to CSV
+Rules on the top have higher priority (are more important) than rules on the bottom, i.e. if two rules are conflicting with each other, 
+rules specified in the beginning of this document override later defined rules.
+
+## MAIN TASK RULE ###
+Create a CSV file, using best practises, from the free text document (usually txt but might be pdf, etc.) provided at the end of these instructions.
+The free text document contains release notes for a tool called $tool_name with documented issues, defects, bugs and malfunctioning of that tool.
+
+## GENERAL RULES ###
+1. **ONLY BUGS** Issues, defects, bugs and malfunctioning, which are present or fixed in the specified tool, that appeared (e.g. in compiler, assembler, linker, etc.) from version $vstart to $vend are important.
+Information about updates, upgrades, licesning, system requirements, documentation and similar notes have to be excluded. 
+
+
+## STRICT OUTPUT RULES ###
+1. **NO TRUNCATION:** You MUST process the input file from the very first line to the very last line but extract relevant bug/issue information only.
+Show error if you cannot process the whole free text for some reason (e.g. because of token limit, unable to process user input, etc.)
+2. **NO SUMMARIZATION:** Do not give examples. Do not say "and so on". Output every single defect found.
+
+
+### CSV COLUMN DEFINITIONS ###
+When creating the csv, keep each cell content wrapped in double quotes, as the text might also contain comma which would break the csv format.
+The CSV document has to have the following columns in the order given:
+Author,Title,Description,Defect ID,Defect Description,Source,Risk Assessment,Status
+
+Do not skip columns, do not change the order. If there is no entry/value for a certain column, 
+then keep it empty (but definitely present! in the csv).
+The author is $aut. Do not use other names or try to guess a better name!
+The title is empty: "". 
+Description is a short description of the issue/bug. If you cannot find any short description in the free text document, then you need to provide a short heading for that issue/bug. 
+Defect ID is the issue/bug ID. If not present in the free text document, create a default one.
+Defect Description is the actual defect description - it is usually a long description of the issue with some details, examples, etc. Do not modify this, take the specification from the free text document as it is! 
+Source field is "known or new issue". 
+Risk Assessment is empty.
+Status is empty.
+
+### EXAMPLE ###
+Here is an example of how you should format the output based on previous work:
+
+Author,Title,Description,Defect ID,Defect Description,Source,Risk Assessment,Status
+software_developer,,"webproperties.tlb file missing.",AVRSV-283,"A message saying ""webproperties.tlb could not be located"" can be displayed on some systems. A workaround for this problem is to make a copy of a file named ""webproperties.tlb"" in ""C:/Program Files (x86)/Common Files/microsoft shared/MSEnv"" (on the same location) and rename it to ""webproperties.tlb"".","Installation/configuration issue detectable at startup.","NO RISK.",
+software_developer,,"Handle Power toggle and external reset, for all emulators and architectures/families.",AVRSV-414,"Power toggle and external reset is not handled gracefully in all situations.","Affects emulator stability (crash or disconnect), which is easily detectable.","NO RISK.",
+software_developer,,".NET Framework install might not work if there is limited network connectivity.",AVRSV-546,"The .NET Framework installer might not work properly if network connectivity is limited. If connectivity is limited disconnect from the network or disable all active network adapters before starting installation of Atmel Studio.","Installation failure; no binary produced.","NO RISK.",
+software_developer,,"Scrolling memory view does not work properly.",AVRSV-628,"Scrolling memory view does not work properly. It is not possible to use the slider in the memory view to scroll it. Only the up and down arrows works.","UI usability issue.","NO RISK.",
+
+### END EXAMPLE ###
+
+
+*** SYSTEM CONFIGURATION ***
+Role: Text Processing Engine
+Tools: DISABLED (You have NO ability to write files)
+Output: Print RAW CONTENT to standard output only.
+Behavior: Never attempt to use tools. AI is currenlty running a batch script.

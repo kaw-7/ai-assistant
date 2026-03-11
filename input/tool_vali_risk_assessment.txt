@@ -1,0 +1,51 @@
+Software Risk Assessment
+
+I will provide you with input text that contains a CSV file generated in a previous step.
+### TASK ###
+Do a risk assessment, as part of tool validation, for each issue in the provided csv file.
+Note: The input might include conversational text like 'Here is the output'. Ignore that text. 
+Find the CSV data inside the input and analyze it.
+Write proper reasoning if this issue might impose risk inside the csv column called "Risk Assessment".
+The output has to be the same csv from the input, with updated "Risk Assessment" column.
+The "Risk Assessment" column, from the CSV file, should be properly formatted, in order not to break csv format!
+Risk assessment text has to start with *single* csv quotation symbol (") and also end with such. None or multiple quotation symbols
+in the beggining or end of "Risk Assessment" column breaks the csv format. 
+### EXAMPLE ###
+Here is an example of how you should format the output based on previous work:
+
+Author,Title,Description,Defect ID,Defect Description,Source,Risk Assessment,Status
+software_developer,,"webproperties.tlb file missing.",AVRSV-283,"A message saying ""webproperties.tlb could not be located"" can be displayed on some systems. ","Installation/configuration issue detectable at startup.","NO RISK.",
+software_developer,,"Handle Power toggle and external reset, for all emulators and architectures/families.",AVRSV-414,"Power toggle and external reset is not handled gracefully in all situations.","Affects emulator stability (crash or disconnect), which is easily detectable.","NO RISK.",
+software_developer,,"Scrolling memory view does not work properly.",AVRSV-628,"Scrolling memory view does not work properly.","UI usability issue.","NO RISK.",
+
+### END EXAMPLE ###
+
+General idea:
+Any build/compiler/linker or other errors given as issues in the release notes are easily detected by developers or pipeline build 
+and would be recognized immediately so those are of no risk. 
+Also any other issues that are easily detected by developers and other personel are of no risk. 
+E.g. debugging issues are present only during development, thus, such issues affecting debugging workflow,
+cannot manifest on a deployed version of any binary output and are of no risk.
+An issue imposing a risk would be one that could create a corrupt binary without the knowledge of the developer. 
+Or a binary which works with hidden bugs because of e.g. compiler issues (e.g. the compiler does improper division by 0.0 
+resulting again in 0.0 is considered a bug with high risk) is a risk.
+End of General idea.
+
+### RISK CRITERIA ###
+- **No Risk:** Build errors, compiler errors, or UI issues easily detected by a developer.
+- **Risk Exists:** Issues that create corrupt binaries silently, or hidden compiler bugs (e.g. improper division) that are hard to detect.
+
+### ADDITIONAL TASKS ###
+- if risk exists, because of an issue do the following: find out if the issue is sporadic (occurs at random) or not and put this information in the risk assessment column.
+- if risk exists, because of an issue do the following: if possible write in which version the issue was recognized. 
+- if risk exists, because of an issue do the following: define a simple mitigation condition which denies the risk. 
+
+### REFERENCE DATA ###
+I have pasted two reference files below (output_vc24.csv and output_vc25.csv). 
+Use these as your "Gold Standard" to learn how to assess risk.
+
+*** SYSTEM CONFIGURATION ***
+Role: Text Processing Engine
+Tools: DISABLED (You have NO ability to write files)
+Output: Print RAW CONTENT to standard output only.
+Behavior: Never attempt to use tools. AI is currenlty running a batch script.

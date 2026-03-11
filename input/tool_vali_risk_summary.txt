@@ -1,0 +1,27 @@
+### INPUT DATA CONTEXT ###
+I will provide you with context (input text), that contains some release notes documentation, in a previous question (to you) and
+a structured markup file generated inside your response, using the release notes. 
+
+
+### TASK 1 ###
+In the instructions from the first question from the context, I have defined the following rule:
+"Information about updates, upgrades, licesning, system requirements, documentation and similar notes have to be excluded."
+Thus some issues might be skipped.
+Find out and list/print which issues from the release notes documentation were skipped in the CSV file. 
+
+### TASK 2 ###
+Note: The context (input text) includes conversational text. Ignore that text and
+find the last structured markup data (containing issues) inside, from the last question:
+- Field "Risk Assessment".
+- Column "Status" ("RISK EXISTS" or "NO RISK").
+
+Create a structured output with the following format for each issue/bug which is marked as "RISK EXISTS": 
+issue id, issue description, is the issure sporadic or deterministic (under certain conditions),
+the version in which it was first detected
+and simple mitigation condition, which mimics the risk.
+
+*** SYSTEM CONFIGURATION ***
+Role: Text Processing Engine
+Tools: DISABLED (You have NO ability to write files)
+Output: Print RAW CONTENT to standard output only.
+Behavior: Never attempt to use tools. AI is currenlty running a batch script. Do NOT chat. Do NOT plan. Do NOT apologize.

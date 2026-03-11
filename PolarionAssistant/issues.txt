@@ -1,0 +1,80 @@
+'''
+[[ Description ]]
+Linker placement in last word of program memory
+[[ Defect ID ]]
+C30-1101
+[[ Defect Description ]]
+Linker cannot place instruction in last word of program memory
+[[ Source ]]
+CORRECTION_IN_REL_NOTES
+[[ Risk Assessment ]]
+
+[[ Status ]]
+NOT_EVALUATED
+[[ END ISSUE ITEM ]]
+[[ Description ]]
+Odd offsets in program memory accepted by special operators
+[[ Defect ID ]]
+BIN30-5
+[[ Defect Description ]]
+Special operators should not accept odd offsets in program memory
+[[ Source ]]
+CORRECTION_IN_REL_NOTES
+[[ Risk Assessment ]]
+
+[[ Status ]]
+NOT_EVALUATED
+[[ END ISSUE ITEM ]]
+[[ Description ]]
+Handle section removal with gc-sections
+[[ Defect ID ]]
+BIN30-205
+[[ Defect Description ]]
+.handle section removed when using --gc-sections
+[[ Source ]]
+CORRECTION_IN_REL_NOTES
+[[ Risk Assessment ]]
+
+[[ Status ]]
+NOT_EVALUATED
+[[ END ISSUE ITEM ]]
+[[ Description ]]
+Isr section removal with gc-sections
+[[ Defect ID ]]
+BIN30-206
+[[ Defect Description ]]
+.isr sections removed when using --gc-sections
+[[ Source ]]
+CORRECTION_IN_REL_NOTES
+[[ Risk Assessment ]]
+
+[[ Status ]]
+NOT_EVALUATED
+[[ END ISSUE ITEM ]]
+[[ Description ]]
+Garbage collected sections allocation
+[[ Defect ID ]]
+BIN30-207
+[[ Defect Description ]]
+garbage collected sections still allocated
+[[ Source ]]
+CORRECTION_IN_REL_NOTES
+[[ Risk Assessment ]]
+
+[[ Status ]]
+NOT_EVALUATED
+[[ END ISSUE ITEM ]]
+[[ Description ]]
+Heap section removal with gc-sections
+[[ Defect ID ]]
+BIN30-216
+[[ Defect Description ]]
+.heap section removed when using --gc-sections
+[[ Source ]]
+CORRECTION_IN_REL_NOTES
+[[ Risk Assessment ]]
+
+[[ Status ]]
+NOT_EVALUATED
+[[ END ISSUE ITEM ]]
+'''
