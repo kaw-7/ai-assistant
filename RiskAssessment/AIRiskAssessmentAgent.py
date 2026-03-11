@@ -12,7 +12,7 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
         self.ai_engine = ai_provider
     
     @override
-    def process_csv(self, input_data_content):
+    def process_issues(self, input_data_content):
         """
         Main method to execute the risk assessment step.
         """

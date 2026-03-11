@@ -12,7 +12,7 @@ from PolarionAssistant.Core.IssueDAOFactory import IssueDAOFactory
 from PolarionAssistant.Core.IssueParser import IssueParser
 import config as PConf
 import time
-
+from concurrent.futures import ThreadPoolExecutor
 
 def polarionImport():
     # Create instance
@@ -42,30 +42,38 @@ def polarionImport():
         print(f"❌ Could not find full name or email of the author: {connector.polarion_username}!")
         exit(1)
     
-    create_total = 0
-    move_total = 0
     parser = IssueParser(PConf.ISSUE_INPUT_FILE)
     parser.read_file()
+    
+    # Pre-set author fields (sequential, fast)
     for issueDTO in parser.issues:
-        start_create = time.perf_counter()
         issueDTO.author_name = full_name
         issueDTO.author_email = email
         issueDTO.polarion_username = connector.polarion_username
-        print(issueDTO)
-        new_issue = IssueDAOFactory.create(connector, issueDTO)
-        end_create = time.perf_counter()
-        create_total += (end_create - start_create)
-        if new_issue is not None:
-            start_move = time.perf_counter()
-            with new_issue as wi:  # Buffers changes
-                wi.moveToDocument(doc, heading_item)
-            end_move = time.perf_counter()
-            move_total += (end_move - start_move)
-        else:
-            print(f"❌ issueDTO with id: {issueDTO.defect_id} skipped!")
-
-    print(f"Elapsed create: {(create_total):.3f} seconds")
-    print(f"Elapsed move: {(move_total):.3f} seconds")
+        #print(issueDTO)
+    
+    # Parallel execution - fire and forget
+    print(f"\n🚀 Processing {len(parser.issues)} issues in parallel...")
+        
+    start = time.perf_counter()
+    with ThreadPoolExecutor(max_workers=11) as executor:
+        # Direct function calls - no partial needed!
+        futures = [executor.submit(IssueDAOFactory.create, connector, issueDTO) 
+                   for issueDTO in parser.issues]
+        new_issues = [f.result() for f in futures if f.result()]
+            
+    # 2. SEQUENTIAL MOVES only (conflict-free)
+    start_move = time.perf_counter()
+    print("🔄 Moving issues sequentially (avoids conflicts)...")
+    for new_issue in new_issues:
+        new_issue.moveToDocument(doc, heading_item)
+    end_move = time.perf_counter()
+    print(f"⏱️  move time: {(end_move - start_move):.3f}s")
+    
+    end = time.perf_counter()
+    print("\n🎉 Parallel complete!")
+    print(f"⏱️  Total parallel time: {(end - start):.3f}s")
+    
 
 if __name__ == "__main__":
     polarionImport()
@@ -88,5 +96,6 @@ if __name__ == "__main__":
 #    for field in custom_fields:
 #        value = wi.getCustomField(field)
 #        print(f"   - {field}: {value}")d: {str(e)}")
+
 
 

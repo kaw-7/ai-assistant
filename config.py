@@ -1,8 +1,8 @@
 # --- VALIDATED TOOL SETTINGS ---
-TOOL_RELEASE_NOTES = "D:/archive/reviews_ISO62304/IAR/intput_IAREmbdWorkbench.txt"
-TOOL_NAME = "IAR Embedded Workbench shared components" #"Microchip MPLAB X30 compiler"
-TOOL_VERSION_START = "9.2.4"  #"9.2.4"
-TOOL_VERSION_END = "9.4.1"   #"9.4.1"
+TOOL_RELEASE_NOTES = "input/arm_9.60.3.txt"
+TOOL_NAME = "IAR C/C++ Compiler for Arm" #"Microchip MPLAB X30 compiler"
+TOOL_VERSION_START = "9.60.3"  #"9.2.4"
+TOOL_VERSION_END = "9.60.3"   #"9.4.1"
 TOOL_PREPROCESSOR = "AI"    #"AI", "IAR_EmbeddedWorkbench" - default is AI
 
 # --- PATH SETTINGS ---

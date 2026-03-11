@@ -20,5 +20,13 @@ class IssueDTO:
         """Ensure snake_case access matches Python conventions"""
         # Optional: auto-convert camelCase if needed
         pass
+    
+    def __str__(self):
+        return f"""🔍 **Issue Summary**
+        📛 ID: {self.defect_id}
+        👤 Author: {self.author_name} ({self.author_email})
+        📝 Description: {self.description[:100]}{'...' if len(self.description) > 100 else ''}
+        ⚠️  Risk: {self.status.value.upper()} | Source: {self.source.value.replace('knownBug', 'Known Bug').replace('fixedInNewerVersion', 'Fixed Later')}
+        📊 Assessment: {self.risk_assessment[:120]}{'...' if len(self.risk_assessment) > 120 else ''}"""
 
 
