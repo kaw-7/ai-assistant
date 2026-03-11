@@ -23,11 +23,11 @@ def ai_engine():
         case _:
             preprocessor = AIPreprocessor(ai_provider)
             
-    csv_content = preprocessor.preprocess_file(release_notes_file_path)
-    # print(csv_content)
+    structured_issues = preprocessor.preprocess_file(release_notes_file_path)
+    # print(structured_issues)
     # sys.exit()
     ai_processor = AIRiskAssessmentAgent(ai_provider)
-    ai_processor.process_csv(input_data_content=csv_content)
+    ai_processor.process_issues(input_data_content=structured_issues)
     
     ai_summary = AIRiskSummary(ai_provider)
     ai_summary.generate_summary()
@@ -35,6 +35,7 @@ def ai_engine():
 if __name__ == "__main__":
     
     # ai_engine()
+    
     start = time.perf_counter()
 
     while True:
@@ -46,6 +47,6 @@ if __name__ == "__main__":
             break
 
     end = time.perf_counter()
-    print(f"Total program time: {(end - start):.3f} seconds")
+    print(f"⏱️ Total program time: {(end - start):.3f} seconds")
     #csv_to_xlsx.convert()
     
