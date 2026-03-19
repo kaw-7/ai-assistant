@@ -1,6 +1,5 @@
 # --- VALIDATED TOOL SETTINGS ---
-DO_AI_PROCESSING = True # True or False
-TOOL_PREPROCESSOR = "Reload_Existing"    #"AI", "IAR_EmbeddedWorkbench", "Reload_Existing" - default is AI
+TOOL_PREPROCESSOR = "Reload_Existing"    #"AI", "IAR_EmbeddedWorkbench", "Reload_Existing" - default is AI, Reload_Existing - skip preprocessor
 
 TOOL_RELEASE_NOTES = "input/Axivion-Suite-ChangeLog-7.11.4.txt"
 TOOL_NAME = "Axivion 7.11.2" #"Microchip MPLAB X30 compiler"
