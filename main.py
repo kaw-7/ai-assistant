@@ -4,10 +4,11 @@ from AIProvider.GeminiProvider import GeminiProvider
 from Preprocessor.AbstractPreprocessor import PreprocessorType 
 from Preprocessor.AIPreprocessor import AIPreprocessor 
 from Preprocessor.IAREWPreprocessor import IAREWPreprocessor
+from Preprocessor.ReloadExistingPreprocessor import ReloadExistingPreprocessor
 from RiskAssessment.AIRiskAssessmentAgent import AIRiskAssessmentAgent
 from RiskAssessment.AIRiskSummary import AIRiskSummary
 from PolarionAssistant.Polarion import polarionImport
-import csv_to_xlsx
+# import csv_to_xlsx
 import time
 
 #"D:/archive/reviews_ISO62304/Microchip/XC16Toolchain/Release Notes for MPLAB XC16 C Compiler v2.10_bug_fixes.htm"
@@ -20,6 +21,8 @@ def ai_engine():
     match PreprocessorType(config.TOOL_PREPROCESSOR):
         case PreprocessorType.IAR_EmbeddedWorkbench:
             preprocessor = IAREWPreprocessor()
+        case PreprocessorType.RELOAD:
+            preprocessor = ReloadExistingPreprocessor(ai_provider)
         case _:
             preprocessor = AIPreprocessor(ai_provider)
             
@@ -29,8 +32,8 @@ def ai_engine():
     ai_processor = AIRiskAssessmentAgent(ai_provider)
     ai_processor.process_issues(input_data_content=structured_issues)
     
-    ai_summary = AIRiskSummary(ai_provider)
-    ai_summary.generate_summary()
+    # ai_summary = AIRiskSummary(ai_provider)
+    # ai_summary.generate_summary()
 
 if __name__ == "__main__":
     

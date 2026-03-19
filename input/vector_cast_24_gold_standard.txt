@@ -792,3 +792,45 @@ Potential Risk. An incorrectly sized array can lead to buffer overflows or other
 [[ Status ]]
 Risk exists
 [[ END ISSUE ITEM ]]
+[[ Description ]]
+CertC-EXP43: false negatives when only some pointer parameters are
+[[ Defect ID ]]
+BAUHAUS-26146
+[[ Defect Description ]]
+CertC-EXP43: false negatives when only some pointer parameters are
+StylecheckRules
+[[ Source ]]
+KNOWN_PROBLEM_BY_VENDOR
+[[ Risk Assessment ]]
+This issue could lead to a 'False Negative' where the tool misses a real defect or provides incorrect analysis results without notifying the developer. This creates a risk of deploying code with hidden bugs. 
+[[ Status ]]
+Risk
+[[ END ISSUE ITEM ]]
+[[ Description ]]
+error #70: incomplete type is not allowed: false positive in template [EDGcpfe/25754]
+[[ Defect ID ]]
+BAUHAUS-20787
+[[ Defect Description ]]
+error #70: incomplete type is not allowed: false positive in template [EDGcpfe/25754]
+C/C++Compiler
+[[ Source ]]
+KNOWN_PROBLEM_BY_VENDOR
+[[ Risk Assessment ]]
+This issue results in a detectable tool failure (assertion/crash) or is a usability/UI issue. It is easily identified by developers and does not lead to silent code corruption.
+[[ Status ]]
+No Risk
+[[ END ISSUE ITEM ]]
+[[ Description ]]
+The UnsafeVarAccessRule only finds conflicts for accesses of whole global variable for CertC-CON43 and CertC-CON32
+[[ Defect ID ]]
+BAUHAUS-26205
+[[ Defect Description ]]
+The UnsafeVarAccessRule only finds conflicts for accesses of whole global variable for CertC-CON43 and CertC-CON32,
+StylecheckRules
+[[ Source ]]
+KNOWN_PROBLEM_BY_VENDOR
+[[ Risk Assessment ]]
+This is a 'False Negative' issue where the tool's analysis rule is limited to whole global variables. As a tool limitation, it remains the responsibility of the developer to verify via tests, posing no risk of silent tool-induced error.
+[[ Status ]]
+No Risk
+[[ END ISSUE ITEM ]]

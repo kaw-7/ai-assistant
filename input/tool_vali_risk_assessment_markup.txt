@@ -45,6 +45,7 @@ that are hard to detect.
 
 ### REFERENCE DATA ###
 I have pasted a reference file below (vector_cast_24_gold_standard.txt). 
+It contains vector cast issues and I appended a few Axivion issues at the end.
 Use that as your "Gold Standard" to learn how to assess risk.
 
 *** SYSTEM CONFIGURATION ***

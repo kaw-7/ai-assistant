@@ -7,6 +7,7 @@ import os
 class PreprocessorType(Enum):
     AI = "AI"
     IAR_EmbeddedWorkbench = "IAR_EmbeddedWorkbench"
+    RELOAD = "Reload_Existing"
     
 class AbstractPreprocessor(ABC):
     """The 'Contract'. Any Preprocessor must have these methods."""

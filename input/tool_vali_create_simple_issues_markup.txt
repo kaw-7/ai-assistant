@@ -25,6 +25,7 @@ bugs and malfunctioning of that tool.
 1. **ONLY BUGS** Issues, defects, bugs and malfunctioning, which are present or fixed in the specified tool, that appeared 
 (e.g. in compiler, assembler, linker, etc.) from version $vstart to $vend are important.
 Information about updates, upgrades, licesning, system requirements, documentation and similar notes have to be excluded. 
+Information about improved items (a.k.a. improvements) has to be discarded.
 
 ## STRICT OUTPUT RULES ###
 1. **NO TRUNCATION:** You MUST process the input file from the very first line to the very last line but extract relevant bug/issue information only.
