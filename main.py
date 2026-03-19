@@ -37,19 +37,22 @@ def ai_engine():
 
 if __name__ == "__main__":
     
-    # ai_engine()
+    if config.DO_AI_PROCESSING:
+        ai_start = time.perf_counter()
+        ai_engine()
+        ai_total = time.perf_counter() - ai_start
     
-    start = time.perf_counter()
-
     while True:
         line = input("Proceed with polarion import - Y/N (y/n):")
         if line.lower() == "y":
+            polarion_start = time.perf_counter()
             polarionImport()
+            polarion_total = time.perf_counter() - polarion_start
+            print(f"⏱️ Total POLARION time: {(polarion_total):.3f} seconds")
             break
         if line.lower() == "n":  
             break
 
-    end = time.perf_counter()
-    print(f"⏱️ Total program time: {(end - start):.3f} seconds")
+    print(f"⏱️ Total PROGRAM (polarion + ai) time: {(ai_total + polarion_total):.3f} seconds")
     #csv_to_xlsx.convert()
     
