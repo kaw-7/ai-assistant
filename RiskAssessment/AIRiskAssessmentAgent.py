@@ -27,7 +27,7 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
             while(True):
                 (pos, input_data_content_partial) = self._get_up_to_nth(
                     input_data_content, 
-                    config.ISSUE_BEGIN_MARKER, 
+                    config.ISSUE_END_MARKER, 
                     config.MAX_COUNT_OF_ISSUES_PROCESSED_AT_ONCE_BY_AI, 
                     pos)
                 if(input_data_content_partial is None):
