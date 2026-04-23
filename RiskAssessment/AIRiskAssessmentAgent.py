@@ -2,6 +2,8 @@ import os
 import sys
 from typing_extensions import override
 import traceback
+from tqdm import tqdm
+import time
 
 from RiskAssessment.AbstractRiskAssessmentAgent import AbstractRiskAssessmentAgent
 import config
@@ -22,20 +24,24 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
                 
             print(f"\n Processing issues by count of {config.MAX_COUNT_OF_ISSUES_PROCESSED_AT_ONCE_BY_AI}.")
             
-            
             pos = 0
+            total_n = self._get_total_occurances(input_data_content, config.ISSUE_END_MARKER)
+            t = tqdm(total=total_n, desc="Generating Partial Risk Assessment Input and sending to AI for analysis....:")
             while(True):
                 (pos, input_data_content_partial) = self._get_up_to_nth(
                     input_data_content, 
                     config.ISSUE_END_MARKER, 
                     config.MAX_COUNT_OF_ISSUES_PROCESSED_AT_ONCE_BY_AI, 
                     pos)
+                
+                t.update(config.MAX_COUNT_OF_ISSUES_PROCESSED_AT_ONCE_BY_AI)
+                time.sleep(61)
                 if(input_data_content_partial is None):
                     break
                 self._process_issues_partial(input_data_content_partial)
                 if(pos == -1 or pos >= len(input_data_content)):
                     break
-                
+            t.close()
             print(f"\n[2/3] Risk Assessment Complete. Saved to: {config.RISK_ASSESSMENT_OUTPUT_FILE}\n")
 
         except Exception:
@@ -53,15 +59,13 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
                 print("\n[ERROR] Generation of user input failed!")
                 sys.exit()  # Stop if generation failed
 
-            print("Partial Risk Assessment Input generated successfully.")
-            print("Sending to Gemini for analysis...")
-
             # Call AI
             ai_response = self.ai_engine.generate_response(user_input=user_input)
 
             # Save Output (final_risk_report.txt)
             with open(config.RISK_ASSESSMENT_OUTPUT_FILE, "a", encoding="utf-8") as f:
-                f.write(ai_response)
+                f.write(ai_response + "\n")
+                
 
         except Exception:
             print(f"\n[ERROR] Risk Assessment failed:\n{traceback.format_exc()}")
@@ -72,7 +76,6 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
         Combines Instructions, Reference CSVs, and the Input CSV into one prompt.
         """
         user_input = ""
-        print("\nPreparing Risk Assessment Context...")
 
         try:
             # --- CHECK FILES EXISTENCE ---
@@ -130,3 +133,19 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
 
         # Found nth occurrence, slice up to it
         return (cur_pos, text[start:cur_pos])
+    
+    def _get_total_occurances(self, text, substring):
+        """Get substring up to nth occurrence, or whole string from start if <n occurrences."""
+        if(text is None):
+            return 0
+        counter = 0
+        cur_pos = 0
+        while(True):
+            cur_pos = text.find(substring, cur_pos)
+            if cur_pos == -1:
+                return counter
+            cur_pos += len(substring)
+            counter += 1
+        
+        raise Exception("Could not find total count of issues!") 
+        

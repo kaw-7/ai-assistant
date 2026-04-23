@@ -12,7 +12,8 @@ from PolarionAssistant.Core.IssueDAOFactory import IssueDAOFactory
 from PolarionAssistant.Core.IssueParser import IssueParser
 import config as PConf
 import time
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
+
 
 def polarionImport():
     # Create instance
@@ -54,13 +55,27 @@ def polarionImport():
     
     # Parallel execution - fire and forget
     print(f"\n🚀 Processing {len(parser.issues)} issues in parallel...")
-        
+    
+    new_issues = []
     start = time.perf_counter()
     with ThreadPoolExecutor(max_workers=11) as executor:
         # Direct function calls - no partial needed!
         futures = [executor.submit(IssueDAOFactory.create, connector, issueDTO) 
                    for issueDTO in parser.issues]
-        new_issues = [f.result() for f in futures if f.result()]
+        for future in as_completed(futures):
+            try:
+                result = future.result(timeout=30)  # Also adds Ctrl+C safety
+                if result:
+                    new_issues.append(result)
+                    print(f"✅ Success: {len(new_issues)} total")
+                else:
+                    print("⚠️ Result was None/empty - skipped")
+                    
+            except TimeoutError:  # ← ADD THIS LINE
+                print("⏰ TIMEOUT after 30s - skipping")
+                future.cancel()
+                # Optionally log traceback: import traceback; traceback.print_exc()
+            
             
     # 2. SEQUENTIAL MOVES only (conflict-free)
     start_move = time.perf_counter()

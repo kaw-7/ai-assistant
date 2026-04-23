@@ -1,12 +1,17 @@
-import config
+
 import os
+import sys
 from google import genai
+from google.genai.errors import ClientError
 from typing_extensions import override
 from dotenv import load_dotenv, find_dotenv
 
 from AIProvider.AIProvider import AIProvider
 from AIProvider.AIContext import AIContext
 
+import httpx
+
+import config
 
 class GeminiProvider(AIProvider, AIContext):
     def __init__(self):
@@ -17,15 +22,31 @@ class GeminiProvider(AIProvider, AIContext):
     @override
     def generate_response(self, user_input: str) -> str:
         self.client.models
-        response = self.client.models.generate_content(
-            model=config.MODEL_NAME,
-            contents=user_input,
-        )
-
-        self.save_question(user_input)
-        self.save_response(response.text)
-        return response.text
-
+        try:
+            
+            self.save_question(user_input)
+            # for debug: save context
+            with open(config.CONTEXT_FILE, "w", encoding="utf-8") as f:
+                f.write(self.context)
+                
+            response = self.client.models.generate_content(
+                model=config.MODEL_NAME,
+                contents=user_input,
+            )
+            self.save_response(response.text)
+            return response.text
+        except httpx.ConnectTimeout as e:
+            print(f"Connect timed out: {e}")
+            sys.exit(1)
+        except httpx.ReadTimeout as e:
+            print(f"Read timed out: {e}")
+            sys.exit(1)
+        except httpx.TimeoutException as e:
+            print(f"Some HTTPX timeout happened: {e}")
+            sys.exit(1)
+        except ClientError as e:
+            print(f"Some ClientError happened: {e}")
+            sys.exit(1)
     @override
     def save_question(self, question_to_ai: str):
         self.context +=   "============= User Question: =============\n"

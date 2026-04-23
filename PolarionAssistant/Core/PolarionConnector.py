@@ -75,7 +75,7 @@ class PolarionConnector:
             
             # Build document path
             doc_name = doc_name or PConf.DOC_NAME
-            doc_path = f"wiki/Validation Reports/{doc_name}"
+            doc_path = f"{doc_name}"
             
             # Get document
             self.doc = self.project.getDocument(doc_path)

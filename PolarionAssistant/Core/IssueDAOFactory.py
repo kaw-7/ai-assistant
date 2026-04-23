@@ -36,7 +36,7 @@ class IssueDAOFactory():
                 }
             )
             end = time.perf_counter()
-            print(f"Elapsed create: {(end - start):.3f} seconds")
+            # print(f"Elapsed create: {(end - start):.3f} seconds") rougly 3-4 seconds
             
             workitem.status = {'id': issueDTO.status.value} #risk_exists, not_evaluated, no_risk
             
@@ -72,7 +72,7 @@ class IssueDAOFactory():
                 new_issue.setCustomField('Source', source_enum_obj) #'fixedInNewerVersion' knownBug
 
             end = time.perf_counter()
-            print(f"Elapsed save: {(end - start):.3f} seconds")
+            #print(f"Elapsed save: {(end - start):.3f} seconds") ~5-7 seconds
                 
             return new_issue
 

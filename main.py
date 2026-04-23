@@ -1,6 +1,8 @@
 import sys
 import config
 from AIProvider.GeminiProvider import GeminiProvider
+from AIProvider.OpenAIProvider import OpenAIProvider
+from AIProvider.AzureOpenAIProvider import AzureOpenAIProvider
 from Preprocessor.AbstractPreprocessor import PreprocessorType 
 from Preprocessor.AIPreprocessor import AIPreprocessor 
 from Preprocessor.IAREWPreprocessor import IAREWPreprocessor
@@ -13,7 +15,12 @@ import time
 
 #"D:/archive/reviews_ISO62304/Microchip/XC16Toolchain/Release Notes for MPLAB XC16 C Compiler v2.10_bug_fixes.htm"
 #D:/archive/reviews_ISO62304/IAR/intput_IAREmbdWorkbench.txt
-def AskUser(question):
+def AskUser(question, answer=None):
+    if(type(answer) is str and answer.lower() == "y"):
+        return True
+    if(type(answer) is str and answer.lower() == "n"):
+        return False
+
     while True:
         line = input(question + " - Y/N (y/n):")
         if line.lower() == "y":
@@ -23,10 +30,10 @@ def AskUser(question):
             return False
         
 def ai_engine():
-    if(AskUser("Skip entire AI procedure")):
+    if(AskUser("Skip entire AI procedure", config.SKIP_ENTIRE_AI)):
         return
     release_notes_file_path = config.TOOL_RELEASE_NOTES
-    ai_provider = GeminiProvider()
+    ai_provider = AzureOpenAIProvider() #GeminiProvider() OpenAIProvider()
     
     match PreprocessorType(config.TOOL_PREPROCESSOR):
         case PreprocessorType.IAR_EmbeddedWorkbench:
@@ -39,7 +46,7 @@ def ai_engine():
     structured_issues = preprocessor.preprocess_file(release_notes_file_path)
     # print(structured_issues)
     # sys.exit()
-    if(not AskUser("Proceed with AI risk assessment")):
+    if(not AskUser("Proceed with AI risk assessment", config.PROCEED_WITH_AI_RISK_ASSESSMENT)):
         return
     ai_processor = AIRiskAssessmentAgent(ai_provider)
     ai_processor.process_issues(input_data_content=structured_issues)

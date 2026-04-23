@@ -25,7 +25,7 @@ bugs and malfunctioning of that tool.
 1. **ONLY BUGS** Issues, defects, bugs and malfunctioning, which are present or fixed in the specified tool, that appeared 
 (e.g. in compiler, assembler, linker, etc.) from version $vstart to $vend are important.
 Information about updates, upgrades, licesning, system requirements, documentation and similar notes have to be excluded. 
-Information about improved items (a.k.a. improvements) has to be discarded.
+Information about improved items (a.k.a. improvements) has to be discarded. 
 
 ## STRICT OUTPUT RULES ###
 1. **NO TRUNCATION:** You MUST process the input file from the very first line to the very last line but extract relevant bug/issue information only.
@@ -48,6 +48,10 @@ Source field has to be mapped to one of these specific values: KNOWN_PROBLEM_BY_
 Risk Assessment is empty.
 Status is set to default NOT_EVALUATED for all items.
 
+KNOWN_PROBLEM_BY_VENDOR - known issue published by vendor
+KNOWN_PROBLEM_3RD_PARTY - known issue published by 3rd party source
+CORRECTION_IN_REL_NOTES - correction of issue fixed by vendor
+KNOWN_PROBLEM_IN_NEWER_VERS - known issue which occured in a newer/later version of the software tool
 
  ###  FORMATTING CONSTRAINTS ###
 
@@ -75,7 +79,7 @@ C30-1101
 [[ Defect Description ]]
 Linker cannot place instruction in last word of program memory
 [[ Source ]]
-CORRECTION_IN_REL_NOTES
+KNOWN_PROBLEM_BY_VENDOR
 [[ Risk Assessment ]]
 
 [[ Status ]]
@@ -88,7 +92,7 @@ BIN30-5
 [[ Defect Description ]]
 Special operators should not accept odd offsets in program memory
 [[ Source ]]
-CORRECTION_IN_REL_NOTES
+KNOWN_PROBLEM_BY_VENDOR
 [[ Risk Assessment ]]
 
 [[ Status ]]
