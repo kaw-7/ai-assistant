@@ -30,7 +30,7 @@ class GeminiProvider(AIProvider, AIContext):
                 f.write(self.context)
                 
             response = self.client.models.generate_content(
-                model=config.MODEL_NAME,
+                model= "gemini-2.5-flash", #config.MODEL_NAME,
                 contents=user_input,
             )
             self.save_response(response.text)

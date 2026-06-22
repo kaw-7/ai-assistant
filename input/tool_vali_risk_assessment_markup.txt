@@ -1,6 +1,6 @@
 Software Risk Assessment
 
-I will provide you with input text that contains a markup file formatted text, generated in a previous step.
+I will provide you with input that contains markup file formatted text, generated in a previous step.
 ### TASK ###
 Do a risk assessment, as part of tool validation, for each issue in the provided file.
 Note: The input might include conversational text like 'Here is the output'. Ignore that text. 
@@ -19,8 +19,8 @@ CORRECTION_IN_REL_NOTES
 NOT_EVALUATED
 [[ END ISSUE ITEM ]]
 inside the input and analyze it.
-Write proper reasoning if this issue might impose risk inside the csv column called "Risk Assessment".
-The output has to be in the exact same format as the input, with updated "Risk Assessment" and "Status" (Risk/No risk) field values.
+Write proper reasoning if this issue might impose risk inside the field called "Risk Assessment".
+The output has to be in the exact same format as the input, with updated "Risk Assessment" and "Status" (Risk Exists/No risk) field values.
 
 General idea:
 Any build/compiler/linker or other errors given as issues in the release notes are easily detected by developers or pipeline build 
@@ -39,7 +39,7 @@ End of General idea.
 that are hard to detect.
 
 ### ADDITIONAL TASKS ###
-- if risk exists, because of an issue do the following: find out if the issue is sporadic (occurs at random) or not and put this information in the risk assessment column.
+- if risk exists, because of an issue do the following: find out if the issue is sporadic (occurs at random) or not and put this information in the risk assessment field.
 - if risk exists, because of an issue do the following: if possible write in which version the issue was recognized. 
 - if risk exists, because of an issue do the following: define a simple mitigation condition which denies the risk. 
 

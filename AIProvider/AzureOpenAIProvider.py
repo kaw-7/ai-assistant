@@ -25,19 +25,20 @@ class AzureOpenAIProvider(AIProvider, AIContext):
         self.save_question(user_input)
         
         granular_timeout = httpx.Timeout(
-            timeout=60.0,  # Total maximum time
+            timeout=600.0,  # Total maximum time
             connect=5.0,   # Max time to establish connection
-            read=45.0,     # Max time to wait for the next chunk of data
-            write=10.0     # Max time to send the request
+            read=450.0,     # Max time to wait for the next chunk of data
+            write=20.0     # Max time to send the request
         )
         response = self.client.with_options(timeout=granular_timeout).chat.completions.create(
-            model=config.MODEL_NAME,  # e.g., "llama-3.1-sonar-large-128k-online"
+            model="gpt-5.4-mini",  # e.g., "llama-3.1-sonar-large-128k-online" config.MODEL_NAME
             messages=[{"role": "user", "content": user_input}],
+            reasoning_effort="high",
             stream=False
         )
-        
+
         response_text = response.choices[0].message.content
-        
+
         self.save_response(response_text)
         return response_text
     

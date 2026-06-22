@@ -39,7 +39,7 @@ class AIPreprocessor(AbstractPreprocessor):
 
     def generate_input(self, release_notes_file_path):
         user_input = ""
-        print(f"[1/3] Generating structured markup with {config.MODEL_NAME}")
+        print("[1/3] Generating structured markup with AI")
         try:
             # --- PREPARE PROMPT ---
             # Read files (using 'with' ensures they close automatically)
@@ -51,6 +51,11 @@ class AIPreprocessor(AbstractPreprocessor):
                 template = Template(f.read())
             with open(release_notes_file_path, "r", encoding="utf-8", errors="replace") as f:
                 release_notes = f.read()
+                pos = release_notes.find("\x00")
+                if pos != -1:
+                    print("first NUL at:", pos)
+                flag = any(ord(c) < 32 and c not in "\r\n\t" for c in release_notes)
+                print(f"has non-printable: {flag}")
 
             instructions = template.safe_substitute(
                 tool_name=config.TOOL_NAME, 

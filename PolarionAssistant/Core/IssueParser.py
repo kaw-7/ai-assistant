@@ -48,7 +48,7 @@ class IssueParser():
     @staticmethod
     def parse_markdown_to_dto(raw_text: str) -> List[IssueDTO]:
         # Split the text into individual blocks based on the END marker
-        blocks = raw_text.split("[[ END ISSUE ITEM ]]")
+        blocks = raw_text.split(PConf.ISSUE_END_MARKER)
         issues = []
 
         # Regex to find content between [[ Field Name ]] and the next field or newline

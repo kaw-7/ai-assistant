@@ -19,6 +19,8 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
         Main method to execute the risk assessment step.
         """
         try:
+            # to do: add possibility to start from an existing position in an existing risk assessment file
+            # the open "w" have to be optional and the pos param should be properly set.
             with open(config.RISK_ASSESSMENT_OUTPUT_FILE, "w", encoding="utf-8") as f:
                 f.write("") # File is now EMPTY (0 bytes)
                 
@@ -27,6 +29,7 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
             pos = 0
             total_n = self._get_total_occurances(input_data_content, config.ISSUE_END_MARKER)
             t = tqdm(total=total_n, desc="Generating Partial Risk Assessment Input and sending to AI for analysis....:")
+            t.update(pos)
             while(True):
                 (pos, input_data_content_partial) = self._get_up_to_nth(
                     input_data_content, 
@@ -35,7 +38,8 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
                     pos)
                 
                 t.update(config.MAX_COUNT_OF_ISSUES_PROCESSED_AT_ONCE_BY_AI)
-                time.sleep(61)
+                # to do: remove this sleep after a better upper tier payment method
+                time.sleep(1)
                 if(input_data_content_partial is None):
                     break
                 self._process_issues_partial(input_data_content_partial)
@@ -121,7 +125,7 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
         return user_input
     
     def _get_up_to_nth(self, text, substring, n, start):
-        """Get substring up to nth occurrence, or whole string from start if <n occurrences."""
+        """Get substring up to nth occurrence or whole string, from start if less than n occurrences."""
         if(start >= len(text)):
             return (-1, "")
         cur_pos = start
@@ -135,7 +139,7 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
         return (cur_pos, text[start:cur_pos])
     
     def _get_total_occurances(self, text, substring):
-        """Get substring up to nth occurrence, or whole string from start if <n occurrences."""
+        """Get total occurances of substring inside text."""
         if(text is None):
             return 0
         counter = 0
