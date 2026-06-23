@@ -1,7 +1,10 @@
-if __name__ == "__main__":
-    import ui_config as uiConf
-else:
+try:
     import UI.ui_config as uiConf
+except ImportError:
+    try:
+        import ui_config as uiConf
+    except ImportError as e:
+        raise ImportError("Neither UI.ui_config nor ui_config is available") from e
         
 # Parsing function for the simplified format
 def formatIssues(text):
@@ -26,13 +29,5 @@ def formatIssues(text):
                 cur[key] = (cur.get(key, "") + ("\n" if cur.get(key) else "") + line)
     return items
         
-if __name__ == "__main__":
-    from App import App
 
-    file_path = "../output/VS2022/final_risk_report.txt"
-    with open(file_path, "r", encoding="utf-8") as f:
-        text = f.read()
-        issuesToDisplay = formatIssues(text)
-        app = App(issuesToDisplay)
-        app.mainloop()
 

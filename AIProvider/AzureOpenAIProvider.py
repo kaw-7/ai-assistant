@@ -36,9 +36,10 @@ class AzureOpenAIProvider(AIProvider, AIContext):
             reasoning_effort="high",
             stream=False
         )
+        self._print_token_usage(response)
 
         response_text = response.choices[0].message.content
-
+        
         self.save_response(response_text)
         return response_text
     
@@ -65,3 +66,11 @@ class AzureOpenAIProvider(AIProvider, AIContext):
         if not my_api_key:
             raise ValueError("API Key not found. Please check your .env file.")
         return my_api_key
+    
+    def _print_token_usage(self, response):
+        usage = response.usage  # Usage object (if provided by the API)
+
+        context_tokens = usage.prompt_tokens       # input token
+        output_tokens  = usage.completion_tokens   # output tokens
+        print("context_tokens:", context_tokens)
+        print("output_tokens:", output_tokens)

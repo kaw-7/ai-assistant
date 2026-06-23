@@ -42,7 +42,7 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
                 time.sleep(1)
                 if(input_data_content_partial is None):
                     break
-                self._process_issues_partial(input_data_content_partial)
+                self._process_issues_in_chunks(input_data_content_partial)
                 if(pos == -1 or pos >= len(input_data_content)):
                     break
             t.close()
@@ -52,7 +52,7 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
             print(f"\n[ERROR] Pre-Partitioning during risk assessment failed:\n{traceback.format_exc()}")
             sys.exit()
     
-    def _process_issues_partial(self, input_data_content):
+    def _process_issues_in_chunks(self, input_data_content):
         """
         Main method to execute the risk assessment step.
         """
