@@ -30,18 +30,19 @@ class IssueCard(tk.Frame):
         left_col.grid(row=0, column=0, sticky="nsew")
         
         # Description area (wrap=word handles width resizing)
+        from tkinter import scrolledtext
         tk.Label(left_col, text=uiConf.DEFECT_DESCRIPTION, font=(uiConf.FONT, uiConf.FONT_SIZE, "bold")).pack(anchor="w")
-        desc_text = tk.Text(left_col, height=3, wrap="word")
+        desc_text = scrolledtext.ScrolledText(left_col, height=3, wrap="word")
         desc_text.insert("1.0", item.get(uiConf.DEFECT_DESCRIPTION, ""))
         desc_text.config(state="disabled")
-        desc_text.pack(fill="x", pady=(0, 5))
+        desc_text.pack(fill="x", pady=(0, uiConf.PADY))
         
         # Risk Assessment area
         tk.Label(left_col, text=uiConf.RISK_ASSESSMENT, font=(uiConf.FONT, uiConf.FONT_SIZE, "bold")).pack(anchor="w")
-        risk_text = tk.Text(left_col, height=3, wrap="word")
+        risk_text = scrolledtext.ScrolledText(left_col, height=3, wrap="word")
         risk_text.insert("1.0", item.get(uiConf.RISK_ASSESSMENT, ""))
         risk_text.config(state="disabled")
-        risk_text.pack(fill="x")
+        risk_text.pack(fill="x", pady=(0, uiConf.PADY))
         
         # --- Right Column ---
         right_col = tk.Frame(main_content, padx=uiConf.PADX)
