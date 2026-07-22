@@ -53,7 +53,7 @@ class IssueDAOFactory():
 
                 # Instantiate formal Zeep objects instead of plain dictionaries
                 defect_desc_obj = TextType(
-                    type='text/html',
+                    type='text/plain',
                     content=issueDTO.defect_description,
                     contentLossy=False
                 )

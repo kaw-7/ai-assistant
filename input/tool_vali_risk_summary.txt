@@ -3,22 +3,13 @@ I will provide you with context (input text), that contains some release notes d
 a structured markup file generated inside your response, using the release notes. 
 
 
-### TASK 1 ###
+### TASK ###
 In the instructions from the first question from the context, I have defined the following rule:
 "Information about updates, upgrades, licesning, system requirements, documentation and similar notes have to be excluded."
 Thus some issues might be skipped.
-Find out and list/print which issues from the release notes documentation were skipped in the CSV file. 
-
-### TASK 2 ###
-Note: The context (input text) includes conversational text. Ignore that text and
-find the last structured markup data (containing issues) inside, from the last question:
-- Field "Risk Assessment".
-- Column "Status" ("RISK EXISTS" or "NO RISK").
-
-Create a structured output with the following format for each issue/bug which is marked as "RISK EXISTS": 
-issue id, issue description, is the issure sporadic or deterministic (under certain conditions),
-the version in which it was first detected
-and simple mitigation condition, which mimics the risk.
+Find out and list/print which issues from the release notes documentation were skipped in the output file. 
+Print the number of relevant issues and the number of skipped issues.
+The total number of issues is the relevant issues plus skipped issues.
 
 *** SYSTEM CONFIGURATION ***
 Role: Text Processing Engine

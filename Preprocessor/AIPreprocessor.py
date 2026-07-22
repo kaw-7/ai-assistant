@@ -24,12 +24,11 @@ class AIPreprocessor(AbstractPreprocessor):
             if not user_input:
                 return
 
-            print("\nUser input was generated!")
-            print("Query is now running...")
+            print("\nUser input was generated! Query is now running...")
 
             ai_response = self.ai_engine.generate_response(user_input=user_input)
             # --- SAVE OUTPUT ---
-            self.save_output(ai_response, config.TEMP_OUTPUT_FILE)
+            self.save_output(ai_response, config.TEMP_OUTPUT_FILE, "a")
             print("Output saved!\n")
             
             return ai_response
@@ -51,17 +50,12 @@ class AIPreprocessor(AbstractPreprocessor):
                 template = Template(f.read())
             with open(release_notes_file_path, "r", encoding="utf-8", errors="replace") as f:
                 release_notes = f.read()
-                pos = release_notes.find("\x00")
-                if pos != -1:
-                    print("first NUL at:", pos)
-                flag = any(ord(c) < 32 and c not in "\r\n\t" for c in release_notes)
-                print(f"has non-printable: {flag}")
+                self.check_characters(release_notes)
 
             instructions = template.safe_substitute(
                 tool_name=config.TOOL_NAME, 
                 vstart=config.TOOL_VERSION_START,
-                vend=config.TOOL_VERSION_END,
-                author_name=config.AUTHOR_NAME)
+                vend=config.TOOL_VERSION_END)
             
             print("Tool name: ", config.TOOL_NAME, ", validated version: ", config.TOOL_VERSION_START,
                   ", last version: ", config.TOOL_VERSION_END)
