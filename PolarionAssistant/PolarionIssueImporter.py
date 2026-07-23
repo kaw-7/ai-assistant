@@ -3,8 +3,8 @@
 Polarion Python Client - Connection Test
 Install: pip install polarion
 """
-from PolarionConnector import PolarionConnector
-from PolarionFactory import PolarionFactory
+from PolarionAssistant.Core.PolarionConnector import PolarionConnector
+from PolarionAssistant.Core.PolarionWorker import PolarionWorker
 from PolarionAssistant.Model.IssueDTO import IssueDTO
 from PolarionAssistant.Model.DAO.IssueFields import *  #IssueStatus, IssueSource
 from PolarionAssistant.Core.PolarionConnector import PolarionConnector
@@ -16,21 +16,23 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
 import sys
 
-class PolarionIssueImporter(PolarionFactory):
+class PolarionIssueImporter(PolarionWorker):
     
     def __init__(self):
         super().__init__()
     
     def GetDocItems(self) -> tuple[str, str, str, str]:
       
-        # Get document (like get_polarion_doc())
-        doc = self._connector.get_document()
+        # Get project
+        project = self._client.getProject(PConf.PROJECT_ID)
+        
+        # Get document
+        doc = project.getDocument(PConf.DOC_NAME)
         if doc is None:
-            print("❌ Document " + PConf.DOC_NAME + " not found!")
+            print(f"❌ Document '{PConf.DOC_NAME}' not found!")
             sys.exit(1)
+        print(f"✅ Loaded '{doc.title}'")
               
-        print("🎉 Ready to create issues!")
-    
         heading_item = ItemUtil.find_heading_item_by_name(doc, PConf.DOC_INPUT_HEADING)
         if heading_item is None:
             print(f"❌ Could not find heading: {PConf.DOC_INPUT_HEADING}!")
@@ -44,7 +46,8 @@ class PolarionIssueImporter(PolarionFactory):
         return doc, heading_item, full_name, email
     
     def ImportIssuesInPolarion(self):
-                
+        
+        print("🎉 Ready to create issues!")
         parser = IssueParser(PConf.ISSUE_INPUT_FILE)
         parser.read_file()
         

@@ -1,7 +1,8 @@
 from abc import ABC
-from PolarionConnector import PolarionConnector
+from Core.PolarionConnector import PolarionConnector
 import sys
-class PolarionFactory(ABC):
+
+class PolarionWorker(ABC):
     def __init__(self):
         self._connector = PolarionConnector()
         
