@@ -7,12 +7,12 @@ class PolarionConnector:
     def __init__(self):
         """Initialize with config values - no connection yet."""
         self.client = None
-        self.project = None
-        self.doc = None
         self.polarion_username = None
     
     def connect(self):
-        """Equivalent to polarion_connect()"""
+        if self.is_connected():
+            return self.client
+
         print("🔍 Connecting to Polarion server...")
         load_dotenv(dotenv_path=".polarion.env")
         # Now fetch the variables
@@ -62,14 +62,12 @@ class PolarionConnector:
             return full_name, email
     
     def is_connected(self):
-        """Check if client and document are ready."""
-        return self.client is not None and self.doc is not None
+        """Check if client is ready."""
+        return self.client is not None
     
     def disconnect(self):
         """Clean shutdown."""
         self.client = None
-        self.project = None
-        self.doc = None
         print("🔌 Disconnected from Polarion")
 
 

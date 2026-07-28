@@ -1,4 +1,5 @@
-PLAN_DOCU = "wiki/Validation Plans/Validation Plan Enterprise Architect v15_0_1514"
-TEST_DOCU = "wiki/Testing/Test Specification to Enterprise Architect v15_0_1514"
+PLAN_DOCU = "wiki/Validation Plans/Validation Plan Rider v2026_1"
+TEST_DOCU = "wiki/Testing/Test Specification to Rider v2026_1"
 
 PROJECT_ID = 'TOV' 
+DOC_INPUT_HEADING = "Operational Qualification" 

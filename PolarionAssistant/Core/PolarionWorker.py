@@ -1,10 +1,11 @@
 from abc import ABC
-from Core.PolarionConnector import PolarionConnector
+from PolarionAssistant.Core.PolarionConnector import PolarionConnector
 import sys
+connector = PolarionConnector()
 
 class PolarionWorker(ABC):
     def __init__(self):
-        self._connector = PolarionConnector()
+        self._connector = connector
         
         self._client = self._connector.connect()
         if self._client is None:
