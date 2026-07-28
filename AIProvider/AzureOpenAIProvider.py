@@ -11,7 +11,7 @@ import config
 class AzureOpenAIProvider(AIProvider, AIContext):
     def __init__(self):
         key = self._get_key_from_env()
-        api_version = "2024-12-01-preview"
+        api_version = "2024-10-01-preview"
         endpoint = "https://toolvaldationaianalyser.openai.azure.com/"
         self.client = AzureOpenAI(
             api_version=api_version,
@@ -25,15 +25,19 @@ class AzureOpenAIProvider(AIProvider, AIContext):
         self.save_question(user_input)
         
         granular_timeout = httpx.Timeout(
-            timeout=600.0,  # Total maximum time
+            timeout=1200.0,  # Total maximum time
             connect=5.0,   # Max time to establish connection
             read=450.0,     # Max time to wait for the next chunk of data
             write=20.0     # Max time to send the request
         )
         response = self.client.with_options(timeout=granular_timeout).chat.completions.create(
             model="gpt-5.4-mini",  # e.g., "llama-3.1-sonar-large-128k-online" config.MODEL_NAME
-            messages=[{"role": "user", "content": user_input}],
-            reasoning_effort="high",
+            messages=[
+                {"role": "system", "content": "You are a helpful tool validaton assistant processing tool release notes, extracting issues and bugs."},
+                {"role": "user", "content": user_input}
+            ],
+            temperature=0.0,
+            max_completion_tokens=128000,
             stream=False
         )
         self._print_token_usage(response)
@@ -69,8 +73,15 @@ class AzureOpenAIProvider(AIProvider, AIContext):
     
     def _print_token_usage(self, response):
         usage = response.usage  # Usage object (if provided by the API)
-
-        context_tokens = usage.prompt_tokens       # input token
+        
+        prompt_tokens = usage.prompt_tokens       # input token
         output_tokens  = usage.completion_tokens   # output tokens
-        print("context_tokens:", context_tokens)
+        print("prompt_tokens:", prompt_tokens)
         print("output_tokens:", output_tokens)
+        try:
+            print("finish_reason:", response.choices[0].finish_reason)
+        except Exception as e:
+            print(f"Could not define finish_reason: {e}")
+
+            
+        

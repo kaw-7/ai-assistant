@@ -3,18 +3,16 @@ import os
 from dotenv import load_dotenv
 from polarion import polarion
 
-import config as PConf
-
 class PolarionConnector:
     def __init__(self):
         """Initialize with config values - no connection yet."""
         self.client = None
-        self.project = None
-        self.doc = None
         self.polarion_username = None
     
     def connect(self):
-        """Equivalent to polarion_connect()"""
+        if self.is_connected():
+            return self.client
+
         print("🔍 Connecting to Polarion server...")
         load_dotenv(dotenv_path=".polarion.env")
         # Now fetch the variables
@@ -62,43 +60,14 @@ class PolarionConnector:
         except Exception:
             print(f"❌ Failed to fetch user info: {traceback.format_exc()}")
             return full_name, email
-
-    def get_document(self, doc_name: str = None):
-        """Equivalent to get_polarion_doc() - loads project + document"""
-        if not self.client:
-            print("❌ Client not connected. Call connect() first.")
-            return None
-        
-        try:
-            # Get project
-            self.project = self.client.getProject(PConf.PROJECT_ID)
-            
-            # Build document path
-            doc_name = doc_name or PConf.DOC_NAME
-            doc_path = f"{doc_name}"
-            
-            # Get document
-            self.doc = self.project.getDocument(doc_path)
-            if self.doc is None:
-                print(f"❌ Document '{doc_path}' not found")
-                return None
-            print(f"✅ Loaded '{self.doc.title}'")
-            return self.doc
-            
-        except Exception:
-            full_error = traceback.format_exc()
-            print(f"❌ Document load failed: {full_error}")
-            return None
     
     def is_connected(self):
-        """Check if client and document are ready."""
-        return self.client is not None and self.doc is not None
+        """Check if client is ready."""
+        return self.client is not None
     
     def disconnect(self):
         """Clean shutdown."""
         self.client = None
-        self.project = None
-        self.doc = None
         print("🔌 Disconnected from Polarion")
 
 

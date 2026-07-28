@@ -5,8 +5,7 @@ the rule defined earlier in the document override the later defined one.
 ## STRICT OUTPUT RULES ###
 1. **NO TRUNCATION:** Do not skip issues. You MUST process the input file from the very first line to the very last line and extract relevant bug/issue information.
 Show error if you cannot process the whole free text format file for some reason (e.g. because of token limit, unable to process user input, etc.)
-I noticed that you do not fullfil this order! E.g. for Visual Studio 2022 you processed only issues under 17.4.21 release heading.
-Subsequent information for 17.4.11, 17.4.10 etc. to 17.4.1 was skipped. This is major flaw. Do not do this.
+
 2. **NO SUMMARIZATION:** Do not give examples. Do not say "and so on". Output every single defect found.
 If you cannot process the whole input at once, interrupt the process with error message like "insuficient token limit" 
 and put it in the output. Please explain the reason why you are not processing all the information from the release notes input.
@@ -45,7 +44,11 @@ The value of each field is put on a separate, single line. The issue ends with [
 must start with [[ Description ]]. Do not plug empty lines in between [[ END ISSUE ITEM ]] and [[ Description ]].
 Do not plug empty lines in between fields - only when the field is empty.
 
-Description is a short description of the issue/bug. If the bug is about improvements, updates, upgrades, licesning, system requirements, documentation and similar notes then put: "MARKER! This is an improvement/update/upgrade/etc". If you cannot find any short description in the free text document and if the issue does not fall in the cathegory defined in the previous sentence, then you need to provide a short heading for that issue/bug. 
+Description is a short description of the issue/bug. 
+If the bug is about improvements, updates, upgrades, licesning, system requirements, documentation and similar notes 
+then put: "MARKER! This is an improvement/update/upgrade/etc". If you cannot find any short description 
+in the free text document and if the issue does not fall in the cathegory defined in the previous sentence, 
+then you need to provide a short heading for that issue/bug. 
 Defect ID is the issue/bug ID. If not present in the free text document, create a default one. 
 Defect Description is the actual defect description - it is usually a long description of the issue with some details, examples, etc. Do not modify this, take the specification from the free text document as it is!
 Source field has to be mapped to one of these specific values: KNOWN_PROBLEM_BY_VENDOR, KNOWN_PROBLEM_3RD_PARTY, CORRECTION_IN_REL_NOTES, KNOWN_PROBLEM_IN_NEWER_VERS, OCCURED_AT_OTTOBOCK, or OTHER_SOURCE.

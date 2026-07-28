@@ -12,7 +12,8 @@ class IssueDAOFactory():
     def create(connector, issueDTO):
         try:
             start = time.perf_counter()
-            workitem = connector.project.createWorkitem(
+            project = connector.client.getProject(PConf.PROJECT_ID)
+            workitem = project.createWorkitem(
                 workitem_type="defect_evaluation", 
                 new_workitem_fields={
                     "title":issueDTO.title,
@@ -53,7 +54,7 @@ class IssueDAOFactory():
 
                 # Instantiate formal Zeep objects instead of plain dictionaries
                 defect_desc_obj = TextType(
-                    type='text/html',
+                    type='text/plain',
                     content=issueDTO.defect_description,
                     contentLossy=False
                 )

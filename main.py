@@ -6,9 +6,11 @@ from Preprocessor.AbstractPreprocessor import PreprocessorType
 from Preprocessor.AIPreprocessor import AIPreprocessor 
 from Preprocessor.IAREWPreprocessor import IAREWPreprocessor
 from Preprocessor.ReloadExistingPreprocessor import ReloadExistingPreprocessor
+from Preprocessor.PreprocessingPipeline import PreprocessingPipeline
+from Preprocessor.TextChunkerPreprocessor import TextChunkerPreprocessor
 from RiskAssessment.AIRiskAssessmentAgent import AIRiskAssessmentAgent
 from RiskAssessment.AIRiskSummary import AIRiskSummary
-from PolarionAssistant.Polarion import polarionImport
+from PolarionAssistant.PolarionIssueImporter import PolarionIssueImporter
 # import csv_to_xlsx
 import time
 from UI.IssueFormatter import formatIssues
@@ -35,9 +37,9 @@ def AskUser(question, answer=None):
 def ai_engine():
     if(AskUser("Skip entire AI procedure", config.SKIP_ENTIRE_AI)):
         return
-    release_notes_file_path = config.TOOL_RELEASE_NOTES
+    
     # todo: create an AI factory class for the ai_provider variable
-    ai_provider = AzureOpenAIProvider() #GeminiProvider() AzureOpenAIProvider()
+    ai_provider = GeminiProvider() #GeminiProvider() AzureOpenAIProvider()
     
     match PreprocessorType(config.TOOL_PREPROCESSOR):
         case PreprocessorType.IAR_EmbeddedWorkbench:
@@ -46,8 +48,12 @@ def ai_engine():
             preprocessor = ReloadExistingPreprocessor(ai_provider)
         case _:
             preprocessor = AIPreprocessor(ai_provider)
-            
-    structured_issues = preprocessor.preprocess_file(release_notes_file_path)
+    
+    preprocessorPipeline = PreprocessingPipeline(TextChunkerPreprocessor(ai_provider), preprocessor)
+    preprocessorPipeline.Start()
+    # structured_issues = preprocessor.preprocess_file(release_notes_file_path)
+    with open(config.TEMP_OUTPUT_FILE, mode="r", encoding="utf-8") as f:
+        structured_issues = f.read()
     # print(structured_issues)
     # sys.exit()
     if(not AskUser("Proceed with AI risk assessment", config.PROCEED_WITH_AI_RISK_ASSESSMENT)):
@@ -79,8 +85,9 @@ if __name__ == "__main__":
     if(not AskUser("Proceed with polarion import")):
         sys.exit(0)
     
-    polarion_start = time.perf_counter()
-    polarionImport()
+    polarion_start = time.perf_counter()    
+    importer = PolarionIssueImporter()
+    importer.ImportIssuesInPolarion()
     polarion_total = time.perf_counter() - polarion_start
     
     print(f"⏱️ Total PROGRAM (polarion + ai) time: {(ai_total + polarion_total):.3f} seconds")
