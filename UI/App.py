@@ -42,7 +42,6 @@ class App(tk.Tk):
         scrollbar = tk.Scrollbar(container, orient="vertical", command=self.canvas.yview)
         
         self.scrollable = tk.Frame(self.canvas)
-        self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
         
         self.scrollable.bind("<Configure>", lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
         
@@ -56,7 +55,7 @@ class App(tk.Tk):
         self._bind_mousewheel()
         
         # Bind resize event
-        self.bind("<Configure>", self.on_resize)
+        self.canvas.bind("<Configure>", self._on_canvas_configure)
         
         self.card_widgets = []
         for it in items:
@@ -66,20 +65,17 @@ class App(tk.Tk):
                 
         self.apply_filter()
 
-    def on_resize(self, event):
-        # Ensure only the main window resize triggers this
-        if event.widget == self:
-            # Adjust canvas content width
-            new_width = self.canvas.winfo_width()
-            self.canvas.itemconfigure(self.canvas_window, width=new_width)
+    def _on_canvas_configure(self, event):
+        self.canvas.itemconfigure(self.canvas_window, width=event.width)
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def apply_filter(self):
         mode = self.filter_var.get()
         for c in self.card_widgets:
+            c.pack_forget()
+        for c in self.card_widgets:
             if c.matches_filter(mode):
                 c.pack(fill="x", pady=uiConf.PADY, padx=uiConf.PADX)
-            else:
-                c.pack_forget()
                 
     def _bind_mousewheel(self):
         # Windows/macOS

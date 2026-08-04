@@ -17,7 +17,7 @@ class AIPreprocessor(AbstractPreprocessor):
 
         if not os.path.exists(release_notes_file_path):
             print(f"[ERROR] Input file not found: {release_notes_file_path}")
-            return
+            sys.exit(1)
 
         try:
             user_input = self.generate_input(release_notes_file_path)

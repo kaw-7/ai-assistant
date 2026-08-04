@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 END_ISSUE_TOKEN = "END ISSUE ITEM"
 
-ISSUE_BEG = "[["
-ISSUE_END = "]]"
+TOKEN_BEG = "[["
+TOKEN_END = "]]"
 
 PADX = 3
 PADY = 3
@@ -21,4 +21,6 @@ RISK_EXISTS = "Risk Exists"
 DEFECT_ID = "Defect ID"
 STATUS = "Status"
 
+ISSUES_FILE = "output/Rider/final_risk_report.txt"
+ISSUES_BACKUP_FILE = "output/Rider/final_risk_report.bck"
 
