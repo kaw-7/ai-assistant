@@ -13,11 +13,9 @@ from RiskAssessment.AIRiskSummary import AIRiskSummary
 from PolarionAssistant.PolarionIssueImporter import PolarionIssueImporter
 # import csv_to_xlsx
 import time
-from UI.IssueFormatter import formatIssues
+from UI.IssueSerializer import markup_to_issueCards
 from UI.App import App
 
-#"D:/archive/reviews_ISO62304/Microchip/XC16Toolchain/Release Notes for MPLAB XC16 C Compiler v2.10_bug_fixes.htm"
-#D:/archive/reviews_ISO62304/IAR/intput_IAREmbdWorkbench.txt
 
 # TO DO create a UI module with a predefined UI inteface e.g. with AskUser metod
 def AskUser(question, answer=None):
@@ -78,7 +76,7 @@ if __name__ == "__main__":
         
     with open(file_path, "r", encoding="utf-8") as f:
         text = f.read()
-        issuesForDisplay = formatIssues(text)
+        issuesForDisplay = markup_to_issueCards(text)
         app = App(issuesForDisplay)
         app.mainloop()
         

@@ -42,7 +42,7 @@ def issueCards_to_markup(issues: list[str]):
         
     text = text[:-1]                
     
-    print(text)
+    # print(text)
     backup_text = ""    
     with open(uiConf.ISSUES_FILE, mode="a+", encoding="utf-8") as read_file1:
         read_file1.seek(0)

@@ -1,20 +1,13 @@
 import tkinter as tk
-try:
-    from UI.IssueCard import IssueCard
-except ImportError:
-    try:
-        from IssueCard import IssueCard
-    except ImportError as e:
-        raise ImportError("Neither UI.IssueCard nor IssueCard is available") from e
 
 try:
     import UI.ui_config as uiConf
+    from UI.IssueCard import IssueCard
+    from UI.IssueSerializer import issueCards_to_markup
 except ImportError:
-    try:
-        import ui_config as uiConf
-    except ImportError as e:
-        raise ImportError("Neither UI.ui_config nor ui_config is available") from e
-
+    import ui_config as uiConf
+    from IssueCard import IssueCard
+    from IssueSerializer import issueCards_to_markup
 
 class App(tk.Tk):
     def __init__(self, items):
@@ -59,7 +52,7 @@ class App(tk.Tk):
         
         self.card_widgets = []
         for it in items:
-            c = IssueCard(self.scrollable, it)
+            c = IssueCard(self.scrollable, it, self._on_issue_save)
             c.pack(fill="x", expand=False, pady=uiConf.PADY, padx=uiConf.PADX)
             self.card_widgets.append(c)
                 
@@ -104,4 +97,8 @@ class App(tk.Tk):
     
         # if we didn't hit scrollable, ignore
         return
+
+    def _on_issue_save(self):
+        issueCards_to_markup(self.items)
+        
 
