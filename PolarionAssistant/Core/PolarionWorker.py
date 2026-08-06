@@ -1,6 +1,10 @@
 from abc import ABC
-from PolarionAssistant.Core.PolarionConnector import PolarionConnector
 import sys
+try:
+    from PolarionAssistant.Core.PolarionConnector import PolarionConnector
+except:
+    from Core.PolarionConnector import PolarionConnector
+    
 connector = PolarionConnector()
 
 class PolarionWorker(ABC):
