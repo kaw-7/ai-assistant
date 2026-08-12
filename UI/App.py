@@ -10,11 +10,12 @@ except ImportError:
     from IssueSerializer import issueCards_to_markup
 
 class App(tk.Tk):
-    def __init__(self, items):
+    def __init__(self, items, items_file_path):
         super().__init__()
         self.title("Issue Items Viewer")
         self.geometry(uiConf.GEOMETRY)
         self.items = items
+        self.items_file_path = items_file_path
         
         # --- UI Construction ---
         top = tk.Frame(self, pady=uiConf.PADY)
@@ -99,6 +100,6 @@ class App(tk.Tk):
         return
 
     def _on_issue_save(self):
-        issueCards_to_markup(self.items)
+        issueCards_to_markup(self.items, self.items_file_path)
         
 

@@ -5,6 +5,14 @@ except ImportError:
         import ui_config as uiConf
     except ImportError as e:
         raise ImportError("Neither UI.ui_config nor ui_config is available") from e
+
+def createIssuesBackUp(out_file=uiConf.ISSUES_FILE, out_back=uiConf.ISSUES_BACKUP_FILE):
+    backup_text = ""    
+    with open(out_file, mode="a+", encoding="utf-8") as read_file1:
+        read_file1.seek(0)
+        backup_text = read_file1.read()
+    with open(out_back, mode="w", encoding="utf-8") as file2:
+        file2.write(backup_text)
         
 # Parsing function for the simplified format
 def markup_to_issueCards(text):
@@ -28,9 +36,9 @@ def markup_to_issueCards(text):
             if key:
                 cur[key] = (cur.get(key, "") + ("\n" if cur.get(key) else "") + line)
     return items
-        
 
-def issueCards_to_markup(issues: list[str]):
+
+def issueCards_to_markup(issues: list[str], out_file=uiConf.ISSUES_FILE):
     
     text = ""
     
@@ -42,13 +50,6 @@ def issueCards_to_markup(issues: list[str]):
         
     text = text[:-1]                
     
-    # print(text)
-    backup_text = ""    
-    with open(uiConf.ISSUES_FILE, mode="a+", encoding="utf-8") as read_file1:
-        read_file1.seek(0)
-        backup_text = read_file1.read()
-    with open(uiConf.ISSUES_BACKUP_FILE, mode="w", encoding="utf-8") as file2:
-        file2.write(backup_text)
-        
-    with open(uiConf.ISSUES_FILE, mode="w", encoding="utf-8") as file1:
+    # print(text)        
+    with open(out_file, mode="w", encoding="utf-8") as file1:
         file1.write(text)

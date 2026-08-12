@@ -50,13 +50,13 @@ class AzureOpenAIProvider(AIProvider, AIContext):
     @override
     def save_question(self, question_to_ai: str):
         self.context += "============= User Question: =============\n"
-        self.context += question_to_ai
+        self.context += question_to_ai or ""
         self.context += "\n============= User Question end ==========\n"
 
     @override
     def save_response(self, ai_response: str):
         self.context += "============= AI Response: ===============\n"
-        self.context += ai_response
+        self.context += ai_response or ""
         self.context += "\n============= AI Response end ============\n"
 
     @override
