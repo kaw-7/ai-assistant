@@ -57,22 +57,27 @@ class TextChunkerPreprocessor(AbstractPreprocessor):
             if(len(release_notes) < 3*config.CHUNK_SIZE/2 ):
                 self.slice_position = len(release_notes)
                 self.end = True
+                print('here1')
                 return release_notes
             
             self.slice_position = release_notes.find(config.CHUNK_DELIMITER)
             if(self.slice_position != -1):
+                self.slice_position += len(config.CHUNK_DELIMITER)
+                print('here2')
                 return release_notes[:self.slice_position]
             
             pattern = re.compile(r'(?:\r?\n[ \t\f\v]*)(?:\r?\n[ \t\f\v]*)(?:\r?\n[ \t\f\v]*)+')
             matches = pattern.search(release_notes, config.CHUNK_SIZE)
             if matches is not None:
                 self.slice_position = matches.end()
+                print('here3')
                 return release_notes[:matches.end()]
             
             pattern = re.compile(r'\r?\n[ \t\f\v]*\r?\n')
             matches = pattern.search(release_notes, config.CHUNK_SIZE)
             if matches is not None:
                 self.slice_position = matches.end()
+                print('here4')
                 return release_notes[:matches.end()]
                 
         raise Exception("Could not split release notes into chunks!")

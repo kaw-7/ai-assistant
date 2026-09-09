@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "ui": {
+    "last_module": "issue_viewer"
+  },
+  "sources": {
+    "main_config": {
+      "SKIP_ENTIRE_AI": "y",
+      "USE_PREPROCESS_CHUNKING": "y"
+    }
+  }
+}

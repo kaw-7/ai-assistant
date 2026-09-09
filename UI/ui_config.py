@@ -21,6 +21,5 @@ RISK_EXISTS = "Risk Exists"
 DEFECT_ID = "Defect ID"
 STATUS = "Status"
 
-ISSUES_FILE = "output/Rider/final_risk_report.txt"
-ISSUES_BACKUP_FILE = "output/Rider/final_risk_report.bck"
-
+ISSUES_FILE = "../output/Axivion7.1/final_risk_report.txt"
+ISSUES_BACKUP_FILE = "../output/Axivion7.1/final_risk_report_gui.bck"

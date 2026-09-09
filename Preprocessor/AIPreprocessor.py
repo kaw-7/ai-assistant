@@ -10,6 +10,8 @@ from Preprocessor.AbstractPreprocessor import AbstractPreprocessor
 class AIPreprocessor(AbstractPreprocessor):
     
     def __init__(self, ai_provider):
+        with open(config.TEMP_OUTPUT_FILE, mode="w", encoding="utf-8") as f:
+            f.write("")
         self.ai_engine = ai_provider
         
     @override

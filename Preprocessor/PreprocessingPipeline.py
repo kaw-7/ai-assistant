@@ -11,10 +11,7 @@ class PreprocessingPipeline:
         self.structured_issues = ""
         
     def Start(self):
-                    
-        with open(config.TEMP_OUTPUT_FILE, mode="w", encoding="utf-8") as f:
-            f.write("")
-        
+
         if config.USE_PREPROCESS_CHUNKING.lower() == "n":
             self.structured_issues = self.ai_preprocessor.preprocess_file(config.TOOL_RELEASE_NOTES)
             return

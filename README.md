@@ -47,6 +47,23 @@ The main configuration for the project is located in `config.py`. Before running
 
 ## Usage
 
+### Launcher (recommended)
+
+`Launcher/` is a tkinter window on top of the other modules. It lists the
+runnable modules (issue formatter and risk assessment, issue viewer, Polarion
+import, test specification builder), lets their configuration values be edited
+before a run and shows the output of the running module:
+
+```bash
+python -m Launcher.main
+```
+
+The configuration files themselves are not modified - the launcher keeps the
+edited values in `Launcher/launcher_settings.json` and applies them to the
+module it starts. See `Launcher/README.md`, also for how to add a module.
+
+### Command line
+
 To run the full risk assessment pipeline, execute the `main.py` script:
 
 ```bash
@@ -69,6 +86,7 @@ AIValiReport/
 ├── main.py               # Main execution script
 ├── csv_to_xlsx.py        # Script to convert CSV output to XLSX
 ├── requirements.txt      # Project dependencies
+├── Launcher/             # UI running the modules and editing their configuration
 ├── AIProvider/           # Handles communication with the AI model
 │   └── GeminiProvider.py
 ├── Preprocessor/      # Contains modules for preprocessing input data

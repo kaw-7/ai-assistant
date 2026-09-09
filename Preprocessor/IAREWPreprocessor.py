@@ -12,6 +12,8 @@ class IAREWPreprocessor(AbstractPreprocessor):
 
     @override
     def preprocess_file(self, release_notes_file_path):
+        with open(config.TEMP_OUTPUT_FILE, mode="w", encoding="utf-8") as f:
+            f.write("")
         print('[1/3] Generating CSV with IAR EW automation script!')
         try:
             return parse_txt_to_csv(txt_file=release_notes_file_path,

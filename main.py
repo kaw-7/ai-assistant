@@ -2,6 +2,7 @@ import sys
 import config
 from AIProvider.GeminiProvider import GeminiProvider
 from AIProvider.AzureOpenAIProvider import AzureOpenAIProvider
+from AIProvider.ClaudeProvider import ClaudeProvider
 from Preprocessor.AbstractPreprocessor import PreprocessorType 
 from Preprocessor.AIPreprocessor import AIPreprocessor 
 from Preprocessor.IAREWPreprocessor import IAREWPreprocessor
@@ -13,7 +14,7 @@ from RiskAssessment.AIRiskSummary import AIRiskSummary
 from PolarionAssistant.PolarionIssueImporter import PolarionIssueImporter
 # import csv_to_xlsx
 import time
-from UI.IssueSerializer import markup_to_issueCards
+from UI.IssueSerializer import markup_to_issueCards, createIssuesBackUp
 from UI.App import App
 
 
@@ -37,7 +38,7 @@ def ai_engine():
         return
     
     # todo: create an AI factory class for the ai_provider variable
-    ai_provider = GeminiProvider() #GeminiProvider() AzureOpenAIProvider()
+    ai_provider = ClaudeProvider() #GeminiProvider() AzureOpenAIProvider() ClaudeProvider
     
     match PreprocessorType(config.TOOL_PREPROCESSOR):
         case PreprocessorType.IAR_EmbeddedWorkbench:
@@ -77,7 +78,10 @@ if __name__ == "__main__":
     with open(file_path, "r", encoding="utf-8") as f:
         text = f.read()
         issuesForDisplay = markup_to_issueCards(text)
-        app = App(issuesForDisplay)
+    
+    if(issuesForDisplay is not None):
+        createIssuesBackUp(config.RISK_ASSESSMENT_OUTPUT_FILE, config.RISK_ASSESSMENT_OUTPUT_FILE_BACK_UP)
+        app = App(issuesForDisplay, config.RISK_ASSESSMENT_OUTPUT_FILE)
         app.mainloop()
         
     if(not AskUser("Proceed with polarion import")):
