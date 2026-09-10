@@ -1,0 +1,639 @@
+<title>Launcher Core Class Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --ground:#EFF2F5;
+  --plate:#FFFFFF;
+  --plate-2:#F7F9FB;
+  --hdr:#E6ECF1;
+  --ink:#182029;
+  --ink-2:#3D4B59;
+  --muted:#6B7887;
+  --hair:#C6D0D9;
+  --hair-soft:#DDE4EA;
+  --accent:#0E6B76;
+  --signal:#A9531C;
+  --sans:"IBM Plex Sans",ui-sans-serif,system-ui,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+  --disp:"Fraunces",Georgia,"Times New Roman",serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#11151A;
+    --plate:#171D24;
+    --plate-2:#1C2329;
+    --hdr:#232B34;
+    --ink:#DCE4EB;
+    --ink-2:#B3BEC9;
+    --muted:#8996A3;
+    --hair:#2E3843;
+    --hair-soft:#242C35;
+    --accent:#4FB8C2;
+    --signal:#DA8B4E;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#11151A;
+  --plate:#171D24;
+  --plate-2:#1C2329;
+  --hdr:#232B34;
+  --ink:#DCE4EB;
+  --ink-2:#B3BEC9;
+  --muted:#8996A3;
+  --hair:#2E3843;
+  --hair-soft:#242C35;
+  --accent:#4FB8C2;
+  --signal:#DA8B4E;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.sheet{
+  max-width:1088px;
+  margin:0 auto;
+  padding:clamp(20px,4vw,56px) clamp(14px,3vw,32px) 80px;
+  display:flex;
+  flex-direction:column;
+  gap:clamp(28px,3.4vw,44px);
+}
+
+/* ---------- title block ---------- */
+.titleblock{
+  border:1px solid var(--hair);
+  background:var(--plate);
+  display:grid;
+  grid-template-columns:1.55fr 1fr;
+}
+@media (max-width:720px){ .titleblock{grid-template-columns:1fr} }
+.tb-main{padding:clamp(18px,2.6vw,30px);display:flex;flex-direction:column;gap:12px}
+.tb-side{
+  padding:clamp(18px,2.6vw,30px);
+  border-left:1px solid var(--hair-soft);
+  background:var(--plate-2);
+  display:flex;flex-direction:column;gap:10px;
+}
+@media (max-width:720px){ .tb-side{border-left:none;border-top:1px solid var(--hair-soft)} }
+.eyebrow{
+  font-family:var(--mono);font-size:10.5px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+}
+h1{
+  font-family:var(--disp);
+  font-weight:600;
+  font-size:clamp(30px,4.6vw,44px);
+  line-height:1.08;
+  letter-spacing:-.015em;
+  margin:0;
+  text-wrap:balance;
+}
+h1 .sub{display:block;font-size:.5em;color:var(--muted);font-weight:500;letter-spacing:0;margin-top:.5em}
+.lede{margin:0;max-width:60ch;color:var(--ink-2)}
+.meta{display:flex;flex-direction:column;gap:7px;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.meta div{display:flex;justify-content:space-between;gap:14px;border-bottom:1px dotted var(--hair);padding-bottom:6px}
+.meta span:last-child{color:var(--ink-2);font-variant-numeric:tabular-nums;text-align:right}
+
+/* ---------- plates ---------- */
+figure.plate{
+  margin:0;
+  border:1px solid var(--hair);
+  background:var(--plate);
+}
+.plate-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding:14px clamp(14px,2vw,22px);
+  border-bottom:1px solid var(--hair-soft);
+  background:var(--plate-2);
+}
+.plate-head .no{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--signal)}
+.plate-head h2{
+  font-family:var(--disp);font-weight:500;font-size:19px;margin:0;letter-spacing:-.01em;
+  flex:1 1 260px;
+}
+.plate-head .tag{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.plate-body{padding:clamp(12px,2vw,22px);overflow-x:auto}
+figcaption{
+  padding:0 clamp(14px,2vw,22px) 18px;
+  font-size:13.5px;color:var(--ink-2);max-width:78ch;
+}
+figcaption code,.ref code,.notes code{font-family:var(--mono);font-size:.9em;color:var(--accent)}
+
+/* ---------- diagram ---------- */
+.dgm{display:block;width:100%;height:auto;min-width:700px}
+.dgm .box{fill:var(--plate-2);stroke:var(--hair);stroke-width:1}
+.dgm .hdr{fill:var(--hdr);stroke:var(--hair);stroke-width:1}
+.dgm .ghost{fill:none;stroke:var(--hair);stroke-width:1;stroke-dasharray:4 3}
+.dgm .rule{stroke:var(--hair);stroke-width:1}
+.dgm .cname{font-family:var(--mono);font-size:13.5px;font-weight:600;fill:var(--ink)}
+.dgm .cname.q{fill:var(--muted);font-weight:500}
+.dgm .st{font-family:var(--mono);font-size:10.5px;font-weight:400;fill:var(--muted)}
+.dgm .mem{font-family:var(--mono);font-size:11.5px;fill:var(--ink-2)}
+.dgm .mem.dim{fill:var(--muted)}
+.dgm .lbl{font-family:var(--mono);font-size:10.5px;fill:var(--muted)}
+.dgm .lane{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.14em;fill:var(--muted)}
+.dgm .edge{stroke:var(--accent);stroke-width:1.4;fill:none}
+.dgm .tri{stroke:var(--accent);stroke-width:1.4;fill:var(--plate)}
+.dgm .cross{stroke:var(--signal);stroke-width:1.6;fill:none}
+.dgm .boundary{stroke:var(--signal);stroke-width:1.2;stroke-dasharray:5 5;opacity:.75}
+.dgm .lbl.sig{fill:var(--signal)}
+.dgm .fbox{fill:var(--plate-2);stroke:var(--hair);stroke-width:1}
+.dgm .ftitle{font-family:var(--mono);font-size:12.5px;font-weight:600;fill:var(--ink)}
+.dgm .fsub{font-family:var(--mono);font-size:10.5px;fill:var(--muted)}
+.dgm .ah path{fill:var(--accent)}
+.dgm .ahs path{fill:var(--signal)}
+
+/* ---------- reference table ---------- */
+.ref{border:1px solid var(--hair);background:var(--plate)}
+.ref h2,.notes h2{
+  font-family:var(--disp);font-weight:500;font-size:19px;margin:0;letter-spacing:-.01em;
+}
+.ref-head,.notes-head{padding:14px clamp(14px,2vw,22px);border-bottom:1px solid var(--hair-soft);background:var(--plate-2);display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.ref-head .no,.notes-head .no{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--signal)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:660px;font-size:13px}
+th,td{text-align:left;vertical-align:top;padding:11px clamp(10px,1.6vw,18px);border-bottom:1px solid var(--hair-soft)}
+th{
+  font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:none}
+td.f{font-family:var(--mono);font-size:12px;color:var(--ink);white-space:nowrap}
+td.d{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);line-height:1.75}
+td.u{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:1.75}
+td .kw{color:var(--accent)}
+tbody tr.none td.d{color:var(--muted)}
+
+/* ---------- notes ---------- */
+.notes{border:1px solid var(--hair);background:var(--plate)}
+.notes ol{margin:0;padding:clamp(14px,2vw,22px) clamp(14px,2vw,22px) clamp(14px,2vw,22px) 0;list-style:none;display:grid;gap:2px}
+.notes li{
+  display:grid;grid-template-columns:56px 1fr;gap:clamp(8px,1.4vw,18px);
+  padding:13px 0;border-bottom:1px solid var(--hair-soft);
+}
+.notes li:last-child{border-bottom:none}
+.notes li .n{
+  font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;
+  padding-top:2px;font-variant-numeric:tabular-nums;
+}
+.notes li p{margin:0;max-width:72ch;font-size:14px;color:var(--ink-2)}
+.notes li p b{color:var(--ink);font-weight:600}
+.notes li.caveat .n{color:var(--signal)}
+
+footer{
+  font-family:var(--mono);font-size:11px;color:var(--muted);
+  border-top:1px solid var(--hair);padding-top:14px;
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="sheet">
+
+  <header class="titleblock">
+    <div class="tb-main">
+      <div class="eyebrow">Launcher / core</div>
+      <h1>Launcher Core Class Map<span class="sub">Seven files, ten classes, one process boundary</span></h1>
+      <p class="lede">The package holds the whole launcher mechanism minus its Tk widgets: how runnable modules are
+        discovered, how their configuration is described and re-evaluated, and how a run is handed to a separate
+        Python process. Members shown are the ones the collaborators actually call.</p>
+    </div>
+    <div class="tb-side">
+      <div class="eyebrow">Sheet data</div>
+      <div class="meta">
+        <div><span>Package</span><span>Launcher/core</span></div>
+        <div><span>Files</span><span>7 + empty init</span></div>
+        <div><span>Lines</span><span>973</span></div>
+        <div><span>Classes</span><span>10</span></div>
+        <div><span>Abstract bases</span><span>2</span></div>
+        <div><span>Out of scope</span><span>ui &middot; modules</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ FIG 1 ============ -->
+  <figure class="plate">
+    <div class="plate-head">
+      <span class="no">Fig. 1</span>
+      <h2>From a folder of files to an editable contract</h2>
+      <span class="tag">registry &middot; module_descriptor &middot; config_sources &middot; config_fields</span>
+    </div>
+    <div class="plate-body">
+      <svg class="dgm" viewBox="0 0 1000 700" role="img"
+           aria-label="ModuleRegistry discovers RunnableModule subclasses; each module declares ConfigSource objects; each source produces ConfigField descriptors whose kind is a FieldKind enum member.">
+        <defs>
+          <marker id="f1-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse" class="ah"><path d="M0,0 L10,5 L0,10 z"/></marker>
+        </defs>
+
+        <rect class="box" x="8" y="30" width="470" height="144"/>
+        <rect class="hdr" x="8" y="30" width="470" height="38"/>
+        <text class="cname" x="22" y="54">ModuleRegistry</text>
+        <text class="st" x="464" y="54" text-anchor="end">registry.py</text>
+        <text class="mem" x="22" y="88">errors: list[str]</text>
+        <text class="mem" x="22" y="106">discover() &#8594; self</text>
+        <text class="mem" x="22" y="124">get(module_id) &#8594; RunnableModule | None</text>
+        <text class="mem" x="22" y="142">modules &middot; __len__ &middot; __iter__</text>
+        <text class="mem" x="22" y="160">sources_by_id() &#8594; {source_id: source}</text>
+
+        <line class="edge" x1="243" y1="174" x2="243" y2="228" marker-end="url(#f1-ah)"/>
+        <text class="lbl" x="257" y="196">imports Launcher/modules/*.py</text>
+        <text class="lbl" x="257" y="210">concrete subclasses only</text>
+
+        <rect class="box" x="8" y="230" width="470" height="144"/>
+        <rect class="hdr" x="8" y="230" width="470" height="38"/>
+        <text class="cname" x="22" y="254">RunnableModule<tspan class="st">  &laquo;abstract&raquo;</tspan></text>
+        <text class="st" x="464" y="254" text-anchor="end">module_descriptor.py</text>
+        <text class="mem" x="22" y="288">id &middot; title &middot; description &middot; order</text>
+        <text class="mem" x="22" y="306">extra_sys_path &middot; opens_window</text>
+        <text class="mem" x="22" y="324">config_sources() &#8594; [ConfigSource]</text>
+        <text class="mem" x="22" y="342">run()  &#8592; abstract, runs in the child</text>
+        <text class="mem" x="22" y="360">label() &#8594; title or id</text>
+
+        <line class="edge" x1="243" y1="374" x2="243" y2="428" marker-end="url(#f1-ah)"/>
+        <text class="lbl" x="257" y="396">declares its configuration</text>
+        <text class="lbl" x="257" y="410">back ends &middot; 0..*</text>
+
+        <rect class="box" x="8" y="430" width="470" height="126"/>
+        <rect class="hdr" x="8" y="430" width="470" height="38"/>
+        <text class="cname" x="22" y="454">ConfigSource<tspan class="st">  &laquo;abstract&raquo;</tspan></text>
+        <text class="st" x="464" y="454" text-anchor="end">config_sources.py</text>
+        <text class="mem" x="22" y="488">id &middot; title &middot; description</text>
+        <text class="mem" x="22" y="506">fields() &#8594; [ConfigField]</text>
+        <text class="mem" x="22" y="524">evaluate(overrides, side_effects=True)</text>
+        <text class="mem" x="22" y="542">apply(overrides)</text>
+
+        <path class="edge" d="M478,470 H700 V376" marker-end="url(#f1-ah)"/>
+        <text class="lbl" x="589" y="462" text-anchor="middle">fields() &#8594; 0..*</text>
+
+        <rect class="box" x="522" y="230" width="470" height="144"/>
+        <rect class="hdr" x="522" y="230" width="470" height="38"/>
+        <text class="cname" x="536" y="254">ConfigField<tspan class="st">  &laquo;dataclass&raquo;</tspan></text>
+        <text class="st" x="978" y="254" text-anchor="end">config_fields.py</text>
+        <text class="mem" x="536" y="288">name &middot; label &middot; kind &middot; choices &middot; help</text>
+        <text class="mem" x="536" y="306">section &middot; secret &middot; derived &middot; editable</text>
+        <text class="mem" x="536" y="324">persist &middot; default</text>
+        <text class="mem" x="536" y="342">to_python(raw) &middot; to_display(value)</text>
+        <text class="mem" x="536" y="360">validate(raw) &#8594; message or ''</text>
+
+        <line class="edge" x1="814" y1="374" x2="814" y2="558" marker-end="url(#f1-ah)"/>
+        <text class="lbl" x="826" y="466">kind picks the widget</text>
+
+        <rect class="box" x="522" y="560" width="470" height="108"/>
+        <rect class="hdr" x="522" y="560" width="470" height="38"/>
+        <text class="cname" x="536" y="584">FieldKind<tspan class="st">  &laquo;str, Enum&raquo;</tspan></text>
+        <text class="st" x="978" y="584" text-anchor="end">config_fields.py</text>
+        <text class="mem" x="536" y="618">TEXT &middot; MULTILINE &middot; INT &middot; FLOAT</text>
+        <text class="mem" x="536" y="636">BOOL &middot; CHOICE &middot; FILE &middot; DIR</text>
+        <text class="mem dim" x="536" y="654">kind_for_value(v) guesses from a literal</text>
+      </svg>
+    </div>
+    <figcaption>The chain runs one way. Drop a file into <code>Launcher/modules/</code> and <code>discover()</code>
+      imports it, keeps the concrete <code>RunnableModule</code> subclasses defined in that file, asks each one for
+      its configuration sources, and asks each source for its fields &mdash; which is exactly what the editor
+      renders. Nothing here knows about Tk, and no step registers itself in a list.</figcaption>
+  </figure>
+
+  <!-- ============ FIG 2 ============ -->
+  <figure class="plate">
+    <div class="plate-head">
+      <span class="no">Fig. 2</span>
+      <h2>Two backends behind the same three operations</h2>
+      <span class="tag">config_sources.py</span>
+    </div>
+    <div class="plate-body">
+      <svg class="dgm" viewBox="0 0 1000 560" role="img"
+           aria-label="PyModuleConfigSource and EnvFileConfigSource both implement ConfigSource. PyModuleConfigSource executes the config file inside an _OverridingNamespace so that derived values recompute.">
+        <defs>
+          <marker id="f2-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse" class="ah"><path d="M0,0 L10,5 L0,10 z"/></marker>
+        </defs>
+
+        <rect class="ghost" x="290" y="24" width="420" height="74"/>
+        <line class="rule" x1="290" y1="60" x2="710" y2="60" stroke-dasharray="4 3"/>
+        <text class="cname q" x="304" y="48">ConfigSource</text>
+        <text class="st" x="696" y="48" text-anchor="end">see fig. 1</text>
+        <text class="mem dim" x="304" y="82">fields() &middot; evaluate() &middot; apply()</text>
+
+        <polygon class="tri" points="500,100 492,114 508,114"/>
+        <line class="edge" x1="500" y1="114" x2="500" y2="140"/>
+        <line class="edge" x1="243" y1="140" x2="757" y2="140"/>
+        <line class="edge" x1="243" y1="140" x2="243" y2="170"/>
+        <line class="edge" x1="757" y1="140" x2="757" y2="170"/>
+        <text class="lbl" x="628" y="132" text-anchor="middle">&laquo;implements&raquo;</text>
+
+        <rect class="box" x="8" y="170" width="470" height="180"/>
+        <rect class="hdr" x="8" y="170" width="470" height="38"/>
+        <text class="cname" x="22" y="194">PyModuleConfigSource</text>
+        <text class="st" x="464" y="194" text-anchor="end">config.py &middot; ui_config.py</text>
+        <text class="mem" x="22" y="228">module_name &middot; file_path</text>
+        <text class="mem" x="22" y="246">field_specs &middot; ignore &middot; show_undeclared</text>
+        <text class="mem" x="22" y="264">fields()    ast.parse + '#' comments</text>
+        <text class="mem" x="22" y="282">evaluate()  exec(source) w/ overrides</text>
+        <text class="mem" x="22" y="300">apply()     setattr on the real module</text>
+        <text class="mem dim" x="22" y="318">_exec_source() builds the namespace</text>
+        <text class="mem dim" x="22" y="336">_no_directory_creation() for previews</text>
+
+        <rect class="box" x="522" y="170" width="470" height="180"/>
+        <rect class="hdr" x="522" y="170" width="470" height="38"/>
+        <text class="cname" x="536" y="194">EnvFileConfigSource</text>
+        <text class="st" x="978" y="194" text-anchor="end">.polarion.env</text>
+        <text class="mem" x="536" y="228">file_path &middot; write_back</text>
+        <text class="mem" x="536" y="246">fields()    KEY=VALUE lines + specs</text>
+        <text class="mem" x="536" y="264">evaluate()  file values, overrides win</text>
+        <text class="mem" x="536" y="282">apply()     &#8594; os.environ</text>
+        <text class="mem" x="536" y="300">write_back  rewrites the file, opt-in</text>
+        <text class="mem dim" x="536" y="318">'#' lines and blanks are skipped</text>
+        <text class="mem dim" x="536" y="336">surrounding quotes are stripped</text>
+
+        <path class="edge" d="M243,350 V384 H500 V414" marker-end="url(#f2-ah)"/>
+        <text class="lbl" x="372" y="376" text-anchor="middle">exec globals / locals</text>
+
+        <rect class="box" x="265" y="416" width="470" height="126"/>
+        <rect class="hdr" x="265" y="416" width="470" height="38"/>
+        <text class="cname" x="279" y="440">_OverridingNamespace<tspan class="st">  &laquo;dict&raquo;</tspan></text>
+        <text class="st" x="721" y="440" text-anchor="end">config_sources.py</text>
+        <text class="mem" x="279" y="474">_overrides: dict</text>
+        <text class="mem" x="279" y="492">__setitem__() swaps at assign time</text>
+        <text class="mem" x="279" y="510">apply_unassigned() adds missing names</text>
+        <text class="mem dim" x="279" y="528">&#8594; derived f-strings recompute, not stale</text>
+      </svg>
+    </div>
+    <figcaption>Both subclasses answer the same three questions, so the editor and the child process treat them
+      identically. The asymmetry is in <em>how</em>: the dotenv source just reads and writes keys, while the Python
+      source re-executes the config file with the user's values substituted at the moment each name is assigned.
+      That is why changing <code>tool_folder</code> also recomputes every
+      <code>f"output/{tool_folder}/&hellip;"</code> path below it instead of leaving a stale value behind.</figcaption>
+  </figure>
+
+  <!-- ============ FIG 3 ============ -->
+  <figure class="plate">
+    <div class="plate-head">
+      <span class="no">Fig. 3</span>
+      <h2>Where a run crosses the process boundary</h2>
+      <span class="tag">settings_store &middot; process_runner &middot; project</span>
+    </div>
+    <div class="plate-body">
+      <svg class="dgm" viewBox="0 0 1000 712" role="img"
+           aria-label="In the launcher process, SettingsStore.as_dict feeds ProcessRunner.start, which writes a temporary JSON file and spawns Launcher.child_main. In the child process the registry resolves the module, each config source applies its overrides, and run executes; stdout streams back through a queue into the Tk main loop.">
+        <defs>
+          <marker id="f3-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse" class="ah"><path d="M0,0 L10,5 L0,10 z"/></marker>
+          <marker id="f3-ahs" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse" class="ahs"><path d="M0,0 L10,5 L0,10 z"/></marker>
+        </defs>
+
+        <text class="lane" x="239" y="26" text-anchor="middle">LAUNCHER PROCESS</text>
+        <text class="lane" x="761" y="26" text-anchor="middle">CHILD PROCESS &mdash; ONE PER RUN</text>
+        <line class="boundary" x1="500" y1="40" x2="500" y2="664"/>
+
+        <rect class="fbox" x="24" y="48" width="430" height="56"/>
+        <text class="ftitle" x="38" y="74">LauncherApp (Tk)</text>
+        <text class="fsub" x="38" y="92">ui/app.py &mdash; module list + config editor</text>
+        <line class="edge" x1="239" y1="104" x2="239" y2="130" marker-end="url(#f3-ah)"/>
+
+        <rect class="fbox" x="24" y="132" width="430" height="68"/>
+        <text class="ftitle" x="38" y="158">SettingsStore.as_dict()</text>
+        <text class="fsub" x="38" y="176">{source_id: {key: value}}</text>
+        <text class="fsub" x="38" y="192">stored + volatile merged</text>
+        <line class="edge" x1="239" y1="200" x2="239" y2="226" marker-end="url(#f3-ah)"/>
+
+        <rect class="fbox" x="24" y="228" width="430" height="68"/>
+        <text class="ftitle" x="38" y="254">ProcessRunner.start(id, overrides)</text>
+        <text class="fsub" x="38" y="272">writes %TEMP%/launcher_cfg_*.json</text>
+        <text class="fsub" x="38" y="288">subprocess.Popen &middot; CREATE_NO_WINDOW</text>
+
+        <line class="cross" x1="454" y1="262" x2="544" y2="262" marker-end="url(#f3-ahs)"/>
+        <text class="lbl sig" x="500" y="220" text-anchor="middle">python -u -m Launcher.child_main</text>
+
+        <rect class="fbox" x="546" y="228" width="430" height="68"/>
+        <text class="ftitle" x="560" y="254">child_main.main(id, json)</text>
+        <text class="fsub" x="560" y="272">ensure_project_root_on_path()</text>
+        <text class="fsub" x="560" y="288">use_project_root_as_cwd()</text>
+        <line class="edge" x1="761" y1="296" x2="761" y2="322" marker-end="url(#f3-ah)"/>
+
+        <rect class="fbox" x="546" y="324" width="430" height="56"/>
+        <text class="ftitle" x="560" y="350">ModuleRegistry().discover() &#8594; get(id)</text>
+        <text class="fsub" x="560" y="368">discovery errors printed, never raised</text>
+        <line class="edge" x1="761" y1="380" x2="761" y2="406" marker-end="url(#f3-ah)"/>
+
+        <rect class="fbox" x="546" y="408" width="430" height="68"/>
+        <text class="ftitle" x="560" y="434">source.apply(overrides) per source</text>
+        <text class="fsub" x="560" y="452">PyModule &#8594; setattr &middot; Env &#8594; os.environ</text>
+        <text class="fsub" x="560" y="468">secret fields echoed as ***</text>
+        <line class="edge" x1="761" y1="476" x2="761" y2="502" marker-end="url(#f3-ah)"/>
+
+        <rect class="fbox" x="546" y="504" width="430" height="68"/>
+        <text class="ftitle" x="560" y="530">RunnableModule.run()</text>
+        <text class="fsub" x="560" y="548">prints &middot; own Tk window &middot; sys.exit</text>
+        <text class="fsub" x="560" y="564">exit 0 &middot; 1 failed &middot; 2 usage &middot; 3 unknown id</text>
+
+        <line class="cross" x1="546" y1="538" x2="456" y2="538" marker-end="url(#f3-ahs)"/>
+        <text class="lbl sig" x="500" y="528" text-anchor="middle">stdout+stderr</text>
+
+        <rect class="fbox" x="24" y="504" width="430" height="68"/>
+        <text class="ftitle" x="38" y="530">reader thread &#8594; queue</text>
+        <text class="fsub" x="38" y="548">MSG_OUTPUT &middot; MSG_STATUS &middot; MSG_FINISHED</text>
+        <text class="fsub" x="38" y="564">4 KiB chunks &middot; incremental utf-8 decode</text>
+        <line class="edge" x1="239" y1="572" x2="239" y2="598" marker-end="url(#f3-ah)"/>
+
+        <rect class="fbox" x="24" y="600" width="430" height="56"/>
+        <text class="ftitle" x="38" y="626">LauncherApp._drain_queue()</text>
+        <text class="fsub" x="38" y="644">polled from the Tk main loop</text>
+
+        <text class="lbl" x="24" y="686">stop() &#8594; taskkill /F /T on the whole tree &middot; the overrides file is unlinked when the child exits</text>
+        <text class="lbl" x="24" y="702">PROJECT_ROOT and SETTINGS_FILE come from project.py &mdash; the only file in the package with no classes</text>
+      </svg>
+    </div>
+    <figcaption>The child is spawned once per run and holds the only copy of the applied configuration, which is why
+      every run starts from clean state and why a module is free to print, block, open its own window or call
+      <code>sys.exit</code>. Output streams back from the moment the process starts &mdash; the reader thread only
+      ever pushes into a queue and the Tk main loop drains it, so nothing touches widgets off-thread. The two
+      launcher-side classes named here appear as classes in fig. 4.</figcaption>
+  </figure>
+
+  <!-- ============ FIG 4 ============ -->
+  <figure class="plate">
+    <div class="plate-head">
+      <span class="no">Fig. 4</span>
+      <h2>The two classes that hold the launcher side</h2>
+      <span class="tag">settings_store.py &middot; process_runner.py &middot; project.py</span>
+    </div>
+    <div class="plate-body">
+      <svg class="dgm" viewBox="0 0 1000 470" role="img"
+           aria-label="SettingsStore and ProcessRunner as classes with their members. SettingsStore.as_dict feeds ProcessRunner.start; both depend on constants from project.py; ProcessRunner defines the queue message kinds.">
+        <defs>
+          <marker id="f4-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse" class="ah"><path d="M0,0 L10,5 L0,10 z"/></marker>
+        </defs>
+
+        <rect class="box" x="8" y="30" width="440" height="234"/>
+        <rect class="hdr" x="8" y="30" width="440" height="38"/>
+        <text class="cname" x="22" y="54">SettingsStore</text>
+        <text class="st" x="434" y="54" text-anchor="end">settings_store.py</text>
+        <text class="mem" x="22" y="88">path: Path = SETTINGS_FILE</text>
+        <text class="mem" x="22" y="106">_sources    persisted overrides</text>
+        <text class="mem" x="22" y="124">_volatile   session only (secrets)</text>
+        <text class="mem" x="22" y="142">_ui         window state</text>
+        <text class="mem" x="22" y="160">load() &middot; save()</text>
+        <text class="mem" x="22" y="178">overrides(source_id) &#8594; dict</text>
+        <text class="mem" x="22" y="196">set_overrides(id, values, volatile)</text>
+        <text class="mem" x="22" y="214">clear_source(source_id)</text>
+        <text class="mem" x="22" y="232">as_dict() &#8594; payload for the child</text>
+        <text class="mem" x="22" y="250">ui_value() &middot; set_ui_value()</text>
+
+        <line class="edge" x1="448" y1="147" x2="550" y2="147" marker-end="url(#f4-ah)"/>
+        <text class="lbl" x="500" y="139" text-anchor="middle">as_dict()</text>
+
+        <rect class="box" x="552" y="30" width="440" height="234"/>
+        <rect class="hdr" x="552" y="30" width="440" height="38"/>
+        <text class="cname" x="566" y="54">ProcessRunner</text>
+        <text class="st" x="978" y="54" text-anchor="end">process_runner.py</text>
+        <text class="mem" x="566" y="88">queue: Queue[(kind, value)]</text>
+        <text class="mem" x="566" y="106">_process &middot; _reader &middot; _stopping</text>
+        <text class="mem" x="566" y="124">_overrides_file &middot; _module_id</text>
+        <text class="mem" x="566" y="142">is_running() &#8594; bool &middot; module_id</text>
+        <text class="mem" x="566" y="160">start(module_id, overrides)</text>
+        <text class="mem" x="566" y="178">stop()  taskkill /F /T on the tree</text>
+        <text class="mem" x="566" y="196">_write_overrides(ovr) &#8594; Path</text>
+        <text class="mem" x="566" y="214">_cleanup_overrides()</text>
+        <text class="mem" x="566" y="232">_child_env()  PYTHONPATH &middot; utf-8</text>
+        <text class="mem" x="566" y="250">_pump_output()  the reader thread</text>
+
+        <line class="edge" x1="228" y1="264" x2="228" y2="298" marker-end="url(#f4-ah)"/>
+        <text class="lbl" x="238" y="285">SETTINGS_FILE</text>
+
+        <path class="edge" d="M700,264 V284 H400 V296" marker-end="url(#f4-ah)"/>
+        <text class="lbl" x="560" y="278">PROJECT_ROOT</text>
+
+        <line class="edge" x1="772" y1="264" x2="772" y2="298" marker-end="url(#f4-ah)"/>
+        <text class="lbl" x="782" y="285">defines</text>
+
+        <rect class="box" x="8" y="300" width="440" height="126"/>
+        <rect class="hdr" x="8" y="300" width="440" height="38"/>
+        <text class="cname" x="22" y="324">project<tspan class="st">  &laquo;module&raquo;</tspan></text>
+        <text class="st" x="434" y="324" text-anchor="end">project.py</text>
+        <text class="mem" x="22" y="358">PROJECT_ROOT &middot; SETTINGS_FILE</text>
+        <text class="mem" x="22" y="376">project_path(*parts) &#8594; Path</text>
+        <text class="mem" x="22" y="394">ensure_project_root_on_path()</text>
+        <text class="mem" x="22" y="412">use_project_root_as_cwd()</text>
+
+        <rect class="box" x="552" y="300" width="440" height="126"/>
+        <rect class="hdr" x="552" y="300" width="440" height="38"/>
+        <text class="cname" x="566" y="324">queue protocol<tspan class="st">  &laquo;constants&raquo;</tspan></text>
+        <text class="st" x="978" y="324" text-anchor="end">process_runner.py</text>
+        <text class="mem" x="566" y="358">MSG_OUTPUT    &#8594; str, stdout chunk</text>
+        <text class="mem" x="566" y="376">MSG_STATUS    &#8594; str, status line</text>
+        <text class="mem" x="566" y="394">MSG_FINISHED  &#8594; int, exit code</text>
+        <text class="mem" x="566" y="412">CHILD_MODULE  = Launcher.child_main</text>
+      </svg>
+    </div>
+    <figcaption>Fig. 3 shows <em>when</em> these two act; this is <em>what they are</em>. Neither is imported by
+      the child process &mdash; they exist only on the launcher side, which is why the run path can cross a process
+      boundary without carrying them along. <code>SettingsStore</code> owns the split between what is written to
+      disk and what stays in memory for the session; <code>ProcessRunner</code> owns the child and the queue that
+      keeps its output off the Tk thread.</figcaption>
+  </figure>
+
+  <!-- ============ FILE MAP ============ -->
+  <section class="ref">
+    <div class="ref-head">
+      <span class="no">Table 1</span>
+      <h2>File map and dependency direction</h2>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>File</th><th>Defines</th><th>Imported by</th></tr>
+        </thead>
+        <tbody>
+          <tr class="none">
+            <td class="f">project.py</td>
+            <td class="d">PROJECT_ROOT &middot; SETTINGS_FILE<br>project_path()<br>ensure_project_root_on_path()<br>use_project_root_as_cwd()<br><em>no classes</em></td>
+            <td class="u">settings_store &middot; process_runner<br>child_main &middot; ui/config_panel<br>modules/*</td>
+          </tr>
+          <tr>
+            <td class="f">config_fields.py</td>
+            <td class="d"><span class="kw">FieldKind</span>(str, Enum)<br><span class="kw">ConfigField</span> &laquo;dataclass&raquo;<br>kind_for_value()</td>
+            <td class="u">config_sources &middot; ui/config_panel<br>modules/_sources</td>
+          </tr>
+          <tr>
+            <td class="f">config_sources.py</td>
+            <td class="d"><span class="kw">ConfigSource</span> &laquo;abstract&raquo;<br><span class="kw">PyModuleConfigSource</span><br><span class="kw">EnvFileConfigSource</span><br><span class="kw">_OverridingNamespace</span>(dict)<br>_no_directory_creation()</td>
+            <td class="u">module_descriptor<br>ui/config_panel<br>modules/_sources</td>
+          </tr>
+          <tr>
+            <td class="f">module_descriptor.py</td>
+            <td class="d"><span class="kw">RunnableModule</span> &laquo;abstract&raquo;</td>
+            <td class="u">registry &middot; modules/*</td>
+          </tr>
+          <tr>
+            <td class="f">registry.py</td>
+            <td class="d"><span class="kw">ModuleRegistry</span><br>MODULES_PACKAGE</td>
+            <td class="u">main &middot; ui/app &middot; child_main</td>
+          </tr>
+          <tr>
+            <td class="f">settings_store.py</td>
+            <td class="d"><span class="kw">SettingsStore</span><br>SETTINGS_VERSION</td>
+            <td class="u">main &middot; ui/app</td>
+          </tr>
+          <tr>
+            <td class="f">process_runner.py</td>
+            <td class="d"><span class="kw">ProcessRunner</span><br>MSG_OUTPUT &middot; MSG_STATUS<br>MSG_FINISHED &middot; CHILD_MODULE</td>
+            <td class="u">ui/app</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ NOTES ============ -->
+  <section class="notes">
+    <div class="notes-head">
+      <span class="no">Notes</span>
+      <h2>What the boxes and arrows can't show</h2>
+    </div>
+    <ol>
+      <li><span class="n">01</span><p><b>The original config files are never rewritten.</b> The launcher stores only
+        the differences the user typed and re-applies them at start-up, so <code>config.py</code> stays the readable
+        default. <code>write_back</code> on a dotenv source is the single opt-in exception.</p></li>
+      <li><span class="n">02</span><p><b>Overrides are keyed by config-source id, not by module id.</b> Two modules
+        returning a source with the same id genuinely share the values &mdash; the same way they share
+        <code>config.py</code> today.</p></li>
+      <li><span class="n">03</span><p><b>Discovery never raises.</b> A module that fails to import, has no
+        <code>id</code>, duplicates one, or blows up in its constructor is collected into
+        <code>ModuleRegistry.errors</code> and shown in the UI; the other modules still load.</p></li>
+      <li><span class="n">04</span><p><b>Only classes defined in the scanned file count.</b> <code>_collect()</code>
+        checks <code>obj.__module__ == py_module.__name__</code>, so a <code>RunnableModule</code> merely imported
+        into a module file is ignored &mdash; and files starting with <code>_</code> are skipped entirely, which is
+        what makes <code>modules/_sources.py</code> a plain helper.</p></li>
+      <li><span class="n">05</span><p><b>Previews are deliberately side-effect-free.</b> The project's config files
+        create their output folders while being read, so <code>evaluate(side_effects=False)</code> patches
+        <code>Path.mkdir</code> and <code>os.makedirs</code> to no-ops while the user is still typing.</p></li>
+      <li><span class="n">06</span><p><b>Declared fields are refined, not replaced.</b> A spec in
+        <code>field_specs</code> inherits its default, its help text from the trailing <code>#</code> comment, and
+        its <code>derived</code> flag from the parsed file; anything the file declares but the spec omits still
+        appears under "Other settings" as a plain text box.</p></li>
+      <li class="caveat"><span class="n">07</span><p><b>Worth knowing:</b> <code>persist=False</code> fields
+        (passwords) stay out of <code>launcher_settings.json</code>, but <code>as_dict()</code> merges them into the
+        temporary overrides JSON handed to the child. That file sits in <code>%TEMP%</code> in plaintext until the
+        run ends.</p></li>
+      <li class="caveat"><span class="n">08</span><p><b>Two silent fallbacks.</b> If a config file cannot be executed
+        in isolation, <code>PyModuleConfigSource</code> falls back to a plain import plus flat overrides (derived
+        values then stay stale), and <code>SettingsStore.load()</code> swallows a corrupt settings file by starting
+        empty. Both are quiet by design; neither reports to the UI.</p></li>
+    </ol>
+  </section>
+
+  <footer>
+    <span>Launcher/core &middot; 7 files &middot; 973 lines</span>
+    <span>read from the working tree &middot; 2026-09-09</span>
+  </footer>
+
+</div>
