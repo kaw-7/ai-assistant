@@ -13,6 +13,7 @@ from PolarionAssistant.Core.IssueDAOFactory import IssueDAOFactory
 from PolarionAssistant.Core.IssueParser import IssueParser
 import config as PConf
 import time
+from typing_extensions import override
 from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
 import sys
 
@@ -20,6 +21,10 @@ class PolarionIssueImporter(PolarionWorker):
     
     def __init__(self):
         super().__init__()
+    
+    @override
+    def PrintDocDetails(self):
+        pass
     
     def GetDocItems(self) -> tuple[str, str, str, str]:
       

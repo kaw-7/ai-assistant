@@ -1,12 +1,14 @@
 import TestSpec.testspec_config as ts_conf
 from Core.PolarionWorker import PolarionWorker
+from typing_extensions import override
 
 class TestCaseDebugger(PolarionWorker):
     
     def __init__(self):
         super().__init__()
-        
-    def PrintTestCaseDetails(self):
+    
+    @override
+    def PrintDocDetails(self):
         # 1. Connect to Polarion and get your project
         project = self._client.getProject(ts_conf.PROJECT_ID)
         

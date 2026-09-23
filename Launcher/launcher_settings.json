@@ -1,12 +1,17 @@
 {
   "version": 1,
   "ui": {
-    "last_module": "issue_viewer"
+    "last_module": "test_spec_builder"
   },
   "sources": {
     "main_config": {
-      "SKIP_ENTIRE_AI": "y",
+      "TOOL_RELEASE_NOTES": "input/releaseNotes/STM32Cube/limit.txt",
+      "PROCEED_WITH_AI_RISK_ASSESSMENT": "n",
       "USE_PREPROCESS_CHUNKING": "y"
+    },
+    "testspec_config": {
+      "PLAN_DOCU": "wiki/Validation Plans/Validation Plan VectorCAST 2026",
+      "TEST_DOCU": "wiki/Testing/Test Specification to VectorCAST 2026 SP3"
     }
   }
 }
