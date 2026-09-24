@@ -1,12 +1,17 @@
 import TestSpec.testspec_config as ts_conf
 from Core.PolarionWorker import PolarionWorker
 from Core.ItemUtil import ItemUtil
+from typing_extensions import override
 
 class TestCaseBuilder(PolarionWorker):
     
     def __init__(self):
         super().__init__()
-        
+    
+    @override
+    def PrintDocDetails(self):
+        pass
+    
     def MoveTestCases(self):
     
         # 1. Connect to Polarion and get your project
