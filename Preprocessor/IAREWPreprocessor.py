@@ -59,7 +59,7 @@ def parse_txt_to_csv(txt_file, input_csv, output_csv, risk_assesment=""):
                     if (len(risk_assesment) > 0):
                         row["Risk Assessment"] = risk_assesment
                     row["Status"] = "to do"
-                    row["Author"] = config.AUTHOR_NAME
+                    row["Author"] = "author"
                     rows.append(row)
                     defect_description = ""
 

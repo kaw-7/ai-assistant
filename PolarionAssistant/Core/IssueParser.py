@@ -6,8 +6,8 @@ from typing import List
 import traceback
 
 import PolarionAssistant.issue_importer_config as PConf
-from PolarionAssistant.Model.IssueDTO import IssueDTO
-from PolarionAssistant.Model.DAO.IssueFields import *
+from PolarionAssistant.Model.IssueDTO import IssueDTO, SourceDTO
+from PolarionAssistant.Model.DAO.IssueFields import IssueStatus, IssueSource
 
 class IssueParser():
     """IssueParser parser parses issues generated from AI
@@ -85,32 +85,33 @@ class IssueParser():
     @staticmethod
     def _fix_status(issue: IssueDTO):
 
-        options = {IssueStatus.RISK, IssueStatus.NO_RISK, IssueStatus.NOT_EVALUATED}
+        options = {IssueStatus.RISK.value, IssueStatus.NO_RISK.value, IssueStatus.NOT_EVALUATED.value}
         if issue.status in options:
             return
         else:
             value_pattern = rf"no.?risk.*"
             match = re.search(value_pattern, issue.status, re.DOTALL | re.IGNORECASE)
             if match:
-                issue.status = IssueStatus.NO_RISK
+                issue.status = IssueStatus.NO_RISK.value
                 return
             value_pattern = rf"risk.?exist.*"
             match = re.search(value_pattern, issue.status, re.DOTALL | re.IGNORECASE)
             if match:
-                issue.status = IssueStatus.RISK
+                issue.status = IssueStatus.RISK.value
                 return
-            issue.status = IssueStatus.NOT_EVALUATED
+            issue.status = IssueStatus.NOT_EVALUATED.value
           
     @staticmethod
     def _fix_source(issue: IssueDTO):
-
-        options = {IssueSource.KNOWN_PROBLEM_BY_VENDOR, 
-                   IssueSource.KNOWN_PROBLEM_3RD_PARTY, 
-                   IssueSource.CORRECTION_IN_REL_NOTES, 
-                   IssueSource.KNOWN_PROBLEM_IN_NEWER_VERS, 
-                   IssueSource.OCCURED_AT_OTTOBOCK,
-                   IssueSource.OTHER_SOURCE}
+        options = {SourceDTO.KNOWN_PROBLEM_BY_VENDOR, 
+                   SourceDTO.KNOWN_PROBLEM_3RD_PARTY, 
+                   SourceDTO.CORRECTION_IN_REL_NOTES, 
+                   SourceDTO.KNOWN_PROBLEM_IN_NEWER_VERS, 
+                   SourceDTO.OCCURED_AT_OTTOBOCK,
+                   SourceDTO.OTHER_SOURCE}
         if issue.source in options:
+            print(issue.source)
+            issue.source = IssueSource[issue.source].value
             return
         else:
-            issue.source = IssueSource.KNOWN_PROBLEM_BY_VENDOR
+            issue.source = IssueSource.KNOWN_PROBLEM_BY_VENDOR.value

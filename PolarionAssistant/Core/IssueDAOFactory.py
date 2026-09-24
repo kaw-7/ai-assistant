@@ -39,7 +39,7 @@ class IssueDAOFactory():
             end = time.perf_counter()
             # print(f"Elapsed create: {(end - start):.3f} seconds") rougly 3-4 seconds
             
-            workitem.status = {'id': issueDTO.status.value} #risk_exists, not_evaluated, no_risk
+            workitem.status = {'id': issueDTO.status} #risk_exists, not_evaluated, no_risk
             
             # 1. Bypass the wrapper to grab the raw Zeep client
             tracker_zeep_client = connector.client.services['Tracker']['client']
@@ -65,7 +65,7 @@ class IssueDAOFactory():
                     contentLossy=False
                 )
     
-                source_enum_obj = EnumType(id=issueDTO.source.value)
+                source_enum_obj = EnumType(id=issueDTO.source)
 
                 # Inject the strongly-typed objects into the custom fields
                 new_issue.setCustomField("DefectDescription", defect_desc_obj)
