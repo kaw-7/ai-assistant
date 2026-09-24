@@ -24,6 +24,7 @@ import contextlib
 import importlib
 import io
 import os
+import sys
 import tokenize
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -121,6 +122,12 @@ class PyModuleConfigSource(ConfigSource):
     ``field_specs`` lets a module refine the automatically discovered entries
     (nicer labels, choices, file pickers, sections).  Everything not mentioned
     there is still offered to the user in the ``section_default`` group.
+
+    ``aliases`` lists the other names the same file is imported under.
+    ``UI/ui_config.py`` for instance is read as ``UI.ui_config`` from the
+    project root and as ``ui_config`` from inside the ``UI`` folder - python
+    would build two unrelated module objects and only one of them would carry
+    the overridden values.
     """
 
     def __init__(
@@ -134,6 +141,7 @@ class PyModuleConfigSource(ConfigSource):
         ignore: Iterable[str] = (),
         section_default: str = "Other settings",
         show_undeclared: bool = True,
+        aliases: Iterable[str] = (),
     ):
         super().__init__(source_id, title, description)
         self.module_name = module_name
@@ -143,6 +151,7 @@ class PyModuleConfigSource(ConfigSource):
         self.ignore = set(ignore)
         self.section_default = section_default
         self.show_undeclared = show_undeclared
+        self.aliases = tuple(aliases)
         self._parsed: Optional[Dict[str, Dict[str, Any]]] = None
 
     # --- source parsing -----------------------------------------------------
@@ -263,17 +272,48 @@ class PyModuleConfigSource(ConfigSource):
     def apply(self, overrides: Mapping[str, Any]) -> None:
         """Import the module and force the overridden (and derived) values."""
         module = importlib.import_module(self.module_name)
+        targets = self._alias_modules(module)
         try:
             _, local_ns = self._exec_source(overrides)
         except Exception as exc:  # keep the run going with a plain override
             print(f"[launcher] could not re-evaluate {self.file_path}: {exc}")
-            for key, value in overrides.items():
-                setattr(module, key, value)
-            return
-        for key, value in local_ns.items():
-            if key.startswith("__"):
+            values = dict(overrides)
+        else:
+            values = {k: v for k, v in local_ns.items() if not k.startswith("__")}
+        for target in targets:
+            for key, value in values.items():
+                setattr(target, key, value)
+
+    def _alias_modules(self, module) -> List[Any]:
+        """Every module object the configuration file is reachable through.
+
+        Modules already imported under another name are collected by their
+        ``__file__``; the names of :attr:`aliases` that are not imported yet
+        are bound to the same object, so a later ``import ui_config`` returns
+        the module the overrides were written into instead of re-reading the
+        file.
+        """
+        targets = [module]
+        try:
+            resolved = self.file_path.resolve()
+        except OSError:
+            resolved = self.file_path
+        for name, other in list(sys.modules.items()):
+            if other is None or other is module:
                 continue
-            setattr(module, key, value)
+            other_file = getattr(other, "__file__", None)
+            if not other_file:
+                continue
+            try:
+                same = Path(other_file).resolve() == resolved
+            except OSError:
+                continue
+            if same:
+                targets.append(other)
+        for alias in self.aliases:
+            if sys.modules.get(alias) is None:
+                sys.modules[alias] = module
+        return targets
 
     # --- internals ----------------------------------------------------------
     def _exec_source(self, overrides: Mapping[str, Any],

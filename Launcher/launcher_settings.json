@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "ui": {
     "last_module": "polarion_import"
   },
@@ -12,9 +12,7 @@
       "TOOL_PREPROCESSOR": "AI",
       "TOOL_RELEASE_NOTES": "input/releaseNotes/Axivion7.4/Axivion-ChangeLog-7.12.4.txt",
       "REF_PATH": "input/releaseNotes/Axivion7.4/Valid_Report_Axivion_7_11_2.txt",
-      "PROCEED_WITH_AI_RISK_ASSESSMENT": "n",
-      "DOC_NAME": "wiki/Anomaly Reports/Axivion v7_4_6 - Periodic Review - September 2026",
-      "DOC_INPUT_HEADING": "Bug Fixes in newer version"
+      "PROCEED_WITH_AI_RISK_ASSESSMENT": "n"
     },
     "testspec_config": {
       "PLAN_DOCU": "wiki/Validation Plans/Validation Plan VectorCAST 2026",
@@ -23,6 +21,10 @@
     "ui_config": {
       "ISSUES_FILE": "output/Axivion7.4/final_risk_report.txt",
       "ISSUES_BACKUP_FILE": "output/Axivion7.4/final_risk_report_o_gui.bck"
+    },
+    "issue_importer_config": {
+      "DOC_NAME": "wiki/Anomaly Reports/Axivion v7_4_6 - Periodic Review - September 2026",
+      "DOC_INPUT_HEADING": "Bug Fixes in newer version"
     }
   }
 }

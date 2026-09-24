@@ -98,7 +98,7 @@ def main(argv=None) -> int:
     print(f"[launcher] ===== {module.label()} =====")
     _add_sys_paths(module)
     _apply_configuration(module, overrides)
-    print("[launcher] starting ...\n")
+    print(f"[launcher] starting {module.entry_point()} ...\n")
 
     started = time.perf_counter()
     try:
