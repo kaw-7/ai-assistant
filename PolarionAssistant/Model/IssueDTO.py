@@ -10,6 +10,11 @@ class SourceDTO(StrEnum):
     OCCURED_AT_OTTOBOCK = "OCCURED_AT_OTTOBOCK"
     OTHER_SOURCE = "OTHER_SOURCE"
 
+class StatusDTO(StrEnum):
+    RISK = "RISK"
+    NO_RISK = "NO_RISK"
+    NOT_EVALUATED = "NOT_EVALUATED"
+
 @dataclass
 class IssueDTO:
     author_name: Optional[str] = None
@@ -21,7 +26,7 @@ class IssueDTO:
     defect_description: Optional[str] = ""
     risk_assessment: Optional[str] = ""    
     source: Optional[str] = SourceDTO.KNOWN_PROBLEM_BY_VENDOR.value
-    status: Optional[str] = "NOT_EVALUATED"
+    status: Optional[str] = StatusDTO.NOT_EVALUATED.value
     
     def __post_init__(self):
         """Ensure snake_case access matches Python conventions"""

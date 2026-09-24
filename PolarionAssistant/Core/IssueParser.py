@@ -6,7 +6,7 @@ from typing import List
 import traceback
 
 import PolarionAssistant.issue_importer_config as PConf
-from PolarionAssistant.Model.IssueDTO import IssueDTO, SourceDTO
+from PolarionAssistant.Model.IssueDTO import IssueDTO, SourceDTO, StatusDTO
 from PolarionAssistant.Model.DAO.IssueFields import IssueStatus, IssueSource
 
 class IssueParser():
@@ -85,10 +85,12 @@ class IssueParser():
     @staticmethod
     def _fix_status(issue: IssueDTO):
 
-        options = {IssueStatus.RISK.value, IssueStatus.NO_RISK.value, IssueStatus.NOT_EVALUATED.value}
+        options = {StatusDTO.RISK, StatusDTO.NO_RISK, StatusDTO.NOT_EVALUATED}
         if issue.status in options:
+            issue.status = IssueStatus[issue.status].value
             return
         else:
+            # the risk instructions ask for free text: "Risk Exists" / "No risk"
             value_pattern = rf"no.?risk.*"
             match = re.search(value_pattern, issue.status, re.DOTALL | re.IGNORECASE)
             if match:
@@ -109,9 +111,11 @@ class IssueParser():
                    SourceDTO.KNOWN_PROBLEM_IN_NEWER_VERS, 
                    SourceDTO.OCCURED_AT_OTTOBOCK,
                    SourceDTO.OTHER_SOURCE}
+        polarion_ids = {member.value for member in IssueSource}
         if issue.source in options:
-            print(issue.source)
             issue.source = IssueSource[issue.source].value
             return
+        elif issue.source in polarion_ids:
+            return          # a report that was imported once already
         else:
             issue.source = IssueSource.KNOWN_PROBLEM_BY_VENDOR.value
