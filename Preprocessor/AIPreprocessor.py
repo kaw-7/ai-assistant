@@ -59,8 +59,8 @@ class AIPreprocessor(AbstractPreprocessor):
                 vstart=config.TOOL_VERSION_START,
                 vend=config.TOOL_VERSION_END)
             
-            print("Tool name: ", config.TOOL_NAME, ", validated version: ", config.TOOL_VERSION_START,
-                  ", last version: ", config.TOOL_VERSION_END)
+            print("Validated tool (version): ", config.TOOL_NAME, ", from version: ", config.TOOL_VERSION_START,
+                  ", to version: ", config.TOOL_VERSION_END)
 
             user_input = (
                 f"{instructions}\n\n"

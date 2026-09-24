@@ -16,7 +16,27 @@ from typing import Any, Dict, Iterable, Mapping
 
 from .project import SETTINGS_FILE
 
-SETTINGS_VERSION = 1
+SETTINGS_VERSION = 2
+
+#: Values stored before the configuration of the modules was split.  The keys
+#: below used to live in ``config.py`` and are now read from
+#: ``PolarionAssistant/issue_importer_config.py``, so the overrides have to
+#: follow them instead of being silently ignored.
+MOVED_KEYS = {
+    "main_config": {
+        "PROJECT_ID": "issue_importer_config",
+        "DOC_NAME": "issue_importer_config",
+        "DOC_INPUT_HEADING": "issue_importer_config",
+        "ISSUE_INPUT_FILE": "issue_importer_config",
+        "ISSUE_MARKER_BEG": "issue_importer_config",
+        "ISSUE_MARKER_END": "issue_importer_config",
+    },
+}
+
+#: Values of configuration entries that do not exist any more.
+DROPPED_KEYS = {
+    "main_config": ("SKIP_ENTIRE_AI",),
+}
 
 
 class SettingsStore:
@@ -39,8 +59,38 @@ class SettingsStore:
             data = json.loads(self.path.read_text(encoding="utf-8"))
         except (OSError, ValueError):
             return
-        self._sources = dict(data.get("sources", {}))
+        self._sources = {k: dict(v) for k, v in data.get("sources", {}).items()}
         self._ui = dict(data.get("ui", {}))
+        if self._migrate():
+            self.save()
+
+    def _migrate(self) -> bool:
+        """Follow the keys that moved to another configuration file.
+
+        Returns ``True`` when something was changed, so that the settings file
+        is rewritten once and the migration does not run again.
+        """
+        changed = False
+        for source_id, moved in MOVED_KEYS.items():
+            values = self._sources.get(source_id)
+            if not values:
+                continue
+            for key, target_id in moved.items():
+                if key not in values:
+                    continue
+                self._sources.setdefault(target_id, {}).setdefault(key, values.pop(key))
+                changed = True
+        for source_id, dropped in DROPPED_KEYS.items():
+            values = self._sources.get(source_id)
+            if not values:
+                continue
+            for key in dropped:
+                if values.pop(key, None) is not None:
+                    changed = True
+        for source_id in [k for k, v in self._sources.items() if not v]:
+            del self._sources[source_id]
+            changed = True
+        return changed
 
     def save(self) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)

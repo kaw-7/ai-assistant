@@ -1,6 +1,8 @@
-Convert free text format file, containing issues from release notes, to a structured markup format:
+Convert free text format file, containing issues from release notes, to a structured markup format. Since it cannot be excluded that 
+the issues from release notes are not present in the validated tool $tool_name, they are subject to further analysis and need to be 
+included in the structured markup format.
 Rules on the top have higher priority (are more important) than rules on the bottom, i.e. if two rules conflict with each other, 
-the rule defined earlier in the document override the later defined one.
+the rule defined earlier in the document override the later defined one. 
 
 ## STRICT OUTPUT RULES ###
 1. **NO TRUNCATION:** Do not skip issues. You MUST process the input file from the very first line to the very last line and extract relevant bug/issue information.

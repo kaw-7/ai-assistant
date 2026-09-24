@@ -14,7 +14,7 @@ from ._sources import polarion_env_source, testspec_config_source
 
 
 class TestSpecBuilderModule(RunnableModule):
-    """Runs ``TestCaseBuilder.MoveTestCases()``."""
+    """Runs ``PolarionAssistant/test_spec_main.py``."""
 
     id = "test_spec_builder"
     title = "4. Test specification builder"
@@ -23,19 +23,16 @@ class TestSpecBuilderModule(RunnableModule):
         "specification document of the same Polarion project."
     )
     order = 40
-    # TestCaseBuilder imports 'TestSpec.*' and 'Core.*'
+    # test_spec_main.py imports 'TestSpec.*' and 'Core.*'
     extra_sys_path = ("PolarionAssistant",)
+    entry_script = "PolarionAssistant/test_spec_main.py"
 
     def config_sources(self):
         return [testspec_config_source(), polarion_env_source()]
 
-    def run(self) -> None:
+    def banner(self) -> None:
         import TestSpec.testspec_config as ts_conf
-        from TestSpec.TestCaseBuilder import TestCaseBuilder
 
         print(f"Project        : {ts_conf.PROJECT_ID}")
         print(f"Plan document  : {ts_conf.PLAN_DOCU}")
-        print(f"Test spec doc  : {ts_conf.TEST_DOCU}\n")
-
-        builder = TestCaseBuilder()
-        builder.MoveTestCases()
+        print(f"Test spec doc  : {ts_conf.TEST_DOCU}")

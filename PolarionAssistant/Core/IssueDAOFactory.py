@@ -3,7 +3,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 
 from dataclasses import dataclass
-import config as PConf
+import PolarionAssistant.issue_importer_config as PConf
 from PolarionAssistant.Model.DAO.IssueFields import *
 
 class IssueDAOFactory():

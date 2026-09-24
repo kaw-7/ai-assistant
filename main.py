@@ -34,8 +34,6 @@ def AskUser(question, answer=None):
             return False
         
 def ai_engine():
-    if(AskUser("Skip entire AI procedure", config.SKIP_ENTIRE_AI)):
-        return
     
     # todo: create an AI factory class for the ai_provider variable
     ai_provider = ClaudeProvider() #GeminiProvider() AzureOpenAIProvider() ClaudeProvider
@@ -69,29 +67,7 @@ if __name__ == "__main__":
     ai_start = time.perf_counter()
     ai_engine()
     ai_total = time.perf_counter() - ai_start
-    print(f"⏱️ AI time to complete: {(ai_total):.3f} seconds")
     
-    file_path = config.TEMP_OUTPUT_FILE
-    if config.PROCEED_WITH_AI_RISK_ASSESSMENT.lower() == "y":
-        file_path = config.RISK_ASSESSMENT_OUTPUT_FILE
-        
-    with open(file_path, "r", encoding="utf-8") as f:
-        text = f.read()
-        issuesForDisplay = markup_to_issueCards(text)
-    
-    if(issuesForDisplay is not None):
-        createIssuesBackUp(config.RISK_ASSESSMENT_OUTPUT_FILE, config.RISK_ASSESSMENT_OUTPUT_FILE_BACK_UP)
-        app = App(issuesForDisplay, config.RISK_ASSESSMENT_OUTPUT_FILE)
-        app.mainloop()
-        
-    if(not AskUser("Proceed with polarion import")):
-        sys.exit(0)
-    
-    polarion_start = time.perf_counter()    
-    importer = PolarionIssueImporter()
-    importer.ImportIssuesInPolarion()
-    polarion_total = time.perf_counter() - polarion_start
-    
-    print(f"⏱️ Total PROGRAM (polarion + ai) time: {(ai_total + polarion_total):.3f} seconds")
+    print(f"⏱️ Total working time for the AI assistant: {ai_total:.3f} seconds")
     #csv_to_xlsx.convert()
     

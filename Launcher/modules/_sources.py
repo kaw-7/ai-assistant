@@ -8,6 +8,10 @@ Each factory returns a *fresh* source object - the launcher fills the parsed
 defaults into the field descriptors, so they must not be shared between calls.
 Everything declared here is only cosmetic: constants that are not listed still
 show up in the editor under "Other settings", they simply get a plain text box.
+
+One source per configuration *file*: since the configuration of the modules was
+split, the AI assistant (``config.py``) and the Polarion issue import
+(``PolarionAssistant/issue_importer_config.py``) no longer share anything.
 """
 from __future__ import annotations
 
@@ -20,6 +24,8 @@ MAIN_CONFIG = "main_config"
 UI_CONFIG = "ui_config"
 POLARION_ENV = "polarion_env"
 TESTSPEC_CONFIG = "testspec_config"
+ISSUE_IMPORTER_CONFIG = "issue_importer_config"
+VALID_REPORT_CONFIG = "valid_report_config"
 
 YES_NO = ("y", "n")
 
@@ -27,21 +33,22 @@ SECTION_TOOL = "Validated tool"
 SECTION_AI = "AI processing"
 SECTION_INSTRUCTIONS = "Instruction files"
 SECTION_OUTPUT = "Generated files"
-SECTION_POLARION = "Polarion import"
+SECTION_DOCUMENT = "Polarion document"
 SECTION_MARKUP = "Issue markup"
+SECTION_FILES = "Files"
 
 
 def main_config_source() -> PyModuleConfigSource:
-    """``config.py`` - shared by the report engine and the Polarion import."""
+    """``config.py`` - the issue formatter and the AI risk assessment."""
     return PyModuleConfigSource(
         source_id=MAIN_CONFIG,
-        title="Main configuration (config.py)",
+        title="AI assistant configuration (config.py)",
         module_name="config",
         file_path=project_path("config.py"),
         description=(
-            "Shared by the issue formatter / risk assessment and by the "
-            "Polarion import. Entries written as f-strings are recomputed "
-            "from the values above them."
+            "Release notes of the validated tool, the AI steps and the files "
+            "they write. Entries written as f-strings are recomputed from the "
+            "values above them."
         ),
         field_specs=[
             # --- validated tool ---
@@ -59,8 +66,6 @@ def main_config_source() -> PyModuleConfigSource:
                         section=SECTION_TOOL),
 
             # --- AI processing ---
-            ConfigField("SKIP_ENTIRE_AI", "Skip the entire AI procedure",
-                        kind=FieldKind.CHOICE, choices=YES_NO, section=SECTION_AI),
             ConfigField("PROCEED_WITH_AI_RISK_ASSESSMENT",
                         "Proceed with the AI risk assessment",
                         kind=FieldKind.CHOICE, choices=YES_NO, section=SECTION_AI),
@@ -101,20 +106,70 @@ def main_config_source() -> PyModuleConfigSource:
             ConfigField("RISK_SUMMARY_OUTPUT_FILE", "Risk summary report",
                         kind=FieldKind.FILE, section=SECTION_OUTPUT),
 
-            # --- polarion ---
-            ConfigField("PROJECT_ID", "Polarion project id", section=SECTION_POLARION),
-            ConfigField("DOC_NAME", "Target document", section=SECTION_POLARION),
-            ConfigField("DOC_INPUT_HEADING", "Target heading", section=SECTION_POLARION),
-            ConfigField("ISSUE_INPUT_FILE", "Issues to import",
-                        kind=FieldKind.FILE, section=SECTION_POLARION),
-
             # --- markup ---
             ConfigField("ISSUE_END_MARKER", "Issue end marker", section=SECTION_MARKUP),
-            ConfigField("ISSUE_MARKER_BEG", "Marker start", section=SECTION_MARKUP),
-            ConfigField("ISSUE_MARKER_END", "Marker end", section=SECTION_MARKUP),
         ],
         # not a setting, just a helper object created inside config.py
         ignore=("path", "Path"),
+    )
+
+
+def issue_importer_config_source() -> PyModuleConfigSource:
+    """``PolarionAssistant/issue_importer_config.py`` - the Polarion import.
+
+    Own file since the configuration split: the target document and the report
+    to read are no longer shared with ``config.py``.
+    """
+    return PyModuleConfigSource(
+        source_id=ISSUE_IMPORTER_CONFIG,
+        title="Issue import configuration (issue_importer_config.py)",
+        module_name="PolarionAssistant.issue_importer_config",
+        file_path=project_path("PolarionAssistant", "issue_importer_config.py"),
+        description=(
+            "Which document the assessed issues are written to and which risk "
+            "report they are read from. Independent of config.py - 'Tool "
+            "folder' has to name the same output folder as the AI assistant."
+        ),
+        field_specs=[
+            ConfigField("PROJECT_ID", "Polarion project id", section=SECTION_DOCUMENT),
+            ConfigField("DOC_NAME", "Target document", section=SECTION_DOCUMENT),
+            ConfigField("DOC_INPUT_HEADING", "Target heading", section=SECTION_DOCUMENT),
+
+            ConfigField("tool_folder", "Tool folder", section=SECTION_FILES,
+                        help="Sub folder of output/, as in config.py"),
+            ConfigField("ISSUE_INPUT_FILE", "Issues to import",
+                        kind=FieldKind.FILE, section=SECTION_FILES),
+
+            ConfigField("ISSUE_MARKER_BEG", "Marker start", section=SECTION_MARKUP),
+            ConfigField("ISSUE_MARKER_END", "Marker end", section=SECTION_MARKUP),
+            ConfigField("ISSUE_END_MARKER", "Issue end marker", section=SECTION_MARKUP),
+        ],
+    )
+
+
+def valid_report_config_source() -> PyModuleConfigSource:
+    """``PolarionAssistant/ValidReport/valid_report_config.py``."""
+    return PyModuleConfigSource(
+        source_id=VALID_REPORT_CONFIG,
+        title="Validation report configuration (valid_report_config.py)",
+        module_name="ValidReport.valid_report_config",
+        file_path=project_path("PolarionAssistant", "ValidReport",
+                               "valid_report_config.py"),
+        description=(
+            "Template and title of the validation report document created in "
+            "Polarion. The title and the document name follow the tool name."
+        ),
+        field_specs=[
+            ConfigField("TOOL_NAME", "Tool name", section=SECTION_DOCUMENT),
+            ConfigField("PROJECT_ID", "Polarion project id", section=SECTION_DOCUMENT),
+            ConfigField("VALID_REPORT_TEMPLATE", "Template document",
+                        section=SECTION_DOCUMENT),
+            ConfigField("VALID_REPORT_DOCU", "Target document",
+                        section=SECTION_DOCUMENT),
+            ConfigField("TARGET_LOCATION", "Target space", section=SECTION_DOCUMENT),
+            ConfigField("TARGET_TITLE", "Document title", section=SECTION_DOCUMENT),
+        ],
+        section_default="Placeholders",
     )
 
 
@@ -126,13 +181,14 @@ def ui_config_source() -> PyModuleConfigSource:
         module_name="UI.ui_config",
         file_path=project_path("UI", "ui_config.py"),
         description="Look and feel of the issue viewer and the file it opens.",
+        # UI/main.py reads the very same file as a top level module
+        aliases=("ui_config",),
         field_specs=[
             ConfigField("ISSUES_FILE", "Issues file", kind=FieldKind.FILE,
-                        section="Files",
-                        help="Relative paths are resolved against the project root "
-                             "and against the UI folder."),
+                        section=SECTION_FILES,
+                        help="Relative to the project root."),
             ConfigField("ISSUES_BACKUP_FILE", "Backup file", kind=FieldKind.FILE,
-                        section="Files"),
+                        section=SECTION_FILES),
             ConfigField("GEOMETRY", "Window size", section="Appearance"),
             ConfigField("FONT", "Font", section="Appearance"),
             ConfigField("FONT_SIZE", "Font size", kind=FieldKind.INT,
