@@ -1,5 +1,5 @@
 import sys
-import config
+import PolarionAssistant.issue_importer_config as PConf
 from PolarionAssistant.PolarionIssueImporter import PolarionIssueImporter
 # import csv_to_xlsx
 import time

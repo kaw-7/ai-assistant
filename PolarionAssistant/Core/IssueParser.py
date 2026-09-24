@@ -5,7 +5,7 @@ import sys
 from typing import List
 import traceback
 
-import config as PConf
+import PolarionAssistant.issue_importer_config as PConf
 from PolarionAssistant.Model.IssueDTO import IssueDTO
 from PolarionAssistant.Model.DAO.IssueFields import *
 

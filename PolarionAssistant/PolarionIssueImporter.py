@@ -11,7 +11,7 @@ from PolarionAssistant.Core.PolarionConnector import PolarionConnector
 from PolarionAssistant.Core.ItemUtil import ItemUtil
 from PolarionAssistant.Core.IssueDAOFactory import IssueDAOFactory
 from PolarionAssistant.Core.IssueParser import IssueParser
-import config as PConf
+import PolarionAssistant.issue_importer_config as PConf
 import time
 from typing_extensions import override
 from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
