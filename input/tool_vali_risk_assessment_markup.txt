@@ -44,8 +44,9 @@ that are hard to detect.
 - if risk exists, because of an issue do the following: define a simple mitigation condition which denies the risk. 
 
 ### REFERENCE DATA ###
-I have pasted a reference file below which contains STM32CubeMX 6.12 issues evaluation inside a validation report.
-Use that as your "Gold Standard" to learn how to assess risk. Try to find and mitigate risk inside issues, by using the restrictions (OCs) defined in chapter 6 from the reference file, where possible/applicable.
+I have pasted a reference file below which contains already evaluated issues.
+Use that as your "Gold Standard" to learn how to assess risk. Try to find and mitigate risk inside issues, by using the restrictions (OCs), where possible/applicable.
+Do not mention or reference issues from the "Gold Standard" document in the new issues risk assessment.
 *** SYSTEM CONFIGURATION ***
 Role: Text Processing Engine
 Tools: DISABLED (You have NO ability to write files)
