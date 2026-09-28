@@ -23,8 +23,7 @@
       "ISSUES_BACKUP_FILE": "output/Axivion7.4/final_risk_report_o_gui.bck"
     },
     "issue_importer_config": {
-      "DOC_NAME": "wiki/Anomaly Reports/Axivion v7_4_6 - Periodic Review - September 2026",
-      "DOC_INPUT_HEADING": "Bug Fixes in newer version"
+      "DOC_INPUT_HEADING": "Bugfixes in 7.12.5"
     }
   }
 }

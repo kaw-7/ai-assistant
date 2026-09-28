@@ -8,7 +8,7 @@ TEST_DOCU = f"wiki/Testing/{TARGET_NAME_ID}"
 TEST_SPEC_TEMPLATE = 'wiki/Testing/_Template Tool Requirement Test Specification _Toolname_'
 
 PROJECT_ID = 'TOV'
-DOC_INPUT_HEADING = "Operational Qualification"
+DOC_INPUT_HEADING = "Test cases for com.ottobock.testing.DPS5005Driver v0.0.1"
 
 # TARGET_PROJECT_ID = "ToolValidation"
 TARGET_LOCATION = "Testing"
@@ -16,3 +16,6 @@ LINK_ROLE = None
 
 PLACEHOLDER = r'<span style="color: #FF0000;">[toolname]</span>'
 PLACEHOLDER_DOCSTATUS = r'<Toolname> <Version>'
+VALI_PLAN_EXCLUDED_HEADINGS = {"Requirements for UnitTestDeviceCommunication v1.0.16", 
+                               "Requirements to the Installation",
+                               "Requirements to the Performance Qualification"}

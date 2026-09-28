@@ -2,6 +2,7 @@ import TestSpec.testspec_config as ts_conf
 from Core.PolarionWorker import PolarionWorker
 from Core.ItemUtil import ItemUtil
 from typing_extensions import override
+import sys
 
 class TestCaseBuilder(PolarionWorker):
     
@@ -25,17 +26,30 @@ class TestCaseBuilder(PolarionWorker):
         
         # Get the element of the Test Spec document to use as the parent node
         heading_item = ItemUtil.find_heading_item_by_name(test_spec, ts_conf.DOC_INPUT_HEADING)
-        
+        if(heading_item is None):
+            sys.exit(1)
+            
         # 3. Retrieve all items (requirements) from the Validation Plan
         requirements = val_plan.getWorkitems()
-        print(f"Scanning {len(requirements)} requirements for floating test cases...")
+        print(f"Scanning {len(requirements)} workitems for floating test cases...")
         
         
         # 4. Iterate through requirements and discover linked test cases
         for req in requirements:
+            if(req.type.id != "requirement"):
+                continue
             # getLinkedItemWithRoles() returns a list of tuples: [('link_role_id', Workitem), ...]
             # This automatically includes both incoming and outgoing links.
             links = req.getLinkedItemWithRoles()
+            
+            is_under_heading = False
+            for link_role, linked_item in req.getLinkedItemWithRoles():
+                if (link_role == "parent" and linked_item.title in ts_conf.VALI_PLAN_EXCLUDED_HEADINGS):
+                    is_under_heading = True
+                    print(f"Exclude the following parentItem|requirement {linked_item}| {req}")
+                    break
+            if is_under_heading:
+                continue
             
             for role, linked_item in links:
                 # Check if the linked item is a Test Case (verify the exact type ID in your system)
