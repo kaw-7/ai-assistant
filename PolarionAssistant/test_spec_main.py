@@ -12,8 +12,10 @@ if __name__ == "__main__":
     #    debugger.PrintDocDetails()
     #    testspec_builder = TestSpecBuilder()
     #    testspec_builder.createFinalDoc()
-        builder = TestCaseBuilder()
-        builder.MoveTestCases()
+        test_case_debugger = TestCaseDebugger()
+        test_case_debugger.PrintDocDetails()
+    #    builder = TestCaseBuilder()
+    #    builder.MoveTestCases()
     except Exception:
         full_error = traceback.format_exc()
         print(f"❌ Error during Test specification creation: {full_error}")

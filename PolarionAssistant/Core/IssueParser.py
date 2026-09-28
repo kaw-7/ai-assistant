@@ -85,18 +85,17 @@ class IssueParser():
     @staticmethod
     def _fix_status(issue: IssueDTO):
 
-        options = {StatusDTO.RISK, StatusDTO.NO_RISK, StatusDTO.NOT_EVALUATED}
+        options = {member.value for member in StatusDTO}
         if issue.status in options:
-            issue.status = IssueStatus[issue.status].value
             return
         else:
             # the risk instructions ask for free text: "Risk Exists" / "No risk"
-            value_pattern = rf"no.?risk.*"
+            value_pattern = r"no.?risk.*"
             match = re.search(value_pattern, issue.status, re.DOTALL | re.IGNORECASE)
             if match:
                 issue.status = IssueStatus.NO_RISK.value
                 return
-            value_pattern = rf"risk.?exist.*"
+            value_pattern = r"risk.?exist.*"
             match = re.search(value_pattern, issue.status, re.DOTALL | re.IGNORECASE)
             if match:
                 issue.status = IssueStatus.RISK.value
@@ -105,15 +104,9 @@ class IssueParser():
           
     @staticmethod
     def _fix_source(issue: IssueDTO):
-        options = {SourceDTO.KNOWN_PROBLEM_BY_VENDOR, 
-                   SourceDTO.KNOWN_PROBLEM_3RD_PARTY, 
-                   SourceDTO.CORRECTION_IN_REL_NOTES, 
-                   SourceDTO.KNOWN_PROBLEM_IN_NEWER_VERS, 
-                   SourceDTO.OCCURED_AT_OTTOBOCK,
-                   SourceDTO.OTHER_SOURCE}
+        options = {member.value for member in SourceDTO}
         polarion_ids = {member.value for member in IssueSource}
         if issue.source in options:
-            issue.source = IssueSource[issue.source].value
             return
         elif issue.source in polarion_ids:
             return          # a report that was imported once already
