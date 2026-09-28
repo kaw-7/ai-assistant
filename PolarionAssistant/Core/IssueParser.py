@@ -87,6 +87,7 @@ class IssueParser():
 
         options = {member.value for member in StatusDTO}
         if issue.status in options:
+            issue.status = IssueStatus[issue.status].value
             return
         else:
             # the risk instructions ask for free text: "Risk Exists" / "No risk"
@@ -106,7 +107,8 @@ class IssueParser():
     def _fix_source(issue: IssueDTO):
         options = {member.value for member in SourceDTO}
         polarion_ids = {member.value for member in IssueSource}
-        if issue.source in options:
+        if issue.source in options:                        #issue.source as SourceDTO
+            issue.source = IssueSource[issue.source].value #issue.source as IssueSource
             return
         elif issue.source in polarion_ids:
             return          # a report that was imported once already
