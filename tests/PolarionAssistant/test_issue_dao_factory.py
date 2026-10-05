@@ -12,7 +12,7 @@ import unittest
 
 from tests.support import captured_stdout, config_values
 
-import PolarionAssistant.issue_importer_config as PConf
+import PolarionAssistant.ValidReport.issue_importer_config as PConf
 from PolarionAssistant.Core.IssueDAOFactory import IssueDAOFactory
 from PolarionAssistant.Model.IssueDTO import IssueDTO
 

@@ -11,7 +11,7 @@ show up in the editor under "Other settings", they simply get a plain text box.
 
 One source per configuration *file*: since the configuration of the modules was
 split, the AI assistant (``config.py``) and the Polarion issue import
-(``PolarionAssistant/issue_importer_config.py``) no longer share anything.
+(``PolarionAssistant/ValidReport/issue_importer_config.py``) no longer share anything.
 """
 from __future__ import annotations
 
@@ -36,6 +36,7 @@ SECTION_OUTPUT = "Generated files"
 SECTION_DOCUMENT = "Polarion document"
 SECTION_MARKUP = "Issue markup"
 SECTION_FILES = "Files"
+SECTION_STEPS = "Steps"
 
 
 def main_config_source() -> PyModuleConfigSource:
@@ -115,7 +116,7 @@ def main_config_source() -> PyModuleConfigSource:
 
 
 def issue_importer_config_source() -> PyModuleConfigSource:
-    """``PolarionAssistant/issue_importer_config.py`` - the Polarion import.
+    """``PolarionAssistant/ValidReport/issue_importer_config.py`` - the Polarion import.
 
     Own file since the configuration split: the target document and the report
     to read are no longer shared with ``config.py``.
@@ -123,8 +124,9 @@ def issue_importer_config_source() -> PyModuleConfigSource:
     return PyModuleConfigSource(
         source_id=ISSUE_IMPORTER_CONFIG,
         title="Issue import configuration (issue_importer_config.py)",
-        module_name="PolarionAssistant.issue_importer_config",
-        file_path=project_path("PolarionAssistant", "issue_importer_config.py"),
+        module_name="PolarionAssistant.ValidReport.issue_importer_config",
+        file_path=project_path("PolarionAssistant", "ValidReport",
+                               "issue_importer_config.py"),
         description=(
             "Which document the assessed issues are written to and which risk "
             "report they are read from. Independent of config.py - 'Tool "
@@ -156,10 +158,16 @@ def valid_report_config_source() -> PyModuleConfigSource:
         file_path=project_path("PolarionAssistant", "ValidReport",
                                "valid_report_config.py"),
         description=(
-            "Template and title of the validation report document created in "
-            "Polarion. The title and the document name follow the tool name."
+            "Steps run by valid_report_main.py, and the template and title of "
+            "the validation report document created in Polarion. The title and "
+            "the document name follow the tool name."
         ),
         field_specs=[
+            ConfigField("BUILD_VALID_REPORT", "Build the validation report",
+                        kind=FieldKind.CHOICE, choices=YES_NO, section=SECTION_STEPS),
+            ConfigField("IMPORT_ISSUES", "Import the issues",
+                        kind=FieldKind.CHOICE, choices=YES_NO, section=SECTION_STEPS),
+
             ConfigField("TOOL_NAME", "Tool name", section=SECTION_DOCUMENT),
             ConfigField("PROJECT_ID", "Polarion project id", section=SECTION_DOCUMENT),
             ConfigField("VALID_REPORT_TEMPLATE", "Template document",

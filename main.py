@@ -11,7 +11,7 @@ from Preprocessor.PreprocessingPipeline import PreprocessingPipeline
 from Preprocessor.TextChunkerPreprocessor import TextChunkerPreprocessor
 from RiskAssessment.AIRiskAssessmentAgent import AIRiskAssessmentAgent
 from RiskAssessment.AIRiskSummary import AIRiskSummary
-from PolarionAssistant.PolarionIssueImporter import PolarionIssueImporter
+from PolarionAssistant.ValidReport.PolarionIssueImporter import PolarionIssueImporter
 # import csv_to_xlsx
 import time
 from UI.IssueSerializer import markup_to_issueCards, createIssuesBackUp

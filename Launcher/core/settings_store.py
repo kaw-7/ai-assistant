@@ -20,7 +20,7 @@ SETTINGS_VERSION = 2
 
 #: Values stored before the configuration of the modules was split.  The keys
 #: below used to live in ``config.py`` and are now read from
-#: ``PolarionAssistant/issue_importer_config.py``, so the overrides have to
+#: ``PolarionAssistant/ValidReport/issue_importer_config.py``, so the overrides have to
 #: follow them instead of being silently ignored.
 MOVED_KEYS = {
     "main_config": {

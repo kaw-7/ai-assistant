@@ -24,9 +24,8 @@ The modules shipped with the launcher, with the entry point each one starts:
 |---|---|---|---|
 | 1 | Issue formatter and risk assessment | `main.py` | `config.py` |
 | 2 | Issue viewer | `UI/main.py` | `UI/ui_config.py` |
-| 3 | Polarion import | `PolarionAssistant/issue_importer_main.py` | `PolarionAssistant/issue_importer_config.py` and `.polarion.env` |
+| 3 | Validation report and issue import | `PolarionAssistant/valid_report_main.py` | `PolarionAssistant/ValidReport/valid_report_config.py`, `PolarionAssistant/ValidReport/issue_importer_config.py` and `.polarion.env` |
 | 4 | Test specification builder | `PolarionAssistant/test_spec_main.py` | `PolarionAssistant/TestSpec/testspec_config.py` and `.polarion.env` |
-| 5 | Validation report builder | `PolarionAssistant/valid_report_main.py` | `PolarionAssistant/ValidReport/valid_report_config.py` and `.polarion.env` |
 
 ## The launcher runs the real main
 
