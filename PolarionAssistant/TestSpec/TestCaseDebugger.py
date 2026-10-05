@@ -18,9 +18,7 @@ class TestCaseDebugger(PolarionWorker):
         # 3. Retrieve all items (requirements) from the Validation Plan
         requirements = val_plan.getWorkitems()
         print(f"Scanning {len(requirements)} work items for test cases to debug...\n")
-        wanted_headings = {"Requirements for UnitTestDeviceCommunication v1.0.16", 
-                           "Requirements to the Installation",
-                           "Requirements to the Performance Qualification"}
+
         # 4. Iterate through requirements and discover linked test cases
         for req in requirements:
             if(req.type.id != "requirement"):
@@ -28,7 +26,7 @@ class TestCaseDebugger(PolarionWorker):
             links = req.getLinkedItemWithRoles()
             is_under_heading = False
             for link_role, linked_item in req.getLinkedItemWithRoles():
-                if (link_role == "parent" and linked_item.title in wanted_headings):
+                if (link_role == "parent" and linked_item.title in ts_conf.VALI_PLAN_EXCLUDED_HEADINGS):
                     is_under_heading = True
                     print(f"Exclude the following parentItem-requirement {linked_item}: {req}")
                     break

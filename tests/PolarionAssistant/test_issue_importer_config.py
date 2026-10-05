@@ -3,7 +3,7 @@
 
 ``config.py`` used to hold the settings of the AI assistant *and* of the
 Polarion import.  The import now has
-``PolarionAssistant/issue_importer_config.py`` of its own.  These tests keep
+``PolarionAssistant/ValidReport/issue_importer_config.py`` of its own.  These tests keep
 the two files complete and compatible - a key that goes missing here is an
 ``AttributeError`` in the middle of a run against the server.
 """
@@ -14,7 +14,7 @@ import unittest
 from tests.support import PROJECT_ROOT  # noqa: F401  (puts the root on sys.path)
 
 import config
-import PolarionAssistant.issue_importer_config as PConf
+import PolarionAssistant.ValidReport.issue_importer_config as PConf
 
 #: everything the import path reads - PolarionIssueImporter, IssueParser
 #: and IssueDAOFactory
@@ -59,7 +59,7 @@ AI_ASSISTANT_KEYS = (
 
 
 class IssueImporterConfigTests(unittest.TestCase):
-    """``PolarionAssistant/issue_importer_config.py``."""
+    """``PolarionAssistant/ValidReport/issue_importer_config.py``."""
 
     def test_holds_every_value_the_import_reads(self):
         for key in IMPORTER_KEYS:

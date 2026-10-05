@@ -1,4 +1,4 @@
-TOOL_NAME = "BlackBoxTesting Framework v1.0.16"
+TOOL_NAME = "Emulator Framework"
 TARGET_TITLE = f"Test Specification to {TOOL_NAME}"
 TARGET_NAME_ID = TARGET_TITLE.replace('.', '_')
 
@@ -16,6 +16,4 @@ LINK_ROLE = None
 
 PLACEHOLDER = r'<span style="color: #FF0000;">[toolname]</span>'
 PLACEHOLDER_DOCSTATUS = r'<Toolname> <Version>'
-VALI_PLAN_EXCLUDED_HEADINGS = {"Requirements for UnitTestDeviceCommunication v1.0.16", 
-                               "Requirements to the Installation",
-                               "Requirements to the Performance Qualification"}
+VALI_PLAN_EXCLUDED_HEADINGS = {}

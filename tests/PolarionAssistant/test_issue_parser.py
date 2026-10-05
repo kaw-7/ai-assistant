@@ -13,7 +13,7 @@ from tests.support import (
     issues_markup,
 )
 
-import PolarionAssistant.issue_importer_config as PConf
+import PolarionAssistant.ValidReport.issue_importer_config as PConf
 from PolarionAssistant.Core.IssueParser import IssueParser
 from PolarionAssistant.Model.DAO.IssueFields import IssueSource, IssueStatus
 from PolarionAssistant.Model.IssueDTO import SourceDTO, StatusDTO

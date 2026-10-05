@@ -1,4 +1,9 @@
 # Validation Report config
+
+# --- STEPS run by valid_report_main.py ('y' / 'n') ---
+BUILD_VALID_REPORT = 'y'  # create the validation report document from the template
+IMPORT_ISSUES = 'y'       # import the risk report issues, see issue_importer_config.py
+
 TOOL_NAME = "VectorCAST 2026 SP3"
 TARGET_TITLE = f"Validation Report {TOOL_NAME}"
 TARGET_NAME_ID = TARGET_TITLE.replace('.', '_')
