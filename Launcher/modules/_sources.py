@@ -215,12 +215,32 @@ def testspec_config_source() -> PyModuleConfigSource:
         title="Test specification configuration (testspec_config.py)",
         module_name="TestSpec.testspec_config",
         file_path=project_path("PolarionAssistant", "TestSpec", "testspec_config.py"),
-        description="Documents used when the test cases are moved.",
+        description=(
+            "Steps run by test_spec_main.py, the template the test specification "
+            "is created from and the documents the test cases are moved "
+            "between. With 'Debug only' set to 'y' nothing is changed in "
+            "Polarion - the documents are only printed."
+        ),
         field_specs=[
-            ConfigField("PROJECT_ID", "Polarion project id", section="Documents"),
-            ConfigField("PLAN_DOCU", "Validation plan document", section="Documents"),
-            ConfigField("TEST_DOCU", "Test specification document", section="Documents"),
-            ConfigField("DOC_INPUT_HEADING", "Target heading", section="Documents"),
+            ConfigField("CREATE_TEST_SPEC", "Create the test specification",
+                        kind=FieldKind.CHOICE, choices=YES_NO, section=SECTION_STEPS),
+            ConfigField("DEBUG", "Debug only (no changes in Polarion)",
+                        kind=FieldKind.CHOICE, choices=YES_NO, section=SECTION_STEPS),
+
+            ConfigField("PROJECT_ID", "Polarion project id", section=SECTION_DOCUMENT),
+            ConfigField("TOOL_NAME", "Tool name", section=SECTION_DOCUMENT),
+            ConfigField("TARGET_LOCATION", "Target space", section=SECTION_DOCUMENT),
+            ConfigField("TARGET_TITLE", "Document title", section=SECTION_DOCUMENT),
+            ConfigField("PLAN_DOCU", "Validation plan document", section=SECTION_DOCUMENT),
+            ConfigField("TEST_DOCU", "Test specification document",
+                        section=SECTION_DOCUMENT),
+            ConfigField("DOC_INPUT_HEADING", "Target heading", section=SECTION_DOCUMENT),
+
+            ConfigField("TEST_SPEC_TEMPLATE", "Template document",
+                        section=SECTION_TEMPLATE),
         ],
-        section_default="Documents",
+        # a set - a text box would turn it into a string and 'in' would then
+        # match substrings of the heading titles; edit it in the file
+        ignore=("VALI_PLAN_EXCLUDED_HEADINGS",),
+        section_default="Placeholders",
     )

@@ -1,7 +1,7 @@
 {
   "version": 2,
   "ui": {
-    "last_module": "polarion_import"
+    "last_module": "test_spec_builder"
   },
   "sources": {
     "main_config": {
@@ -13,14 +13,16 @@
       "REF_PATH": "input/releaseNotes/OpenRTOS/PeriodicReviews_OpenRTOS.txt"
     },
     "testspec_config": {
-      "PLAN_DOCU": "wiki/Validation Plans/Validation Plan VectorCAST 2026",
-      "TEST_DOCU": "wiki/Testing/Test Specification to VectorCAST 2026 SP3"
+      "PLAN_DOCU": "wiki/Validation Plans/Validation Plan Salea Logic 2_4_44",
+      "TEST_DOCU": "wiki/Testing/Test Specification to Salea Logic 2_4_44",
+      "DOC_INPUT_HEADING": "Operational Qualification",
+      "TOOL_NAME": "Salea Logic 2.4.44"
     },
     "ui_config": {
       "ISSUES_FILE": "output/OpenRTOS/final_risk_report.txt",
       "ISSUES_BACKUP_FILE": "output/OpenRTOS/final_risk_report_o_gui.bck"
     },
-    "issue_importer_config": {
+    "valid_report_config": {
       "DOC_NAME": "wiki/Anomaly Reports SOUP/Periodic Review OpenRTOS v11_3_1 - September 2026",
       "DOC_INPUT_HEADING": "Published Issues and Bugs",
       "tool_folder": "OpenRTOS",

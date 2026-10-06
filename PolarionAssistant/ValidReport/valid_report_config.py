@@ -23,7 +23,7 @@ DOC_NAME = f"wiki/{TARGET_LOCATION}/{TARGET_NAME_ID}"
 DOC_INPUT_HEADING = "Bug Fixes in newer version" # currently it has to be a heading
 
 # --- IO PATH SETTINGS ---
-tool_folder = "Axivion7.4"
+tool_folder = "VectorCAST"
 ISSUE_INPUT_FILE = f"output/{tool_folder}/final_risk_report.txt" # the risk report written by the AI assistant
 
 # --- ISSUE MARKUP ---
@@ -35,7 +35,7 @@ ISSUE_END_MARKER = "[[ END ISSUE ITEM ]]"
 # ============================================================================
 # DOCUMENT CREATION
 # ============================================================================
-VALID_REPORT_TEMPLATE = 'wiki/Validation Reports/_ValidationReportTemplate CSV'
+VALID_REPORT_TEMPLATE = f'wiki/{TARGET_LOCATION}/_ValidationReportTemplate CSV'
 
 # TARGET_PROJECT_ID = "ToolValidation"
 LINK_ROLE = None
