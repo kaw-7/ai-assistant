@@ -12,7 +12,7 @@ TARGET_NAME_ID = TARGET_TITLE.replace('.', '_')
 PLAN_DOCU = f"wiki/Validation Plans/Validation Plan {TOOL_NAME.replace('.', '_')}"
 TARGET_LOCATION = "Testing"
 TEST_DOCU = f"wiki/{TARGET_LOCATION}/{TARGET_NAME_ID}"
-TEST_SPEC_TEMPLATE = 'wiki/{TARGET_LOCATION}/_Template Tool Requirement Test Specification _Toolname_'
+TEST_SPEC_TEMPLATE = f'wiki/{TARGET_LOCATION}/_Template Tool Requirement Test Specification _Toolname_'
 
 PROJECT_ID = 'TOV'
 DOC_INPUT_HEADING = "Requirements to the Operational Qualification"
