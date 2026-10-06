@@ -18,19 +18,36 @@ from .project import SETTINGS_FILE
 
 SETTINGS_VERSION = 2
 
-#: Values stored before the configuration of the modules was split.  The keys
-#: below used to live in ``config.py`` and are now read from
-#: ``PolarionAssistant/ValidReport/issue_importer_config.py``, so the overrides have to
-#: follow them instead of being silently ignored.
+#: Values stored before the configuration files were reorganised.  The keys
+#: below moved to another configuration file - first from ``config.py`` to
+#: ``issue_importer_config.py``, then that file was merged into
+#: ``PolarionAssistant/ValidReport/valid_report_config.py`` - so the overrides
+#: have to follow them instead of being silently ignored.
 MOVED_KEYS = {
     "main_config": {
-        "PROJECT_ID": "issue_importer_config",
-        "DOC_NAME": "issue_importer_config",
-        "DOC_INPUT_HEADING": "issue_importer_config",
-        "ISSUE_INPUT_FILE": "issue_importer_config",
-        "ISSUE_MARKER_BEG": "issue_importer_config",
-        "ISSUE_MARKER_END": "issue_importer_config",
+        "PROJECT_ID": "valid_report_config",
+        "DOC_NAME": "valid_report_config",
+        "DOC_INPUT_HEADING": "valid_report_config",
+        "ISSUE_INPUT_FILE": "valid_report_config",
+        "ISSUE_MARKER_BEG": "valid_report_config",
+        "ISSUE_MARKER_END": "valid_report_config",
     },
+    "issue_importer_config": {
+        "PROJECT_ID": "valid_report_config",
+        "DOC_NAME": "valid_report_config",
+        "DOC_INPUT_HEADING": "valid_report_config",
+        "tool_folder": "valid_report_config",
+        "ISSUE_INPUT_FILE": "valid_report_config",
+        "ISSUE_MARKER_BEG": "valid_report_config",
+        "ISSUE_MARKER_END": "valid_report_config",
+        "ISSUE_END_MARKER": "valid_report_config",
+    },
+}
+
+#: Entries renamed inside the same configuration file, as ``old: new``.
+RENAMED_KEYS = {
+    # the created document and the import target are the same document
+    "valid_report_config": {"VALID_REPORT_DOCU": "DOC_NAME"},
 }
 
 #: Values of configuration entries that do not exist any more.
@@ -79,6 +96,15 @@ class SettingsStore:
                 if key not in values:
                     continue
                 self._sources.setdefault(target_id, {}).setdefault(key, values.pop(key))
+                changed = True
+        for source_id, renamed in RENAMED_KEYS.items():
+            values = self._sources.get(source_id)
+            if not values:
+                continue
+            for old, new in renamed.items():
+                if old not in values:
+                    continue
+                values.setdefault(new, values.pop(old))
                 changed = True
         for source_id, dropped in DROPPED_KEYS.items():
             values = self._sources.get(source_id)

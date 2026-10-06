@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""The configuration split: who reads which file.
+"""One configuration file per module: who reads which file.
 
 ``config.py`` used to hold the settings of the AI assistant *and* of the
-Polarion import.  The import now has
-``PolarionAssistant/ValidReport/issue_importer_config.py`` of its own.  These tests keep
-the two files complete and compatible - a key that goes missing here is an
-``AttributeError`` in the middle of a run against the server.
+Polarion import.  The validation report module (document creation and issue
+import) now has ``PolarionAssistant/ValidReport/valid_report_config.py`` of its
+own.  These tests keep the two files complete and compatible - a key that goes
+missing here is an ``AttributeError`` in the middle of a run against the server.
 """
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ import unittest
 from tests.support import PROJECT_ROOT  # noqa: F401  (puts the root on sys.path)
 
 import config
-import PolarionAssistant.ValidReport.issue_importer_config as PConf
+import PolarionAssistant.ValidReport.valid_report_config as PConf
 
 #: everything the import path reads - PolarionIssueImporter, IssueParser
 #: and IssueDAOFactory
@@ -26,6 +26,19 @@ IMPORTER_KEYS = (
     "ISSUE_MARKER_BEG",
     "ISSUE_MARKER_END",
     "ISSUE_END_MARKER",
+)
+
+#: everything valid_report_main.py and ValidReportBuilder read
+DOC_CREATION_KEYS = (
+    "BUILD_VALID_REPORT",
+    "TOOL_NAME",
+    "VALID_REPORT_TEMPLATE",
+    "TARGET_LOCATION",
+    "TARGET_NAME_ID",
+    "TARGET_TITLE",
+    "LINK_ROLE",
+    "PLACEHOLDER",
+    "PLACEHOLDER_DOCSTATUS",
 )
 
 #: everything main.py and the preprocessors read from config.py
@@ -58,14 +71,31 @@ AI_ASSISTANT_KEYS = (
 )
 
 
-class IssueImporterConfigTests(unittest.TestCase):
-    """``PolarionAssistant/ValidReport/issue_importer_config.py``."""
+class ValidReportConfigTests(unittest.TestCase):
+    """``PolarionAssistant/ValidReport/valid_report_config.py``."""
 
     def test_holds_every_value_the_import_reads(self):
         for key in IMPORTER_KEYS:
             with self.subTest(key=key):
                 self.assertTrue(hasattr(PConf, key),
-                                f"issue_importer_config.py has no {key}")
+                                f"valid_report_config.py has no {key}")
+
+    def test_holds_every_value_the_document_creation_reads(self):
+        for key in DOC_CREATION_KEYS:
+            with self.subTest(key=key):
+                self.assertTrue(hasattr(PConf, key),
+                                f"valid_report_config.py has no {key}")
+
+    def test_the_document_step_is_yes_or_no(self):
+        self.assertIn(PConf.BUILD_VALID_REPORT.lower(), ("y", "n"))
+
+    def test_the_import_targets_the_created_document(self):
+        # the document step creates TARGET_NAME_ID in TARGET_LOCATION, the
+        # import opens DOC_NAME - both have to be the same document
+        self.assertEqual(PConf.DOC_NAME,
+                         f"wiki/{PConf.TARGET_LOCATION}/{PConf.TARGET_NAME_ID}")
+        self.assertFalse(hasattr(PConf, "VALID_REPORT_DOCU"),
+                         "VALID_REPORT_DOCU was merged into DOC_NAME")
 
     def test_the_input_file_follows_the_tool_folder(self):
         self.assertIn(PConf.tool_folder, PConf.ISSUE_INPUT_FILE)
@@ -99,7 +129,7 @@ class MainConfigTests(unittest.TestCase):
                 self.assertIn(config.tool_folder, getattr(config, key))
 
     def test_the_polarion_settings_are_gone(self):
-        # they moved to issue_importer_config.py - a copy left behind here
+        # they moved to valid_report_config.py - a copy left behind here
         # would be edited by mistake and silently ignored
         for key in ("DOC_NAME", "DOC_INPUT_HEADING", "ISSUE_INPUT_FILE",
                     "ISSUE_MARKER_BEG", "ISSUE_MARKER_END"):

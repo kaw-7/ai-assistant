@@ -1,4 +1,6 @@
-import ValidReport.valid_report_config as vr_conf
+import PolarionAssistant.ValidReport.valid_report_config as vr_conf
+# the importer uses 'PolarionAssistant.*' imports - needs the project root on sys.path
+from PolarionAssistant.ValidReport.PolarionIssueImporter import PolarionIssueImporter
 
 import traceback
 import time
@@ -12,11 +14,8 @@ if __name__ == "__main__":
             builder = ValidReportBuilder()
             builder.createFinalDoc()
 
-        if vr_conf.IMPORT_ISSUES.lower() == "y":
-            # the importer uses 'PolarionAssistant.*' imports - needs the project root on sys.path
-            from PolarionAssistant.ValidReport.PolarionIssueImporter import PolarionIssueImporter
-            importer = PolarionIssueImporter()
-            importer.ImportIssuesInPolarion()
+        importer = PolarionIssueImporter()
+        importer.ImportIssuesInPolarion()
     except Exception:
         full_error = traceback.format_exc()
         print(f"❌ Error during Validation report creation: {full_error}")

@@ -1,4 +1,4 @@
-import ValidReport.valid_report_config as vr_conf
+import PolarionAssistant.ValidReport.valid_report_config as vr_conf
 from Core.PolarionWorker import PolarionWorker
 from typing_extensions import override
 import traceback

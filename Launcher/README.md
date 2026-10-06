@@ -24,7 +24,7 @@ The modules shipped with the launcher, with the entry point each one starts:
 |---|---|---|---|
 | 1 | Issue formatter and risk assessment | `main.py` | `config.py` |
 | 2 | Issue viewer | `UI/main.py` | `UI/ui_config.py` |
-| 3 | Validation report and issue import | `PolarionAssistant/valid_report_main.py` | `PolarionAssistant/ValidReport/valid_report_config.py`, `PolarionAssistant/ValidReport/issue_importer_config.py` and `.polarion.env` |
+| 3 | Validation report and issue import | `PolarionAssistant/valid_report_main.py` | `PolarionAssistant/ValidReport/valid_report_config.py` and `.polarion.env` |
 | 4 | Test specification builder | `PolarionAssistant/test_spec_main.py` | `PolarionAssistant/TestSpec/testspec_config.py` and `.polarion.env` |
 
 ## The launcher runs the real main
@@ -58,7 +58,7 @@ every module owns its file and nothing is shared any more except
 `.polarion.env`, which all Polarion modules read.
 
 > The tool folder now exists twice: in `config.py` for the AI assistant and in
-> `issue_importer_config.py` for the import. Both have to name the same
+> `valid_report_config.py` for the import. Both have to name the same
 > `output/` folder for the import to find the risk report.
 
 Two kinds of entries appear in the editor:
