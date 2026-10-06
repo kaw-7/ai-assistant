@@ -17,7 +17,7 @@ class TestSpecBuilderModule(RunnableModule):
     """Runs ``PolarionAssistant/test_spec_main.py``."""
 
     id = "test_spec_builder"
-    title = "4. Test specification builder"
+    title = "4. Test case import with possible document creation." 
     description = (
         "Copies the test specification template into a stand alone document "
         "for the validated tool, then moves the test cases of the validation "
