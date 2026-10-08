@@ -144,8 +144,12 @@ class ConsolePane(ttk.Frame):
                 continue
             if self._pending_return:
                 self._pending_return = False
-                # a progress bar rewrites its line - drop the previous one
-                self.text.delete("insert linestart", "insert lineend")
+                # a "\r\n" split over two reads is a plain line break
+                if not part.startswith("\n"):
+                    # a progress bar rewrites its line - drop the previous one.
+                    # Anchor on the end, not on "insert": a click in the view
+                    # moves the insert mark even while the widget is disabled.
+                    self.text.delete("end-1c linestart", "end-1c")
             self.text.insert("end", part, tag or ())
         self._trim()
         self.text.configure(state="disabled")
