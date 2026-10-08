@@ -67,42 +67,51 @@ class IssueCard(tk.Frame):
         tk.Label(right_col, text=item.get(uiConf.DEFECT_ID, ""), bg="#eee").pack(fill="x", pady=(0, uiConf.PADY))
         
         tk.Label(right_col, text=uiConf.STATUS, font=(uiConf.FONT, uiConf.FONT_SIZE, "bold")).pack(anchor="w")
-        tk.Label(right_col, text=item.get(uiConf.STATUS, ""), bg="#eee").pack(fill="x")
+        # dropdown is only active while the card is in edit mode
+        STATUS_OPTIONS = [uiConf.RISK_EXISTS, uiConf.NO_RISK, uiConf.NOT_EVALUATED]
+        self.status_var = tk.StringVar(value=self._current_status(STATUS_OPTIONS))
+        self.status_menu = tk.OptionMenu(right_col, 
+                                         self.status_var, 
+                                         *STATUS_OPTIONS,
+                                         command=self._on_status_change)
+        self.status_menu.config(state="disabled")
+        self.status_menu.pack(fill="x")
+
+    def _current_status(self, status_options):
+        # show the stored status as one of the dropdown values, the AI writes it in different cases
+        status_text = (self.item.get(uiConf.STATUS) or "").strip()
+        for option in status_options:
+            if self._status_matches(option, status_text):
+                return option
+        return status_text
 
     def matches_filter(self, mode):
         # mode: "All", "Risk Exists", "No Risk", "NOT_EVALUATED"
         ra = (self.item.get(uiConf.RISK_ASSESSMENT) or "").strip()
         status_text = (self.item.get(uiConf.STATUS) or "").strip()
         
-        if mode == uiConf.ALL:
+        if mode == uiConf.ALL or self._status_pattern(mode) is None:
             return True
-        
-        if mode == uiConf.NOT_EVALUATED:
-            pattern = uiConf.NOT_EVALUATED.lower().replace("_", ".?")    # 'not.?evaluated'
-            if re.search(pattern, status_text, re.IGNORECASE ):
-                return True
-            if re.search(pattern, ra, re.IGNORECASE ):
-                return True
-            return False
-        
-        if mode == uiConf.RISK_EXISTS:
-            pattern = uiConf.RISK_EXISTS.lower().replace(" ", ".?")[:-1]    # 'risk.?exist'
-            if re.search(pattern, status_text, re.IGNORECASE ):
-                return True
-            if re.search(pattern, ra, re.IGNORECASE ):
-                return True
-            return False
-        
-        if mode == uiConf.NO_RISK:
-            pattern = uiConf.NO_RISK.lower().replace(" ", ".?")    # 'no.?risk'
-            if re.search(pattern, status_text, re.IGNORECASE ):
-                return True
-            if re.search(pattern, ra, re.IGNORECASE ):
-                return True
-            return False
-        
-        return True
+
+        return self._status_matches(mode, status_text) or self._status_matches(mode, ra)
     
+    @staticmethod
+    def _status_pattern(mode):
+        if mode == uiConf.NOT_EVALUATED:
+            return uiConf.NOT_EVALUATED.lower().replace("_", ".?")    # 'not.?evaluated'
+        if mode == uiConf.RISK_EXISTS:
+            return uiConf.RISK_EXISTS.lower().replace(" ", ".?")[:-1]    # 'risk.?exist'
+        if mode == uiConf.NO_RISK:
+            return uiConf.NO_RISK.lower().replace(" ", ".?")    # 'no.?risk'
+        return None
+
+    def _status_matches(self, mode, text):
+        pattern = self._status_pattern(mode)
+        return pattern is not None and re.search(pattern, text, re.IGNORECASE) is not None
+
+    def _on_status_change(self, value):
+        self.item[uiConf.STATUS] = value
+
     def _toggle_expand(self):
         self.expanded = not self.expanded
         self._toggle_widget_expand(self.desc_text)
@@ -123,9 +132,11 @@ class IssueCard(tk.Frame):
         if(self._edit):
             self.risk_text.config(state="normal")
             self.desc_text.config(state="normal")
+            self.status_menu.config(state="normal")
         else:
             self.risk_text.config(state="disabled")
             self.desc_text.config(state="disabled")
+            self.status_menu.config(state="disabled")
 
     def _bind_sync(self, widget, key):
         widget.bind("<<Modified>>", lambda e, k=key: self._sync(e.widget, k))
