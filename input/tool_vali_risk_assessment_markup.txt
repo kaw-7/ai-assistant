@@ -25,7 +25,7 @@ The output has to be in the exact same format as the input, with updated "Risk A
 General idea:
 Any build/compiler/linker or other errors given as issues in the release notes are easily detected by developers or pipeline build 
 and would be recognized immediately so those are of no risk. 
-Also any other issues that are easily detected by developers and other personel are of no risk. 
+Also any other issues that are easily detected by tool users and other personel are of no risk. 
 E.g. debugging issues are present only during development, thus, such issues affecting debugging workflow,
 cannot manifest on a deployed version of any binary output and are of no risk.
 An issue imposing a risk would be one that could create a corrupt binary without the knowledge of the developer. 
