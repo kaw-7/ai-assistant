@@ -1,338 +1,798 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.0.3 Chrome/114.0.5735.289 Electron/25.8.4 Safari/537.36" modified="2026-06-30T11:37:14.260Z" etag="-SEii_VP6gPPrUu4r4EJ" version="22.0.3" type="device">
-  <diagram name="Page-1" id="YTk8KiZYADcE1CkT8FHO">
-    <mxGraphModel dx="1379" dy="2044" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+<mxfile host="Electron" agent="Claude Code" version="22.0.3" type="device">
+  <diagram name="1 - AI providers" id="AIAssistantPage1">
+    <mxGraphModel dx="1379" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-3" value="Preprocessor" style="swimlane;whiteSpace=wrap;html=1;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="20" y="310" width="720" height="270" as="geometry" />
+        <mxCell id="t1" value="AIProvider - one interface per LLM vendor" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="16" width="700" height="24" as="geometry" />
         </mxCell>
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-4" value="&lt;div align=&quot;left&quot;&gt;AbstractPreprocessor&lt;br&gt;@abstractmethod&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;void preprocess_file(self, string:release_notes_file_path)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="8LvVxfX2mHlh-TnpkaEa-3" vertex="1">
-          <mxGeometry x="40" y="40" width="330" height="60" as="geometry" />
+        <mxCell id="t1s" value="Every provider implements both abstract classes: generate_response() for the call, AIContext for the running question/answer transcript." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="30" y="42" width="1000" height="18" as="geometry" />
         </mxCell>
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-5" value="AIPreprocessor" style="rounded=1;whiteSpace=wrap;html=1;" parent="8LvVxfX2mHlh-TnpkaEa-3" vertex="1">
-          <mxGeometry x="40" y="160" width="130" height="60" as="geometry" />
+        <mxCell id="aip" value="&amp;laquo;abstract&amp;raquo;&lt;br&gt;&lt;b&gt;AIProvider&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;AIProvider/AIProvider.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="230" y="80" width="340" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.197;entryY=1.004;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=block;endFill=0;" parent="8LvVxfX2mHlh-TnpkaEa-3" source="8LvVxfX2mHlh-TnpkaEa-5" target="8LvVxfX2mHlh-TnpkaEa-4" edge="1">
+        <mxCell id="aip-o0" value="+ generate_response(prompt: str): str  {abstract}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="aip">
+          <mxGeometry y="58" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="aic" value="&amp;laquo;abstract&amp;raquo;&lt;br&gt;&lt;b&gt;AIContext&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;AIProvider/AIContext.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="770" y="80" width="340" height="124" as="geometry" />
+        </mxCell>
+        <mxCell id="aic-o0" value="+ save_question(prompt: str)  {abstract}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="aic">
+          <mxGeometry y="58" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="aic-o1" value="+ save_response(prompt: str)  {abstract}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="aic">
+          <mxGeometry y="80" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="aic-o2" value="+ retrieve_context(): str  {abstract}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="aic">
+          <mxGeometry y="102" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="gem" value="&lt;b&gt;GeminiProvider&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;google.genai&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="30" y="320" width="250" height="198" as="geometry" />
+        </mxCell>
+        <mxCell id="gem-a0" value="client: genai.Client" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="gem">
+          <mxGeometry y="58" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="gem-a1" value="context: str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="gem">
+          <mxGeometry y="80" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="gem-div" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="gem">
+          <mxGeometry y="102" width="250" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="gem-o0" value="+ generate_response(user_input): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="gem">
+          <mxGeometry y="110" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="gem-o1" value="+ save_question(q) / save_response(r)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="gem">
+          <mxGeometry y="132" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="gem-o2" value="+ retrieve_context(): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="gem">
+          <mxGeometry y="154" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="gem-o3" value="- _get_key_from_env()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="gem">
+          <mxGeometry y="176" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="azu" value="&lt;b&gt;AzureOpenAIProvider&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;openai.AzureOpenAI&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=42;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="320" width="250" height="204" as="geometry" />
+        </mxCell>
+        <mxCell id="azu-a0" value="client: AzureOpenAI" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="azu">
+          <mxGeometry y="42" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="azu-a1" value="context: str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="azu">
+          <mxGeometry y="64" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="azu-div" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="azu">
+          <mxGeometry y="86" width="250" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="azu-o0" value="+ generate_response(user_input): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="azu">
+          <mxGeometry y="94" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="azu-o1" value="+ save_question(q) / save_response(r)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="azu">
+          <mxGeometry y="116" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="azu-o2" value="+ retrieve_context(): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="azu">
+          <mxGeometry y="138" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="azu-o3" value="- _get_key_from_env()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="azu">
+          <mxGeometry y="160" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="azu-o4" value="- _print_token_usage(response)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="azu">
+          <mxGeometry y="182" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="oai" value="&lt;b&gt;OpenAIProvider&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;openai&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="570" y="320" width="250" height="176" as="geometry" />
+        </mxCell>
+        <mxCell id="oai-a0" value="context: str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="oai">
+          <mxGeometry y="58" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="oai-div" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="oai">
+          <mxGeometry y="80" width="250" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="oai-o0" value="+ generate_response(user_input): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="oai">
+          <mxGeometry y="88" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="oai-o1" value="+ save_question(q) / save_response(r)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="oai">
+          <mxGeometry y="110" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="oai-o2" value="+ retrieve_context(): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="oai">
+          <mxGeometry y="132" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="oai-o3" value="- _get_key_from_env()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="oai">
+          <mxGeometry y="154" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ppx" value="&lt;b&gt;PerplexityProvider&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;openai.OpenAI (Perplexity endpoint)&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="840" y="320" width="250" height="198" as="geometry" />
+        </mxCell>
+        <mxCell id="ppx-a0" value="client: OpenAI" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="ppx">
+          <mxGeometry y="58" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ppx-a1" value="context: str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="ppx">
+          <mxGeometry y="80" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ppx-div" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="ppx">
+          <mxGeometry y="102" width="250" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="ppx-o0" value="+ generate_response(user_input): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="ppx">
+          <mxGeometry y="110" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ppx-o1" value="+ save_question(q) / save_response(r)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="ppx">
+          <mxGeometry y="132" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ppx-o2" value="+ retrieve_context(): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="ppx">
+          <mxGeometry y="154" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ppx-o3" value="- _get_key_from_env()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="ppx">
+          <mxGeometry y="176" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cla" value="&lt;b&gt;ClaudeProvider&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;claude_agent_sdk&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="320" width="250" height="176" as="geometry" />
+        </mxCell>
+        <mxCell id="cla-a0" value="context: str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cla">
+          <mxGeometry y="58" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cla-div" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="cla">
+          <mxGeometry y="80" width="250" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cla-o0" value="+ generate_response(user_input): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cla">
+          <mxGeometry y="88" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cla-o1" value="+ save_question(q) / save_response(r)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cla">
+          <mxGeometry y="110" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cla-o2" value="+ retrieve_context(): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cla">
+          <mxGeometry y="132" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cla-o3" value="- _ask(prompt): str  async" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cla">
+          <mxGeometry y="154" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ip0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.3;exitY=0;exitDx=0;exitDy=0;entryX=0.1;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="gem" target="aip">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;" parent="8LvVxfX2mHlh-TnpkaEa-3" source="8LvVxfX2mHlh-TnpkaEa-7" target="8LvVxfX2mHlh-TnpkaEa-4" edge="1">
+        <mxCell id="ic0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.7;exitY=0;exitDx=0;exitDy=0;entryX=0.1;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="gem" target="aic">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-7" value="IAREWPreprocessor" style="rounded=1;whiteSpace=wrap;html=1;" parent="8LvVxfX2mHlh-TnpkaEa-3" vertex="1">
-          <mxGeometry x="197.5" y="160" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-9" value="AxivionPreprocessor" style="rounded=1;whiteSpace=wrap;html=1;" parent="8LvVxfX2mHlh-TnpkaEa-3" vertex="1">
-          <mxGeometry x="350" y="160" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.903;entryY=1.029;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=block;endFill=0;" parent="8LvVxfX2mHlh-TnpkaEa-3" source="8LvVxfX2mHlh-TnpkaEa-9" target="8LvVxfX2mHlh-TnpkaEa-4" edge="1">
+        <mxCell id="ip1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.3;exitY=0;exitDx=0;exitDy=0;entryX=0.3;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="azu" target="aip">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="UScCpWAk8BD-hlS-M_Xb-4" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;strokeColor=#E78D0D;" parent="8LvVxfX2mHlh-TnpkaEa-3" edge="1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="190" y="230" as="sourcePoint" />
-            <mxPoint x="480" y="230" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-11" value="RiskAssessment" style="swimlane;whiteSpace=wrap;html=1;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="67.5" y="620" width="420" height="220" as="geometry" />
-        </mxCell>
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-12" value="&lt;div align=&quot;left&quot;&gt;AbstractRiskAssessmentAgent&lt;br&gt;@abstractmethod&lt;br&gt;&amp;nbsp; &amp;nbsp; void process_csv(self):&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="8LvVxfX2mHlh-TnpkaEa-11" vertex="1">
-          <mxGeometry x="22.5" y="40" width="175" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=block;endFill=0;" parent="8LvVxfX2mHlh-TnpkaEa-11" source="8LvVxfX2mHlh-TnpkaEa-15" target="8LvVxfX2mHlh-TnpkaEa-12" edge="1">
+        <mxCell id="ic1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.7;exitY=0;exitDx=0;exitDy=0;entryX=0.3;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="azu" target="aic">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-15" value="AIRiskAssessmentAgent" style="rounded=1;whiteSpace=wrap;html=1;" parent="8LvVxfX2mHlh-TnpkaEa-11" vertex="1">
-          <mxGeometry x="56.25" y="140" width="160" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="5gk9JtorZNjHyHgcTJLy-1" value="AIRiskSummary&lt;br&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;void generate_summary()&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="8LvVxfX2mHlh-TnpkaEa-11" vertex="1">
-          <mxGeometry x="242.5" y="40" width="155" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-17" value="Configurator" style="swimlane;whiteSpace=wrap;html=1;startSize=20;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="580" y="-260" width="200" height="160" as="geometry" />
-        </mxCell>
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-18" value="config" style="rounded=1;whiteSpace=wrap;html=1;" parent="8LvVxfX2mHlh-TnpkaEa-17" vertex="1">
-          <mxGeometry x="40" y="50" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-20" value="AIProvider" style="swimlane;whiteSpace=wrap;html=1;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="32.27000000000001" y="30" width="925" height="240" as="geometry">
-            <mxRectangle x="295" y="30" width="100" height="30" as="alternateBounds" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-21" value="&lt;div align=&quot;left&quot;&gt;AIProvider&lt;br&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;@abstractmethod&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;string generate_response(string);&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="8LvVxfX2mHlh-TnpkaEa-20" vertex="1">
-          <mxGeometry x="155" y="40" width="210" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=block;endFill=0;" parent="8LvVxfX2mHlh-TnpkaEa-20" source="8LvVxfX2mHlh-TnpkaEa-22" target="8LvVxfX2mHlh-TnpkaEa-21" edge="1">
+        <mxCell id="ip2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.3;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="oai" target="aip">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="8LvVxfX2mHlh-TnpkaEa-22" value="GeminiProvider" style="rounded=1;whiteSpace=wrap;html=1;" parent="8LvVxfX2mHlh-TnpkaEa-20" vertex="1">
-          <mxGeometry x="48.75" y="160" width="152.5" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="3eS_v42u-Op1bvGjLPwh-2" value="AzureOpenAIProvider" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="8LvVxfX2mHlh-TnpkaEa-20">
-          <mxGeometry x="325" y="160" width="185" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="3eS_v42u-Op1bvGjLPwh-3" value="PerplexityProvider" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="8LvVxfX2mHlh-TnpkaEa-20">
-          <mxGeometry x="785" y="160" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="3eS_v42u-Op1bvGjLPwh-4" value="OpenAIProvider" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="8LvVxfX2mHlh-TnpkaEa-20">
-          <mxGeometry x="595" y="160" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="3eS_v42u-Op1bvGjLPwh-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=block;endFill=0;" edge="1" parent="8LvVxfX2mHlh-TnpkaEa-20" source="3eS_v42u-Op1bvGjLPwh-2" target="8LvVxfX2mHlh-TnpkaEa-21">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="135" y="170" as="sourcePoint" />
-            <mxPoint x="270" y="110" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3eS_v42u-Op1bvGjLPwh-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="8LvVxfX2mHlh-TnpkaEa-20" source="3eS_v42u-Op1bvGjLPwh-4" target="8LvVxfX2mHlh-TnpkaEa-21">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="703" y="149.71" as="sourcePoint" />
-            <mxPoint x="545" y="89.71000000000001" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3eS_v42u-Op1bvGjLPwh-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="8LvVxfX2mHlh-TnpkaEa-20" source="3eS_v42u-Op1bvGjLPwh-3" target="8LvVxfX2mHlh-TnpkaEa-21">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="843" y="120" as="sourcePoint" />
-            <mxPoint x="685" y="60" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="-m28YHfDF9zysrP2et5K-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;endArrow=openThin;endFill=0;" parent="1" source="8LvVxfX2mHlh-TnpkaEa-21" target="8LvVxfX2mHlh-TnpkaEa-15" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="550" y="790" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="-m28YHfDF9zysrP2et5K-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;endArrow=openThin;endFill=0;" parent="1" source="8LvVxfX2mHlh-TnpkaEa-18" target="8LvVxfX2mHlh-TnpkaEa-4" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="680" y="-60" />
-              <mxPoint x="10" y="-60" />
-              <mxPoint x="10" y="395" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="-m28YHfDF9zysrP2et5K-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=openThin;endFill=0;" parent="1" source="8LvVxfX2mHlh-TnpkaEa-18" target="8LvVxfX2mHlh-TnpkaEa-5" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="680" y="-60" />
-              <mxPoint x="10" y="-60" />
-              <mxPoint x="10" y="500" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="-m28YHfDF9zysrP2et5K-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.315;entryY=0.983;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=openThin;endFill=0;" parent="1" source="8LvVxfX2mHlh-TnpkaEa-18" target="8LvVxfX2mHlh-TnpkaEa-7" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="680" y="-60" />
-              <mxPoint x="10" y="-60" />
-              <mxPoint x="10" y="550" />
-              <mxPoint x="255" y="550" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="-m28YHfDF9zysrP2et5K-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=openThin;endFill=0;" parent="1" target="8LvVxfX2mHlh-TnpkaEa-9" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="680" y="-60" />
-              <mxPoint x="10" y="-60" />
-              <mxPoint x="10" y="550" />
-              <mxPoint x="430" y="550" />
-            </Array>
-            <mxPoint x="680" y="-150" as="sourcePoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="-m28YHfDF9zysrP2et5K-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;endArrow=openThin;endFill=0;" parent="1" source="8LvVxfX2mHlh-TnpkaEa-18" target="8LvVxfX2mHlh-TnpkaEa-22" edge="1">
+        <mxCell id="ic2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.7;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="oai" target="aic">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="-m28YHfDF9zysrP2et5K-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=openThin;endFill=0;" parent="1" source="8LvVxfX2mHlh-TnpkaEa-18" target="8LvVxfX2mHlh-TnpkaEa-15" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="680" y="-60" />
-              <mxPoint x="10" y="-60" />
-              <mxPoint x="10" y="790" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="-m28YHfDF9zysrP2et5K-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=openThin;endFill=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" parent="1" source="8LvVxfX2mHlh-TnpkaEa-21" target="8LvVxfX2mHlh-TnpkaEa-5" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="550" y="130" />
-              <mxPoint x="550" y="560" />
-              <mxPoint x="125" y="560" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="UScCpWAk8BD-hlS-M_Xb-5" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;strokeColor=#E78D0D;" parent="1" source="UScCpWAk8BD-hlS-M_Xb-11" edge="1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="210" y="460" as="sourcePoint" />
-            <mxPoint x="500" y="460" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="UScCpWAk8BD-hlS-M_Xb-6" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;strokeColor=#E78D0D;" parent="1" edge="1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="500" y="540" as="sourcePoint" />
-            <mxPoint x="500" y="460" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="UScCpWAk8BD-hlS-M_Xb-7" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;strokeColor=#E78D0D;" parent="1" edge="1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="210" y="540" as="sourcePoint" />
-            <mxPoint x="210" y="460" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="UScCpWAk8BD-hlS-M_Xb-12" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;strokeColor=#E78D0D;" parent="1" target="UScCpWAk8BD-hlS-M_Xb-11" edge="1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="210" y="460" as="sourcePoint" />
-            <mxPoint x="500" y="460" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="UScCpWAk8BD-hlS-M_Xb-11" value="" style="shape=image;html=1;verticalLabelPosition=bottom;verticalAlign=top;imageAspect=1;aspect=fixed;image=img/clipart/Gear_128x128.png" parent="1" vertex="1">
-          <mxGeometry x="486.25" y="450" width="17.05" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="5gk9JtorZNjHyHgcTJLy-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=openThin;endFill=0;" parent="1" source="8LvVxfX2mHlh-TnpkaEa-18" target="5gk9JtorZNjHyHgcTJLy-1" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="680" y="-60" />
-              <mxPoint x="10" y="-60" />
-              <mxPoint x="10" y="650" />
-              <mxPoint x="388" y="650" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="5gk9JtorZNjHyHgcTJLy-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;endArrow=openThin;endFill=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" parent="1" source="8LvVxfX2mHlh-TnpkaEa-21" target="5gk9JtorZNjHyHgcTJLy-1" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="550" y="130" />
-              <mxPoint x="550" y="260" />
-              <mxPoint x="780" y="260" />
-              <mxPoint x="780" y="690" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-1" value="PolarionConnector" style="swimlane;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="1050" y="30" width="1010" height="500" as="geometry" />
-        </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-2" value="Core" style="swimlane;whiteSpace=wrap;html=1;" parent="QQ4fqF0MmiYUsDhPUaEc-1" vertex="1">
-          <mxGeometry x="30" y="80" width="410" height="350" as="geometry" />
-        </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-3" value="IssueParser&lt;br&gt;&lt;div&gt;@staticmethod&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; def parse_markdown_to_dto(raw_text: str) -&amp;gt; List[IssueDTO]&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="QQ4fqF0MmiYUsDhPUaEc-2" vertex="1">
-          <mxGeometry x="20" y="40" width="340" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-5" value="IssueDAOFactory&lt;br&gt;&lt;div&gt;@staticmethod&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&amp;nbsp; &amp;nbsp; def create(connector, issueDTO)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="QQ4fqF0MmiYUsDhPUaEc-2" vertex="1">
-          <mxGeometry x="20" y="110" width="340" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-6" value="ItemUtil&lt;br&gt;&lt;div&gt;@staticmethod&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; def find_heading_item_by_name(document, heading_name)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="QQ4fqF0MmiYUsDhPUaEc-2" vertex="1">
-          <mxGeometry x="20" y="180" width="340" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-7" value="&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;PolarionConnector&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp; &amp;nbsp; def connect(self)&amp;nbsp; &amp;nbsp;&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&amp;nbsp; &amp;nbsp; def get_current_user_info(self)&lt;br&gt;&amp;nbsp; &amp;nbsp;&amp;nbsp;def get_document(self, doc_name: str = None)" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="QQ4fqF0MmiYUsDhPUaEc-2" vertex="1">
-          <mxGeometry x="20" y="250" width="340" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-8" value="Model" style="swimlane;whiteSpace=wrap;html=1;" parent="QQ4fqF0MmiYUsDhPUaEc-1" vertex="1">
-          <mxGeometry x="590" y="110" width="370" height="270" as="geometry" />
-        </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-9" value="DAO" style="swimlane;whiteSpace=wrap;html=1;" parent="QQ4fqF0MmiYUsDhPUaEc-8" vertex="1">
-          <mxGeometry x="155" y="30" width="200" height="200" as="geometry" />
-        </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-11" value="IssueStatus" style="rounded=1;whiteSpace=wrap;html=1;" parent="QQ4fqF0MmiYUsDhPUaEc-9" vertex="1">
-          <mxGeometry x="50" y="40" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-12" value="IssueSource" style="rounded=1;whiteSpace=wrap;html=1;" parent="QQ4fqF0MmiYUsDhPUaEc-9" vertex="1">
-          <mxGeometry x="50" y="115" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-10" value="IssueDTO" style="rounded=1;whiteSpace=wrap;html=1;" parent="QQ4fqF0MmiYUsDhPUaEc-8" vertex="1">
-          <mxGeometry x="15" y="30" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-15" value="Polarion&lt;br&gt;main()" style="rounded=1;whiteSpace=wrap;html=1;" parent="QQ4fqF0MmiYUsDhPUaEc-1" vertex="1">
-          <mxGeometry x="460" y="30" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=openThin;endFill=0;" parent="QQ4fqF0MmiYUsDhPUaEc-1" source="QQ4fqF0MmiYUsDhPUaEc-5" target="QQ4fqF0MmiYUsDhPUaEc-15" edge="1">
+        <mxCell id="ip3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.3;exitY=0;exitDx=0;exitDy=0;entryX=0.7;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="ppx" target="aip">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=openThin;endFill=0;" parent="QQ4fqF0MmiYUsDhPUaEc-1" source="QQ4fqF0MmiYUsDhPUaEc-3" target="QQ4fqF0MmiYUsDhPUaEc-15" edge="1">
+        <mxCell id="ic3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.7;exitY=0;exitDx=0;exitDy=0;entryX=0.7;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="ppx" target="aic">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=openThin;endFill=0;" parent="QQ4fqF0MmiYUsDhPUaEc-1" source="QQ4fqF0MmiYUsDhPUaEc-6" target="QQ4fqF0MmiYUsDhPUaEc-15" edge="1">
+        <mxCell id="ip4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.3;exitY=0;exitDx=0;exitDy=0;entryX=0.9;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="cla" target="aip">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=openThin;endFill=0;" parent="QQ4fqF0MmiYUsDhPUaEc-1" source="QQ4fqF0MmiYUsDhPUaEc-7" target="QQ4fqF0MmiYUsDhPUaEc-15" edge="1">
+        <mxCell id="ic4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.7;exitY=0;exitDx=0;exitDy=0;entryX=0.9;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="cla" target="aic">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=openThin;endFill=0;" parent="QQ4fqF0MmiYUsDhPUaEc-1" source="QQ4fqF0MmiYUsDhPUaEc-10" target="QQ4fqF0MmiYUsDhPUaEc-15" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="700" y="180" />
-            </Array>
-          </mxGeometry>
+        <mxCell id="n1" value="Which provider runs?&lt;br&gt;main.ai_engine() constructs one by hand - today ClaudeProvider()&lt;br&gt;(todo in code: an AI factory). That single instance is passed to&lt;br&gt;every preprocessor and agent on page 2.&lt;br&gt;&lt;br&gt;Model selection&lt;br&gt;  OpenAI, Perplexity: config.MODEL_NAME&lt;br&gt;  Gemini, Azure: model name hardcoded in the provider&lt;br&gt;  Claude: SDK default, signs in with the claude.ai login" style="shape=note;whiteSpace=wrap;html=1;size=14;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="30" y="560" width="560" height="180" as="geometry" />
         </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=openThin;endFill=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="QQ4fqF0MmiYUsDhPUaEc-1" source="QQ4fqF0MmiYUsDhPUaEc-12" target="QQ4fqF0MmiYUsDhPUaEc-5" edge="1">
+        <mxCell id="n1b" value="ClaudeProvider.py - module helper&lt;br&gt;run_async(coro): runs the SDK coroutine with asyncio.run(), or on a&lt;br&gt;dedicated thread with its own Proactor loop when a loop is already&lt;br&gt;running (Spyder / Jupyter).&lt;br&gt;&lt;br&gt;Gemini and Claude also write the transcript to config.CONTEXT_FILE." style="shape=note;whiteSpace=wrap;html=1;size=14;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="620" y="560" width="490" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1" value="Config used by a class - header colour" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="560" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1-c0" value="" style="rounded=0;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="586" width="24" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1-t0" value="config  (config.py)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1172" y="584" width="380" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="2 - AI engine" id="AIAssistantPage2">
+    <mxGraphModel dx="1379" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t2" value="main.py - release notes in, risk report out" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="16" width="700" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t2s" value="Every class that talks to the LLM takes the AIProvider from page 1 in its constructor and keeps it as ai_engine." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="30" y="42" width="1000" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="main" value="&amp;laquo;module&amp;raquo;&lt;br&gt;&lt;b&gt;main&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;main.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=74;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="30" y="80" width="320" height="118" as="geometry" />
+        </mxCell>
+        <mxCell id="main-o0" value="AskUser(question, answer=None): bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="main">
+          <mxGeometry y="74" width="320" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="main-o1" value="ai_engine()   match TOOL_PREPROCESSOR -&gt; preprocessor" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="main">
+          <mxGeometry y="96" width="320" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pipe" value="&lt;b&gt;PreprocessingPipeline&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Preprocessor/PreprocessingPipeline.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="410" y="80" width="400" height="176" as="geometry" />
+        </mxCell>
+        <mxCell id="pipe-a0" value="chunk_preprocessor: TextChunkerPreprocessor" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="pipe">
+          <mxGeometry y="58" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pipe-a1" value="ai_preprocessor: AbstractPreprocessor" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="pipe">
+          <mxGeometry y="80" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pipe-a2" value="structured_issues: str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="pipe">
+          <mxGeometry y="102" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pipe-div" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="pipe">
+          <mxGeometry y="124" width="400" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="pipe-o0" value="+ Start()   one pass if USE_PREPROCESS_CHUNKING=n" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="pipe">
+          <mxGeometry y="132" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pipe-o1" value="+ getIssues(): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="pipe">
+          <mxGeometry y="154" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg" value="&amp;laquo;module&amp;raquo;&lt;br&gt;&lt;b&gt;config&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;config.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="870" y="80" width="380" height="278" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg-a0" value="tool_folder, TOOL_NAME, TOOL_RELEASE_NOTES" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
+          <mxGeometry y="58" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg-a1" value="TOOL_VERSION_START / TOOL_VERSION_END" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
+          <mxGeometry y="80" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg-a2" value="TOOL_PREPROCESSOR, USE_PREPROCESS_CHUNKING" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
+          <mxGeometry y="102" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg-a3" value="CHUNK_SIZE / CHUNK_DELIMITER" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
+          <mxGeometry y="124" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg-a4" value="PROCEED_WITH_AI_RISK_ASSESSMENT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
+          <mxGeometry y="146" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg-a5" value="MAX_COUNT_OF_ISSUES_PROCESSED_AT_ONCE_BY_AI" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
+          <mxGeometry y="168" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg-a6" value="*_INSTRUCTIONS_PATH, REF_PATH" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
+          <mxGeometry y="190" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg-a7" value="TEMP_* / *_OUTPUT_FILE, CONTEXT_FILE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
+          <mxGeometry y="212" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg-a8" value="CSV_TEMPLATE, ISSUE_END_MARKER" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
+          <mxGeometry y="234" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg-a9" value="MODEL_NAME" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
+          <mxGeometry y="256" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ptype" value="&amp;laquo;Enum&amp;raquo;&lt;br&gt;&lt;b&gt;PreprocessorType&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Preprocessor/AbstractPreprocessor.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="160" width="340" height="124" as="geometry" />
+        </mxCell>
+        <mxCell id="ptype-a0" value="AI = &quot;AI&quot;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="ptype">
+          <mxGeometry y="58" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ptype-a1" value="IAR_EmbeddedWorkbench" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="ptype">
+          <mxGeometry y="80" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ptype-a2" value="RELOAD = &quot;Reload_Existing&quot;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="ptype">
+          <mxGeometry y="102" width="340" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="absp" value="&amp;laquo;abstract&amp;raquo;&lt;br&gt;&lt;b&gt;AbstractPreprocessor&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Preprocessor/AbstractPreprocessor.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="330" width="400" height="124" as="geometry" />
+        </mxCell>
+        <mxCell id="absp-o0" value="+ preprocess_file(release_notes_file_path): str  {abstract}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="absp">
+          <mxGeometry y="58" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="absp-o1" value="+ save_output(text, file_path, opts=&quot;w&quot;)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="absp">
+          <mxGeometry y="80" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="absp-o2" value="+ check_characters(release_notes)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="absp">
+          <mxGeometry y="102" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="chunk" value="&lt;b&gt;TextChunkerPreprocessor&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Preprocessor/TextChunkerPreprocessor.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="30" y="540" width="270" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="chunk-a0" value="ai_engine: AIProvider" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="chunk">
+          <mxGeometry y="58" width="270" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="chunk-a1" value="it, slice_position" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="chunk">
+          <mxGeometry y="80" width="270" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="chunk-a2" value="end: bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="chunk">
+          <mxGeometry y="102" width="270" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="chunk-div" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="chunk">
+          <mxGeometry y="124" width="270" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="chunk-o0" value="+ preprocess_file(path): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="chunk">
+          <mxGeometry y="132" width="270" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="chunk-o1" value="+ End(): bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="chunk">
+          <mxGeometry y="154" width="270" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="chunk-o2" value="- _slice_input(path)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="chunk">
+          <mxGeometry y="176" width="270" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="chunk-o3" value="- _generate_chunk(path)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="chunk">
+          <mxGeometry y="198" width="270" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="aipre" value="&lt;b&gt;AIPreprocessor&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Preprocessor/AIPreprocessor.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="320" y="540" width="270" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="aipre-a0" value="ai_engine: AIProvider" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="aipre">
+          <mxGeometry y="58" width="270" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="aipre-div" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="aipre">
+          <mxGeometry y="80" width="270" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="aipre-o0" value="+ preprocess_file(path): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="aipre">
+          <mxGeometry y="88" width="270" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="aipre-o1" value="+ generate_input(path): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="aipre">
+          <mxGeometry y="110" width="270" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="reload" value="&lt;b&gt;ReloadExistingPreprocessor&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Preprocessor/ReloadExistingPreprocessor.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="610" y="540" width="270" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="reload-a0" value="ai_engine: AIProvider" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="reload">
+          <mxGeometry y="58" width="270" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="reload-div" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="reload">
+          <mxGeometry y="80" width="270" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="reload-o0" value="+ preprocess_file(path): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="reload">
+          <mxGeometry y="88" width="270" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="reload-o1" value="reuses TEMP_OUTPUT_FILE, no AI call" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="reload">
+          <mxGeometry y="110" width="270" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="iar" value="&lt;b&gt;IAREWPreprocessor&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Preprocessor/IAREWPreprocessor.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="900" y="540" width="270" height="102" as="geometry" />
+        </mxCell>
+        <mxCell id="iar-o0" value="+ preprocess_file(path): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="iar">
+          <mxGeometry y="58" width="270" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="iar-o1" value="parse_txt_to_csv(...)   module function" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="iar">
+          <mxGeometry y="80" width="270" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pi0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.15;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="chunk" target="absp">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=openThin;endFill=0;" parent="QQ4fqF0MmiYUsDhPUaEc-1" source="QQ4fqF0MmiYUsDhPUaEc-11" target="QQ4fqF0MmiYUsDhPUaEc-5" edge="1">
+        <mxCell id="pi1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.38;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="aipre" target="absp">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="3eS_v42u-Op1bvGjLPwh-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=openThin;endFill=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="8LvVxfX2mHlh-TnpkaEa-18" target="3eS_v42u-Op1bvGjLPwh-2">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="190" y="150" as="sourcePoint" />
-            <mxPoint x="677.5714285714284" y="220" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3eS_v42u-Op1bvGjLPwh-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=openThin;endFill=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="8LvVxfX2mHlh-TnpkaEa-18" target="3eS_v42u-Op1bvGjLPwh-4">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="800" y="90" as="sourcePoint" />
-            <mxPoint x="920" y="215" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3eS_v42u-Op1bvGjLPwh-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=openThin;endFill=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="8LvVxfX2mHlh-TnpkaEa-18" target="3eS_v42u-Op1bvGjLPwh-3">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="890" y="87.5" as="sourcePoint" />
-            <mxPoint x="1019" y="212.5" as="targetPoint" />
-            <Array as="points">
-              <mxPoint x="680" y="-60" />
-              <mxPoint x="877" y="-60" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3eS_v42u-Op1bvGjLPwh-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;endArrow=openThin;endFill=0;" edge="1" parent="1" target="3eS_v42u-Op1bvGjLPwh-12">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points" />
-            <mxPoint x="550" y="130" as="sourcePoint" />
-            <mxPoint x="284" y="790" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3eS_v42u-Op1bvGjLPwh-12" value="TextChunkerPreprocessor" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="530" y="470" width="160" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="3eS_v42u-Op1bvGjLPwh-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;" edge="1" parent="1" source="3eS_v42u-Op1bvGjLPwh-12" target="8LvVxfX2mHlh-TnpkaEa-4">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="752" y="458" as="sourcePoint" />
-            <mxPoint x="680" y="400" as="targetPoint" />
-            <Array as="points">
-              <mxPoint x="681" y="380" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="8LvVxfX2mHlh-TnpkaEa-18" target="QQ4fqF0MmiYUsDhPUaEc-7" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1000" y="-180" />
-              <mxPoint x="1000" y="395" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="8LvVxfX2mHlh-TnpkaEa-18" target="QQ4fqF0MmiYUsDhPUaEc-5" edge="1">
+        <mxCell id="pi2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.61;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="reload" target="absp">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="8LvVxfX2mHlh-TnpkaEa-18" target="QQ4fqF0MmiYUsDhPUaEc-3" edge="1">
+        <mxCell id="pi3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.84;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="iar" target="absp">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="QQ4fqF0MmiYUsDhPUaEc-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="8LvVxfX2mHlh-TnpkaEa-18" target="QQ4fqF0MmiYUsDhPUaEc-15" edge="1">
+        <mxCell id="absr" value="&amp;laquo;abstract&amp;raquo;&lt;br&gt;&lt;b&gt;AbstractRiskAssessmentAgent&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;RiskAssessment/AbstractRiskAssessmentAgent.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="820" width="400" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="absr-o0" value="+ process_issues()  {abstract}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="absr">
+          <mxGeometry y="58" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="agent" value="&lt;b&gt;AIRiskAssessmentAgent&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;RiskAssessment/AIRiskAssessmentAgent.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="410" y="960" width="400" height="198" as="geometry" />
+        </mxCell>
+        <mxCell id="agent-a0" value="ai_engine: AIProvider" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="agent">
+          <mxGeometry y="58" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="agent-div" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="agent">
+          <mxGeometry y="80" width="400" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="agent-o0" value="+ process_issues(input_data_content)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="agent">
+          <mxGeometry y="88" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="agent-o1" value="- _process_issues_in_chunks(content)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="agent">
+          <mxGeometry y="110" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="agent-o2" value="- _generate_input(content): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="agent">
+          <mxGeometry y="132" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="agent-o3" value="- _get_up_to_nth(text, substring, n, start)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="agent">
+          <mxGeometry y="154" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="agent-o4" value="- _get_total_occurances(text, substring): int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="agent">
+          <mxGeometry y="176" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="summ" value="&lt;b&gt;AIRiskSummary&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;RiskAssessment/AIRiskSummary.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="870" y="820" width="380" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="summ-a0" value="ai_engine: AIProvider" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="summ">
+          <mxGeometry y="58" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="summ-div" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="summ">
+          <mxGeometry y="80" width="380" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="summ-o0" value="+ generate_summary()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="summ">
+          <mxGeometry y="88" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="summ-o1" value="+ generate_input(user_context): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="summ">
+          <mxGeometry y="110" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="summn" value="not called at the moment - commented out in main.ai_engine()" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="870" y="960" width="380" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="m1" value="builds, Start()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endFill=0;strokeWidth=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="main" target="pipe">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m3" value="process_issues() if PROCEED_...=y" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endFill=0;strokeWidth=1;fontSize=10;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="main" target="agent">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m4" value="chunk_preprocessor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endFill=0;strokeWidth=1;fontSize=10;exitX=0;exitY=0.8;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="pipe" target="chunk">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m5" value="ai_preprocessor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endFill=0;strokeWidth=1;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="pipe" target="absp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="agent" target="absr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="n2" value="File hand-offs (paths from config.py, under output/{tool_folder}/)&lt;br&gt;&lt;br&gt;TOOL_RELEASE_NOTES&lt;br&gt;  -&gt; TextChunker -&gt; temp_chunk.txt   (only if USE_PREPROCESS_CHUNKING=y)&lt;br&gt;  -&gt; AI / IAR / Reload preprocessor -&gt; temp_output_risk.txt&lt;br&gt;  -&gt; AIRiskAssessmentAgent -&gt; final_risk_report.txt&lt;br&gt;  -&gt; reviewed in the UI (IssueReviewUI.drawio),&lt;br&gt;     imported into Polarion (PolarionAssistant.drawio)" style="shape=note;whiteSpace=wrap;html=1;size=14;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="870" y="995" width="460" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2" value="Config used by a class - header colour" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="80" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2-c0" value="" style="rounded=0;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="106" width="24" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2-t0" value="config  (config.py)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1322" y="104" width="380" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="3 - Flow sequence" id="AIAssistantPage3">
+    <mxGraphModel dx="1379" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t3" value="Flow sequence - one run of main.ai_engine()" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="16" width="700" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t3s" value="Blue arrows are file reads and writes - the steps hand data to each other through files, not only through return values. Paths are config.py names." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="30" y="42" width="1300" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="ll-main" value="&lt;b&gt;main&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;main.py - ai_engine()&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;size=50;fillColor=#DAE8FC;" vertex="1" parent="1">
+          <mxGeometry x="30" y="80" width="160" height="1894" as="geometry" />
+        </mxCell>
+        <mxCell id="ll-pipe" value="&lt;b&gt;PreprocessingPipeline&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;size=50;fillColor=#DAE8FC;" vertex="1" parent="1">
+          <mxGeometry x="230" y="80" width="160" height="1894" as="geometry" />
+        </mxCell>
+        <mxCell id="ll-chunk" value="&lt;b&gt;TextChunkerPreprocessor&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;size=50;fillColor=#DAE8FC;" vertex="1" parent="1">
+          <mxGeometry x="430" y="80" width="160" height="1894" as="geometry" />
+        </mxCell>
+        <mxCell id="ll-pre" value="&lt;b&gt;AIPreprocessor&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;the selected preprocessor&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;size=50;fillColor=#DAE8FC;" vertex="1" parent="1">
+          <mxGeometry x="630" y="80" width="160" height="1894" as="geometry" />
+        </mxCell>
+        <mxCell id="ll-agent" value="&lt;b&gt;AIRiskAssessmentAgent&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;size=50;fillColor=#DAE8FC;" vertex="1" parent="1">
+          <mxGeometry x="830" y="80" width="160" height="1894" as="geometry" />
+        </mxCell>
+        <mxCell id="ll-prov" value="&lt;b&gt;ClaudeProvider&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;the AIProvider instance&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;size=50;fillColor=#DAE8FC;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="80" width="160" height="1894" as="geometry" />
+        </mxCell>
+        <mxCell id="ll-llm" value="&lt;b&gt;Claude&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;claude_agent_sdk.query()&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;size=50;fillColor=#F5F5F5;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="80" width="160" height="1894" as="geometry" />
+        </mxCell>
+        <mxCell id="ll-files" value="&lt;b&gt;Files&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;output/{tool_folder}/ + input/&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;size=50;fillColor=#F5F5F5;" vertex="1" parent="1">
+          <mxGeometry x="1430" y="80" width="160" height="1894" as="geometry" />
+        </mxCell>
+        <mxCell id="m1-180" value="1. ClaudeProvider()" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1290" y="-180" />
-              <mxPoint x="1290" y="100" />
-            </Array>
+            <mxPoint x="110" y="180" as="sourcePoint" />
+            <mxPoint x="1110" y="180" as="targetPoint" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="m2-214" value="2. AIPreprocessor(ai_provider)   - match TOOL_PREPROCESSOR" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="110" y="214" as="sourcePoint" />
+            <mxPoint x="710" y="214" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m3-248" value="3. truncate TEMP_OUTPUT_FILE (temp_output_risk.txt)" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;fontSize=10;strokeColor=#6C8EBF;fontColor=#3A5A8C;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="710" y="248" as="sourcePoint" />
+            <mxPoint x="1510" y="248" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m4-282" value="4. TextChunkerPreprocessor(ai_provider)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="110" y="282" as="sourcePoint" />
+            <mxPoint x="510" y="282" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m5-316" value="5. PreprocessingPipeline(chunker, preprocessor)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="110" y="316" as="sourcePoint" />
+            <mxPoint x="310" y="316" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m6-350" value="6. Start()" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="110" y="350" as="sourcePoint" />
+            <mxPoint x="310" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m7-414" value="7. preprocess_file(TOOL_RELEASE_NOTES)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="414" as="sourcePoint" />
+            <mxPoint x="710" y="414" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m8-462" value="8. read INSTRUCTIONS_PATH + release notes" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;fontSize=10;strokeColor=#6C8EBF;fontColor=#3A5A8C;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="710" y="462" as="sourcePoint" />
+            <mxPoint x="1510" y="462" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s9" value="" style="html=1;endArrow=block;endFill=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="710" y="496" as="sourcePoint" />
+            <mxPoint x="710" y="512" as="targetPoint" />
+            <Array as="points"><mxPoint x="740" y="496" /><mxPoint x="740" y="512" /></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="st9" value="9. generate_input(): fill tool_name, vstart, vend" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="746" y="490" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="m10-546" value="10. generate_response(prompt)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="710" y="546" as="sourcePoint" />
+            <mxPoint x="1110" y="546" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s11" value="" style="html=1;endArrow=block;endFill=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1110" y="580" as="sourcePoint" />
+            <mxPoint x="1110" y="596" as="targetPoint" />
+            <Array as="points"><mxPoint x="1140" y="580" /><mxPoint x="1140" y="596" /></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="st11" value="11. save_question(prompt)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1146" y="574" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="m12-630" value="12. write transcript to CONTEXT_FILE" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;fontSize=10;strokeColor=#6C8EBF;fontColor=#3A5A8C;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1110" y="630" as="sourcePoint" />
+            <mxPoint x="1510" y="630" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m13-664" value="13. query(prompt), allowed_tools=[]" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1110" y="664" as="sourcePoint" />
+            <mxPoint x="1310" y="664" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m13-698" value="AssistantMessage text blocks" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1310" y="698" as="sourcePoint" />
+            <mxPoint x="1110" y="698" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s14" value="" style="html=1;endArrow=block;endFill=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1110" y="732" as="sourcePoint" />
+            <mxPoint x="1110" y="748" as="targetPoint" />
+            <Array as="points"><mxPoint x="1140" y="732" /><mxPoint x="1140" y="748" /></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="st14" value="14. save_response(text)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1146" y="726" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="m14-782" value="response: structured issues" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1110" y="782" as="sourcePoint" />
+            <mxPoint x="710" y="782" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m15-816" value="15. append to TEMP_OUTPUT_FILE" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;fontSize=10;strokeColor=#6C8EBF;fontColor=#3A5A8C;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="710" y="816" as="sourcePoint" />
+            <mxPoint x="1510" y="816" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fr-ai" value="AI preprocessing  (reused below)" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;fillColor=none;height=24;fontSize=11;width=230;" vertex="1" parent="1">
+          <mxGeometry x="620" y="428" width="970" height="402" as="geometry" />
+        </mxCell>
+        <mxCell id="m15-864" value="structured issues" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="710" y="864" as="sourcePoint" />
+            <mxPoint x="310" y="864" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sep-chunk" value="[else: USE_PREPROCESS_CHUNKING = y]" style="html=1;endArrow=none;dashed=1;dashPattern=8 4;fontSize=10;align=left;verticalAlign=top;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="200" y="886" as="sourcePoint" />
+            <mxPoint x="1600" y="886" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m16-930" value="16. copy TOOL_RELEASE_NOTES -&gt; TEMP_REL_NOTES, clear TEMP_CHUNK_FILE" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;fontSize=10;strokeColor=#6C8EBF;fontColor=#3A5A8C;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="930" as="sourcePoint" />
+            <mxPoint x="1510" y="930" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m17-994" value="17. preprocess_file(TEMP_REL_NOTES)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="994" as="sourcePoint" />
+            <mxPoint x="510" y="994" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m18-1028" value="18. read TEMP_REL_NOTES" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;fontSize=10;strokeColor=#6C8EBF;fontColor=#3A5A8C;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="1028" as="sourcePoint" />
+            <mxPoint x="1510" y="1028" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s19" value="" style="html=1;endArrow=block;endFill=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="1062" as="sourcePoint" />
+            <mxPoint x="510" y="1078" as="targetPoint" />
+            <Array as="points"><mxPoint x="540" y="1062" /><mxPoint x="540" y="1078" /></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="st19" value="19. _generate_chunk(): cut at CHUNK_DELIMITER / ~CHUNK_SIZE" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="546" y="1056" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="m20-1112" value="20. write chunk to TEMP_CHUNK_FILE" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;fontSize=10;strokeColor=#6C8EBF;fontColor=#3A5A8C;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="1112" as="sourcePoint" />
+            <mxPoint x="1510" y="1112" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m21-1146" value="21. _slice_input(): drop the chunk from TEMP_REL_NOTES" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;fontSize=10;strokeColor=#6C8EBF;fontColor=#3A5A8C;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="1146" as="sourcePoint" />
+            <mxPoint x="1510" y="1146" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m21-1180" value="chunk text" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="1180" as="sourcePoint" />
+            <mxPoint x="310" y="1180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m22-1214" value="22. preprocess_file(TEMP_CHUNK_FILE)   -&gt; AI preprocessing as above" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="1214" as="sourcePoint" />
+            <mxPoint x="710" y="1214" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m22-1248" value="issues of this chunk, added to structured_issues" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="710" y="1248" as="sourcePoint" />
+            <mxPoint x="310" y="1248" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m23-1282" value="23. End()" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="1282" as="sourcePoint" />
+            <mxPoint x="510" y="1282" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m23-1316" value="True once the rest fits in one chunk" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="1316" as="sourcePoint" />
+            <mxPoint x="310" y="1316" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fr-loop" value="loop  [until End()]" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;fillColor=none;height=24;fontSize=11;width=150;" vertex="1" parent="1">
+          <mxGeometry x="220" y="944" width="1360" height="388" as="geometry" />
+        </mxCell>
+        <mxCell id="fr-alt" value="alt  [USE_PREPROCESS_CHUNKING = n]" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;fillColor=none;height=24;fontSize=11;width=270;" vertex="1" parent="1">
+          <mxGeometry x="200" y="370" width="1400" height="976" as="geometry" />
+        </mxCell>
+        <mxCell id="m23-1380" value="Start() returns" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="1380" as="sourcePoint" />
+            <mxPoint x="110" y="1380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m24-1414" value="24. read TEMP_OUTPUT_FILE -&gt; structured_issues" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;fontSize=10;strokeColor=#6C8EBF;fontColor=#3A5A8C;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="110" y="1414" as="sourcePoint" />
+            <mxPoint x="1510" y="1414" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s25" value="" style="html=1;endArrow=block;endFill=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="110" y="1448" as="sourcePoint" />
+            <mxPoint x="110" y="1464" as="targetPoint" />
+            <Array as="points"><mxPoint x="140" y="1448" /><mxPoint x="140" y="1464" /></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="st25" value="25. AskUser(&quot;Proceed with AI risk assessment&quot;, PROCEED_WITH_AI_RISK_ASSESSMENT)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="146" y="1442" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="m26-1528" value="26. AIRiskAssessmentAgent(ai_provider)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="110" y="1528" as="sourcePoint" />
+            <mxPoint x="910" y="1528" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m27-1562" value="27. process_issues(structured_issues)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="110" y="1562" as="sourcePoint" />
+            <mxPoint x="910" y="1562" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m28-1596" value="28. truncate RISK_ASSESSMENT_OUTPUT_FILE (final_risk_report.txt)" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;fontSize=10;strokeColor=#6C8EBF;fontColor=#3A5A8C;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="910" y="1596" as="sourcePoint" />
+            <mxPoint x="1510" y="1596" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s29" value="" style="html=1;endArrow=block;endFill=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="910" y="1660" as="sourcePoint" />
+            <mxPoint x="910" y="1676" as="targetPoint" />
+            <Array as="points"><mxPoint x="940" y="1660" /><mxPoint x="940" y="1676" /></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="st29" value="29. _get_up_to_nth(): next MAX_COUNT_OF_ISSUES_... issues, split at ISSUE_END_MARKER" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="946" y="1654" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="m30-1710" value="30. _generate_input(): read RISK_INSTRUCTIONS_PATH + REF_PATH" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;fontSize=10;strokeColor=#6C8EBF;fontColor=#3A5A8C;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="910" y="1710" as="sourcePoint" />
+            <mxPoint x="1510" y="1710" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m31-1744" value="31. generate_response(prompt)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="910" y="1744" as="sourcePoint" />
+            <mxPoint x="1110" y="1744" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m32-1778" value="32. query(prompt)   - transcript and context as above" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1110" y="1778" as="sourcePoint" />
+            <mxPoint x="1310" y="1778" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m32-1812" value="text blocks" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1310" y="1812" as="sourcePoint" />
+            <mxPoint x="1110" y="1812" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m32-1846" value="risk assessment of these issues" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1110" y="1846" as="sourcePoint" />
+            <mxPoint x="910" y="1846" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m33-1880" value="33. append to RISK_ASSESSMENT_OUTPUT_FILE" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;fontSize=10;strokeColor=#6C8EBF;fontColor=#3A5A8C;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="910" y="1880" as="sourcePoint" />
+            <mxPoint x="1510" y="1880" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fr-risk" value="loop  [until all issues sent]" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;fillColor=none;height=24;fontSize=11;width=200;" vertex="1" parent="1">
+          <mxGeometry x="820" y="1610" width="760" height="286" as="geometry" />
+        </mxCell>
+        <mxCell id="m33-1930" value="done" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="910" y="1930" as="sourcePoint" />
+            <mxPoint x="110" y="1930" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fr-opt" value="opt  [answer = y]" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;fillColor=none;height=24;fontSize=11;width=150;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1484" width="1580" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="n3a" value="TOOL_PREPROCESSOR picks the class on the AIPreprocessor lifeline:&lt;br&gt;- AI: AIPreprocessor, as drawn&lt;br&gt;- IAR_EmbeddedWorkbench: IAREWPreprocessor - no AI call,&lt;br&gt;   parse_txt_to_csv() writes TEMP_OUTPUT_FILE&lt;br&gt;- Reload_Existing: ReloadExistingPreprocessor - no AI call,&lt;br&gt;   returns the TEMP_OUTPUT_FILE of an earlier run" style="shape=note;whiteSpace=wrap;html=1;size=14;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="280" width="440" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="n3b" value="main reads TEMP_OUTPUT_FILE itself instead of using&lt;br&gt;PreprocessingPipeline.getIssues(); in chunk mode the&lt;br&gt;AI preprocessor appends each chunk's result to it." style="shape=note;whiteSpace=wrap;html=1;size=14;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="420" width="440" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="n3c" value="Result: final_risk_report.txt&lt;br&gt;  -&gt; reviewed in the UI (IssueReviewUI.drawio)&lt;br&gt;  -&gt; imported into Polarion (PolarionAssistant.drawio)" style="shape=note;whiteSpace=wrap;html=1;size=14;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="1894" width="440" height="70" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
