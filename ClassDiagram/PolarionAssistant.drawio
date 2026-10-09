@@ -1,0 +1,415 @@
+<mxfile host="Electron" agent="Claude Code" version="22.0.3" type="device">
+  <diagram name="PolarionAssistant" id="PolarionAssistantPage1">
+    <mxGraphModel dx="1379" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t3" value="PolarionAssistant - documents and issues in Polarion" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="16" width="700" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t3s" value="Every worker shares one module-level PolarionConnector and exits the process when it cannot connect." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="30" y="42" width="1000" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="conn" value="&lt;b&gt;PolarionConnector&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Core/PolarionConnector.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=42;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="80" width="360" height="182" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-a0" value="client" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="conn">
+          <mxGeometry y="42" width="360" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-a1" value="polarion_username: str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="conn">
+          <mxGeometry y="64" width="360" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-div" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="conn">
+          <mxGeometry y="86" width="360" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-o0" value="+ connect(): client | None" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="conn">
+          <mxGeometry y="94" width="360" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-o1" value="+ get_current_user_info(): (full_name, email)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="conn">
+          <mxGeometry y="116" width="360" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-o2" value="+ is_connected(): bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="conn">
+          <mxGeometry y="138" width="360" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-o3" value="+ disconnect()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="conn">
+          <mxGeometry y="160" width="360" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="work" value="&amp;laquo;abstract&amp;raquo;&lt;br&gt;&lt;b&gt;PolarionWorker&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Core/PolarionWorker.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="430" y="80" width="400" height="198" as="geometry" />
+        </mxCell>
+        <mxCell id="work-a0" value="- _connector: PolarionConnector   shared" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="work">
+          <mxGeometry y="58" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="work-a1" value="- _client" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="work">
+          <mxGeometry y="80" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="work-div" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="work">
+          <mxGeometry y="102" width="400" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="work-o0" value="+ PrintDocDetails()  {abstract}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="work">
+          <mxGeometry y="110" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="work-o1" value="+ getTemplate(proj_id, template_path)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="work">
+          <mxGeometry y="132" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="work-o2" value="- _ModifyItems(items, placeholder, substitute)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="work">
+          <mxGeometry y="154" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="work-o3" value="- _moveChildren(document, workitem, target_parent)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="work">
+          <mxGeometry y="176" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="item" value="&lt;b&gt;ItemUtil&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Core/ItemUtil.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=42;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="870" y="80" width="370" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="item-o0" value="+ find_heading_item_by_name(document, heading_name)  {static}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="item">
+          <mxGeometry y="42" width="370" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="fact" value="&lt;b&gt;IssueDAOFactory&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Core/IssueDAOFactory.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses valid_report_config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#FFE6CC;strokeColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="870" y="180" width="370" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="fact-o0" value="+ create(connector, issueDTO): work item  {static}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="fact">
+          <mxGeometry y="58" width="370" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pars" value="&lt;b&gt;IssueParser&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Core/IssueParser.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses valid_report_config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#FFE6CC;strokeColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="80" width="380" height="242" as="geometry" />
+        </mxCell>
+        <mxCell id="pars-a0" value="file_path" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="pars">
+          <mxGeometry y="58" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pars-a1" value="issues: list[IssueDTO]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="pars">
+          <mxGeometry y="80" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pars-a2" value="issues_as_string: str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="pars">
+          <mxGeometry y="102" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pars-div" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="pars">
+          <mxGeometry y="124" width="380" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="pars-o0" value="+ read_file()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="pars">
+          <mxGeometry y="132" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pars-o1" value="+ preprocess_initial_string_issues()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="pars">
+          <mxGeometry y="154" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pars-o2" value="+ parse_markdown_to_dto(raw_text): list[IssueDTO]  {static}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="pars">
+          <mxGeometry y="176" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pars-o3" value="- _fix_status(issue)  {static}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="pars">
+          <mxGeometry y="198" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pars-o4" value="- _fix_source(issue)  {static}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="pars">
+          <mxGeometry y="220" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="lts" value="TestSpec" style="swimlane;html=1;startSize=30;horizontal=1;whiteSpace=wrap;fillColor=none;dashed=1;dashPattern=6 6;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="350" width="1080" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="lvr" value="ValidReport" style="swimlane;html=1;startSize=30;horizontal=1;whiteSpace=wrap;fillColor=none;dashed=1;dashPattern=6 6;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="350" width="550" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="tsb" value="&lt;b&gt;TestSpecBuilder&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;TestSpec/TestSpecBuilder.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses testspec_config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="30" y="390" width="250" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="tsb-o0" value="+ createFinalDoc()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsb">
+          <mxGeometry y="58" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tsb-o1" value="- _createDoc()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsb">
+          <mxGeometry y="80" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tsb-o2" value="- _changeDocToolName(spec)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsb">
+          <mxGeometry y="102" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tsb-o3" value="- _ChangeDocStatus(items)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsb">
+          <mxGeometry y="124" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tsb-o4" value="- _ChangeItems(items)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsb">
+          <mxGeometry y="146" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tsb-o5" value="- _MoveDummyTestCases(doc)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsb">
+          <mxGeometry y="168" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tsd" value="&lt;b&gt;TestSpecDebugger&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;TestSpec/TestSpecDebugger.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses testspec_config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="300" y="390" width="250" height="124" as="geometry" />
+        </mxCell>
+        <mxCell id="tsd-o0" value="+ PrintDocDetails()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsd">
+          <mxGeometry y="58" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tsd-o1" value="- _PrintDocStatus(items)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsd">
+          <mxGeometry y="80" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tsd-o2" value="- _PrintItems(items)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsd">
+          <mxGeometry y="102" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tcb" value="&lt;b&gt;TestCaseBuilder&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;TestSpec/TestCaseBuilder.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses testspec_config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="570" y="390" width="250" height="146" as="geometry" />
+        </mxCell>
+        <mxCell id="tcb-o0" value="+ MoveTestCases()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tcb">
+          <mxGeometry y="58" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tcb-o1" value="- _ModifyATestCase(tc, req_desc)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tcb">
+          <mxGeometry y="80" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tcb-o2" value="- _CreateDescription(desc)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tcb">
+          <mxGeometry y="102" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tcb-o3" value="- _CreateTestAction(desc)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tcb">
+          <mxGeometry y="124" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tcd" value="&lt;b&gt;TestCaseDebugger&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;TestSpec/TestCaseDebugger.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses testspec_config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="840" y="390" width="250" height="146" as="geometry" />
+        </mxCell>
+        <mxCell id="tcd-o0" value="+ PrintDocDetails()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tcd">
+          <mxGeometry y="58" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tcd-o1" value="- _ReadATestCase(tc, req_desc)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tcd">
+          <mxGeometry y="80" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tcd-o2" value="- _CreateDescription(desc)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tcd">
+          <mxGeometry y="102" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tcd-o3" value="- _CreateTestAction(desc)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tcd">
+          <mxGeometry y="124" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="vrb" value="&lt;b&gt;ValidReportBuilder&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;ValidReport/ValidReportBuilder.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses valid_report_config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#FFE6CC;strokeColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="390" width="250" height="168" as="geometry" />
+        </mxCell>
+        <mxCell id="vrb-o0" value="+ createFinalDoc()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="vrb">
+          <mxGeometry y="58" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="vrb-o1" value="- _createDoc()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="vrb">
+          <mxGeometry y="80" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="vrb-o2" value="- _changeDocToolName(report)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="vrb">
+          <mxGeometry y="102" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="vrb-o3" value="- _ChangeDocStatus(items)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="vrb">
+          <mxGeometry y="124" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="vrb-o4" value="- _ChangeItems(items)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="vrb">
+          <mxGeometry y="146" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="imp" value="&lt;b&gt;PolarionIssueImporter&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;ValidReport/PolarionIssueImporter.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses valid_report_config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#FFE6CC;strokeColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="1390" y="390" width="250" height="102" as="geometry" />
+        </mxCell>
+        <mxCell id="imp-o0" value="+ GetDocItems(): (doc, heading, name, email)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="imp">
+          <mxGeometry y="58" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="imp-o1" value="+ ImportIssuesInPolarion()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="imp">
+          <mxGeometry y="80" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="wi0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.08;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="tsb" target="work">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wi1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="tsd" target="work">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wi2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.42;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="tcb" target="work">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wi3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.58;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="tcd" target="work">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wi4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="vrb" target="work">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wi5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.92;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="imp" target="work">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wc" value="_connector" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endFill=0;strokeWidth=1;fontSize=10;exitX=0;exitY=0.3;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="work" target="conn">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ip" value="read_file()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endFill=0;strokeWidth=1;fontSize=10;exitX=0.8;exitY=0;exitDx=0;exitDy=0;entryX=0.6;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="imp" target="pars">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="if" value="create() on 11 threads" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1;fontSize=10;exitX=0.2;exitY=0;exitDx=0;exitDy=0;entryX=0.8;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="imp" target="fact">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tsm" value="&amp;laquo;script&amp;raquo;&lt;br&gt;&lt;b&gt;test_spec_main&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;PolarionAssistant/test_spec_main.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses testspec_config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=74;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="30" y="660" width="520" height="162" as="geometry" />
+        </mxCell>
+        <mxCell id="tsm-o0" value="CREATE_TEST_SPEC=y, DEBUG=n  -&gt;  TestSpecBuilder.createFinalDoc()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsm">
+          <mxGeometry y="74" width="520" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tsm-o1" value="CREATE_TEST_SPEC=y, DEBUG=y  -&gt;  TestSpecDebugger.PrintDocDetails()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsm">
+          <mxGeometry y="96" width="520" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tsm-o2" value="DEBUG=n  -&gt;  TestCaseBuilder.MoveTestCases()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsm">
+          <mxGeometry y="118" width="520" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tsm-o3" value="DEBUG=y  -&gt;  TestCaseDebugger.PrintDocDetails()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsm">
+          <mxGeometry y="140" width="520" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tsc" value="&amp;laquo;module&amp;raquo;&lt;br&gt;&lt;b&gt;testspec_config&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;TestSpec/testspec_config.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="580" y="660" width="400" height="168" as="geometry" />
+        </mxCell>
+        <mxCell id="tsc-a0" value="PROJECT_ID, TOOL_NAME, CREATE_TEST_SPEC, DEBUG" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsc">
+          <mxGeometry y="58" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tsc-a1" value="TEST_SPEC_TEMPLATE, PLAN_DOCU, TEST_DOCU" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsc">
+          <mxGeometry y="80" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tsc-a2" value="TARGET_LOCATION / TARGET_NAME_ID / TARGET_TITLE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsc">
+          <mxGeometry y="102" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tsc-a3" value="PLACEHOLDER, PLACEHOLDER_DOCSTATUS, LINK_ROLE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsc">
+          <mxGeometry y="124" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tsc-a4" value="DOC_INPUT_HEADING, VALI_PLAN_EXCLUDED_HEADINGS" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="tsc">
+          <mxGeometry y="146" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="vrm" value="&amp;laquo;script&amp;raquo;&lt;br&gt;&lt;b&gt;valid_report_main&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;PolarionAssistant/valid_report_main.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses valid_report_config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=74;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#FFE6CC;strokeColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="660" width="520" height="118" as="geometry" />
+        </mxCell>
+        <mxCell id="vrm-o0" value="BUILD_VALID_REPORT=y  -&gt;  ValidReportBuilder.createFinalDoc()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="vrm">
+          <mxGeometry y="74" width="520" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="vrm-o1" value="always  -&gt;  PolarionIssueImporter.ImportIssuesInPolarion()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="vrm">
+          <mxGeometry y="96" width="520" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="vrc" value="&amp;laquo;module&amp;raquo;&lt;br&gt;&lt;b&gt;valid_report_config&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;ValidReport/valid_report_config.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#FFE6CC;strokeColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="800" width="520" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="vrc-a0" value="PROJECT_ID, TOOL_NAME, BUILD_VALID_REPORT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="vrc">
+          <mxGeometry y="58" width="520" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="vrc-a1" value="VALID_REPORT_TEMPLATE, TARGET_LOCATION / _NAME_ID / _TITLE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="vrc">
+          <mxGeometry y="80" width="520" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="vrc-a2" value="PLACEHOLDER, PLACEHOLDER_DOCSTATUS, LINK_ROLE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="vrc">
+          <mxGeometry y="102" width="520" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="vrc-a3" value="DOC_NAME, DOC_INPUT_HEADING" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="vrc">
+          <mxGeometry y="124" width="520" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="vrc-a4" value="ISSUE_INPUT_FILE = final_risk_report.txt" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="vrc">
+          <mxGeometry y="146" width="520" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="vrc-a5" value="ISSUE_MARKER_BEG / _END, ISSUE_END_MARKER" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="vrc">
+          <mxGeometry y="168" width="520" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="dto" value="&amp;laquo;dataclass&amp;raquo;&lt;br&gt;&lt;b&gt;IssueDTO&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Model/IssueDTO.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="1700" y="80" width="320" height="242" as="geometry" />
+        </mxCell>
+        <mxCell id="dto-a0" value="author_name / author_email" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="dto">
+          <mxGeometry y="58" width="320" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="dto-a1" value="polarion_username" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="dto">
+          <mxGeometry y="80" width="320" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="dto-a2" value="title / description" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="dto">
+          <mxGeometry y="102" width="320" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="dto-a3" value="defect_id / defect_description" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="dto">
+          <mxGeometry y="124" width="320" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="dto-a4" value="risk_assessment" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="dto">
+          <mxGeometry y="146" width="320" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="dto-a5" value="source: str = SourceDTO.KNOWN_PROBLEM_BY_VENDOR" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="dto">
+          <mxGeometry y="168" width="320" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="dto-a6" value="status: str = StatusDTO.NOT_EVALUATED" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="dto">
+          <mxGeometry y="190" width="320" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="dto-div" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="dto">
+          <mxGeometry y="212" width="320" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="dto-o0" value="+ __str__(): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="dto">
+          <mxGeometry y="220" width="320" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="sdto" value="&amp;laquo;StrEnum&amp;raquo;&lt;br&gt;&lt;b&gt;StatusDTO&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Model/IssueDTO.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="1700" y="380" width="220" height="124" as="geometry" />
+        </mxCell>
+        <mxCell id="sdto-a0" value="RISK" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="sdto">
+          <mxGeometry y="58" width="220" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="sdto-a1" value="NO_RISK" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="sdto">
+          <mxGeometry y="80" width="220" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="sdto-a2" value="NOT_EVALUATED" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="sdto">
+          <mxGeometry y="102" width="220" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ist" value="&amp;laquo;StrEnum&amp;raquo;&lt;br&gt;&lt;b&gt;IssueStatus&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Model/DAO/IssueFields.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="1960" y="380" width="260" height="124" as="geometry" />
+        </mxCell>
+        <mxCell id="ist-a0" value="RISK = &quot;risk_exists&quot;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="ist">
+          <mxGeometry y="58" width="260" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ist-a1" value="NO_RISK = &quot;no_risk&quot;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="ist">
+          <mxGeometry y="80" width="260" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ist-a2" value="NOT_EVALUATED = &quot;not_evaluated&quot;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="ist">
+          <mxGeometry y="102" width="260" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="srdto" value="&amp;laquo;StrEnum&amp;raquo;&lt;br&gt;&lt;b&gt;SourceDTO&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Model/IssueDTO.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="1700" y="540" width="220" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="srdto-a0" value="KNOWN_PROBLEM_BY_VENDOR" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="srdto">
+          <mxGeometry y="58" width="220" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="srdto-a1" value="KNOWN_PROBLEM_3RD_PARTY" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="srdto">
+          <mxGeometry y="80" width="220" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="srdto-a2" value="CORRECTION_IN_REL_NOTES" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="srdto">
+          <mxGeometry y="102" width="220" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="srdto-a3" value="KNOWN_PROBLEM_IN_NEWER_VERS" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="srdto">
+          <mxGeometry y="124" width="220" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="srdto-a4" value="OCCURED_AT_OTTOBOCK" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="srdto">
+          <mxGeometry y="146" width="220" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="srdto-a5" value="OTHER_SOURCE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="srdto">
+          <mxGeometry y="168" width="220" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="isr" value="&amp;laquo;StrEnum&amp;raquo;&lt;br&gt;&lt;b&gt;IssueSource&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Model/DAO/IssueFields.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="1960" y="540" width="260" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="isr-a0" value="&quot;knownBug&quot;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="isr">
+          <mxGeometry y="58" width="260" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="isr-a1" value="&quot;3rdPartyBug&quot;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="isr">
+          <mxGeometry y="80" width="260" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="isr-a2" value="&quot;fixedInNewerVersion&quot;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="isr">
+          <mxGeometry y="102" width="260" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="isr-a3" value="&quot;knownBugNewerVersion&quot;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="isr">
+          <mxGeometry y="124" width="260" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="isr-a4" value="&quot;ottobock&quot;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="isr">
+          <mxGeometry y="146" width="260" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="isr-a5" value="&quot;otherSource&quot;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="isr">
+          <mxGeometry y="168" width="260" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pd" value="produces" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endFill=0;strokeWidth=1;fontSize=10;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="pars" target="dto">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ms" value="_fix_status" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sdto" target="ist">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="mr" value="_fix_source" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endFill=0;dashed=1;strokeWidth=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="srdto" target="isr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="n3" value="The DTO enums hold the names the AI writes in the report;&lt;br&gt;IssueParser maps them by member name to the Polarion enum ids.&lt;br&gt;Free-text status (&quot;Risk exists&quot; / &quot;No risk&quot;) is matched by regex,&lt;br&gt;anything else becomes not_evaluated." style="shape=note;whiteSpace=wrap;html=1;size=14;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1700" y="790" width="520" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3" value="Config used by a class - header colour" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="870" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3-c0" value="" style="rounded=0;html=1;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="30" y="896" width="24" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3-t0" value="testspec_config  (PolarionAssistant/TestSpec)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="62" y="894" width="380" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3-c1" value="" style="rounded=0;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;" vertex="1" parent="1">
+          <mxGeometry x="30" y="920" width="24" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3-t1" value="valid_report_config  (PolarionAssistant/ValidReport)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="62" y="918" width="380" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
