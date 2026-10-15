@@ -182,10 +182,6 @@ def ui_config_source() -> PyModuleConfigSource:
             ConfigField("FONT", "Font", section="Appearance"),
             ConfigField("FONT_SIZE", "Font size", kind=FieldKind.INT,
                         section="Appearance"),
-            ConfigField("PADX", "Horizontal padding", kind=FieldKind.INT,
-                        section="Appearance"),
-            ConfigField("PADY", "Vertical padding", kind=FieldKind.INT,
-                        section="Appearance"),
         ],
         section_default="Labels and tokens",
     )
