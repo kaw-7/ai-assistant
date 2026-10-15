@@ -82,6 +82,11 @@ class _FieldEditor:
                                   values=list(field.choices), state="readonly")
             widget.grid(row=0, column=0, sticky="ew")
             widget.bind("<<ComboboxSelected>>", lambda _e: self._commit())
+            # the wheel must scroll the form, never change the selected value:
+            # drop the class binding so the event reaches the scrollable frame
+            widget.unbind_class("TCombobox", "<MouseWheel>")
+            widget.unbind_class("TCombobox", "<Button-4>")
+            widget.unbind_class("TCombobox", "<Button-5>")
             return widget
 
         if field.kind is FieldKind.MULTILINE:
@@ -97,6 +102,8 @@ class _FieldEditor:
         widget.grid(row=0, column=0, sticky="ew")
         widget.bind("<FocusOut>", lambda _e: self._commit())
         widget.bind("<Return>", lambda _e: self._commit())
+        # long values (document names, paths) may not fit - show them whole
+        Tooltip(widget, self._full_value_hint)
 
         if field.kind in (FieldKind.FILE, FieldKind.DIR):
             ttk.Button(holder, text="...", width=3,
@@ -117,6 +124,14 @@ class _FieldEditor:
     def _on_override_toggled(self) -> None:
         self._apply_enabled_state()
         self._commit()
+
+    def _full_value_hint(self) -> str:
+        """The value as tooltip text, but only when the entry cuts it off."""
+        # the entry knows best which part of its text it shows
+        first, last = self.widget.xview()
+        if first <= 0.0 and last >= 1.0:
+            return ""
+        return self.var.get()
 
     def _commit(self) -> None:
         if callable(self.on_commit):
@@ -259,10 +274,11 @@ class ConfigPanel(ttk.Frame):
         for section_name, fields in sections.items():
             grid = ttk.LabelFrame(box, text=section_name)
             grid.pack(fill="x", expand=False, padx=cfg.PADX, pady=cfg.PADY)
-            # fixed widths keep the sections aligned, the hints take the rest
+            # fixed widths keep the labels of all sections aligned
             grid.columnconfigure(0, weight=0, minsize=cfg.CHECK_WIDTH)
-            grid.columnconfigure(2, weight=0, minsize=cfg.FIELD_WIDTH)
-            grid.columnconfigure(3, weight=1)
+            # the value widgets take the spare width so long values stay readable
+            grid.columnconfigure(2, weight=1, minsize=cfg.FIELD_WIDTH)
+            grid.columnconfigure(3, weight=0)
             for row, field in enumerate(fields):
                 editor = _FieldEditor(grid, field, row, self._on_editor_commit)
                 self._editors.append((source, editor))

@@ -55,7 +55,11 @@ class ScrollableFrame(ttk.Frame):
 
 
 class Tooltip:
-    """Yellow hint box shown while the mouse rests on a widget."""
+    """Yellow hint box shown while the mouse rests on a widget.
+
+    ``text`` may be a callable, evaluated each time the box is about to show;
+    an empty result shows nothing.
+    """
 
     DELAY_MS = 450
 
@@ -78,14 +82,15 @@ class Tooltip:
             self._after_id = None
 
     def _show(self):
-        if self._window is not None or not self.text:
+        text = self.text() if callable(self.text) else self.text
+        if self._window is not None or not text:
             return
         x = self.widget.winfo_rootx() + 20
         y = self.widget.winfo_rooty() + self.widget.winfo_height() + 4
         self._window = tk.Toplevel(self.widget)
         self._window.wm_overrideredirect(True)
         self._window.wm_geometry(f"+{x}+{y}")
-        tk.Label(self._window, text=self.text, justify="left",
+        tk.Label(self._window, text=text, justify="left",
                  background="#ffffe0", relief="solid", borderwidth=1,
                  font=(cfg.FONT, cfg.FONT_SIZE - 1)).pack(ipadx=4, ipady=2)
 
