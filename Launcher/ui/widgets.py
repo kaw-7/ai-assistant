@@ -5,22 +5,25 @@ from __future__ import annotations
 import tkinter as tk
 from tkinter import ttk
 
+import UI.theme as theme
+
 from . import launcher_config as cfg
 
 
 class ScrollableFrame(ttk.Frame):
     """A frame with a vertical scrollbar; put the content into ``.inner``."""
 
-    def __init__(self, master, **kwargs):
+    def __init__(self, master, on_scroll=None, **kwargs):
         super().__init__(master, **kwargs)
-        self.canvas = tk.Canvas(self, highlightthickness=0)
+        self.on_scroll = on_scroll
+        self.canvas = tk.Canvas(self, highlightthickness=0, background=theme.GROUND)
         self.scrollbar = ttk.Scrollbar(self, orient="vertical",
                                        command=self.canvas.yview)
         self.inner = ttk.Frame(self.canvas)
 
         self._window = self.canvas.create_window((0, 0), window=self.inner,
                                                  anchor="nw")
-        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+        self.canvas.configure(yscrollcommand=self._on_yscroll)
 
         self.canvas.pack(side="left", fill="both", expand=True)
         self.scrollbar.pack(side="right", fill="y")
@@ -29,6 +32,23 @@ class ScrollableFrame(ttk.Frame):
         self.canvas.bind("<Configure>", self._on_canvas_configure)
         self.bind("<Enter>", lambda _e: self._bind_wheel())
         self.bind("<Leave>", lambda _e: self._unbind_wheel())
+
+    def _on_yscroll(self, first, last):
+        self.scrollbar.set(first, last)
+        if callable(self.on_scroll):
+            self.on_scroll()
+
+    def scroll_to(self, widget) -> None:
+        """Scroll so that ``widget`` (inside ``.inner``) is at the top."""
+        self.update_idletasks()
+        total = self.inner.winfo_height()
+        if total > 0:
+            y = widget.winfo_rooty() - self.inner.winfo_rooty()
+            self.canvas.yview_moveto(max(0.0, (y - 8) / total))
+
+    def visible_top(self) -> int:
+        """Y of the first visible pixel, in the coordinates of ``.inner``."""
+        return int(self.canvas.canvasy(0))
 
     def _on_inner_configure(self, _event=None):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
@@ -55,7 +75,7 @@ class ScrollableFrame(ttk.Frame):
 
 
 class Tooltip:
-    """Yellow hint box shown while the mouse rests on a widget.
+    """Hint box shown while the mouse rests on a widget.
 
     ``text`` may be a callable, evaluated each time the box is about to show;
     an empty result shows nothing.
@@ -90,9 +110,9 @@ class Tooltip:
         self._window = tk.Toplevel(self.widget)
         self._window.wm_overrideredirect(True)
         self._window.wm_geometry(f"+{x}+{y}")
-        tk.Label(self._window, text=text, justify="left",
-                 background="#ffffe0", relief="solid", borderwidth=1,
-                 font=(cfg.FONT, cfg.FONT_SIZE - 1)).pack(ipadx=4, ipady=2)
+        tk.Label(self._window, text=text, justify="left", wraplength=640,
+                 background=theme.DARK, foreground="#FFFFFF", relief="flat",
+                 borderwidth=0, font=(cfg.FONT, cfg.FONT_SIZE - 1)).pack(ipadx=8, ipady=4)
 
     def _hide(self, _event=None):
         self._cancel()
@@ -108,26 +128,58 @@ class ConsolePane(ttk.Frame):
     TAG_OK = "ok"
     TAG_ERROR = "error"
 
-    def __init__(self, master, **kwargs):
+    # state shown in the pill of the title bar: dot colour per state
+    STATE_IDLE = "idle"
+    STATE_RUNNING = "running"
+    STATE_OK = "ok"
+    STATE_ERROR = "error"
+    _STATE_DOTS = {
+        STATE_IDLE: cfg.COLOR_SIDEBAR_MUTED,
+        STATE_RUNNING: cfg.COLOR_CONSOLE_INFO,
+        STATE_OK: cfg.COLOR_CONSOLE_OK,
+        STATE_ERROR: cfg.COLOR_CONSOLE_ERROR,
+    }
+
+    def __init__(self, master, fonts: theme.Fonts, **kwargs):
         super().__init__(master, **kwargs)
+        bar_bg = cfg.COLOR_CONSOLE_BAR
 
-        toolbar = ttk.Frame(self)
+        toolbar = tk.Frame(self, background=bar_bg, padx=theme.SPACE_L, pady=6)
         toolbar.pack(fill="x")
-        ttk.Label(toolbar, text="Output").pack(side="left", padx=cfg.PADX)
-        self.autoscroll = tk.BooleanVar(value=True)
-        ttk.Checkbutton(toolbar, text="Auto scroll",
-                        variable=self.autoscroll).pack(side="right", padx=cfg.PADX)
-        ttk.Button(toolbar, text="Clear",
-                   command=self.clear).pack(side="right", padx=cfg.PADX)
+        tk.Label(toolbar, text="Output", background=bar_bg,
+                 foreground=cfg.COLOR_SIDEBAR_TEXT, font=fonts.body_bold).pack(side="left")
+        pill = tk.Frame(toolbar, background=cfg.COLOR_SIDEBAR_SELECTED, padx=8, pady=1)
+        pill.pack(side="left", padx=(theme.SPACE_M, 0))
+        self._state_dot = tk.Label(pill, text="●", background=cfg.COLOR_SIDEBAR_SELECTED,
+                                   font=fonts.small)
+        self._state_dot.pack(side="left")
+        self._state_text = tk.Label(pill, background=cfg.COLOR_SIDEBAR_SELECTED,
+                                    foreground=cfg.COLOR_SIDEBAR_TEXT, font=fonts.small)
+        self._state_text.pack(side="left", padx=(4, 0))
+        self._message = tk.Label(toolbar, background=bar_bg,
+                                 foreground=cfg.COLOR_SIDEBAR_MUTED, font=fonts.small)
+        self._message.pack(side="left", padx=(theme.SPACE_M, 0))
 
+        ttk.Button(toolbar, text="Clear", style="Dark.TButton",
+                   command=self.clear).pack(side="right")
+        self.autoscroll = tk.BooleanVar(value=True)
+        ttk.Checkbutton(toolbar, text="Auto scroll", style="Dark.TCheckbutton",
+                        variable=self.autoscroll).pack(side="right", padx=theme.SPACE_M)
+
+        body = tk.Frame(self, background=cfg.COLOR_CONSOLE_BG)
+        body.pack(fill="both", expand=True)
         self.text = tk.Text(
-            self, height=cfg.CONSOLE_HEIGHT, wrap="none",
+            body, height=cfg.CONSOLE_HEIGHT, wrap="none",
             background=cfg.COLOR_CONSOLE_BG, foreground=cfg.COLOR_CONSOLE_FG,
-            insertbackground=cfg.COLOR_CONSOLE_FG,
-            font=(cfg.MONO_FONT, cfg.MONO_FONT_SIZE), state="disabled",
+            insertbackground=cfg.COLOR_CONSOLE_FG, relief="flat", borderwidth=0,
+            highlightthickness=0, padx=theme.SPACE_L, pady=theme.SPACE_S, spacing1=1,
+            selectbackground=cfg.COLOR_SIDEBAR_LINE, inactiveselectbackground=cfg.COLOR_SIDEBAR_LINE,
+            font=fonts.mono, state="disabled",
         )
-        y_scroll = ttk.Scrollbar(self, orient="vertical", command=self.text.yview)
-        x_scroll = ttk.Scrollbar(self, orient="horizontal", command=self.text.xview)
+        y_scroll = ttk.Scrollbar(body, orient="vertical", command=self.text.yview,
+                                 style="Dark.Vertical.TScrollbar")
+        x_scroll = ttk.Scrollbar(body, orient="horizontal", command=self.text.xview,
+                                 style="Dark.Horizontal.TScrollbar")
         self.text.configure(yscrollcommand=y_scroll.set, xscrollcommand=x_scroll.set)
 
         self.text.tag_configure(self.TAG_INFO, foreground=cfg.COLOR_CONSOLE_INFO)
@@ -139,6 +191,16 @@ class ConsolePane(ttk.Frame):
         self.text.pack(side="left", fill="both", expand=True)
 
         self._pending_return = False
+        self.set_state(self.STATE_IDLE, cfg.STATE_IDLE)
+
+    # --- title bar ----------------------------------------------------------
+    def set_state(self, state: str, text: str) -> None:
+        self._state_dot.configure(foreground=self._STATE_DOTS.get(state, cfg.COLOR_SIDEBAR_MUTED))
+        self._state_text.configure(text=text)
+
+    def set_message(self, text: str) -> None:
+        """Short note next to the state - "Settings saved" and the like."""
+        self._message.configure(text=text)
 
     # --- content ------------------------------------------------------------
     def append(self, chunk: str, tag: str | None = None) -> None:

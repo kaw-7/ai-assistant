@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """Right pane of the issue viewer: the selected issue, read or edited.
 
-Read mode shows the texts as plain, selectable text.  Edit mode makes the
-defect description, the risk assessment and the status changeable; every
+Read mode shows the texts as plain, selectable text.  Edit mode - switched
+for the whole viewer by the App, see ``set_editing`` - makes the defect
+description, the risk assessment and the status changeable; every
 change is written into the issue dictionary straight away and reported
 through ``on_change``.  Nothing here reacts to the mouse wheel except the
 text boxes, which scroll.
@@ -91,17 +92,17 @@ class IssueDetail(tk.Frame):
         header = tk.Frame(self.body, background=theme.GROUND)
         header.pack(fill="x")
 
-        # first line: IDs and type on the left, navigation and Edit on the right
+        # first line: IDs and type on the left, edit mode and navigation on the right
         top = tk.Frame(header, background=theme.GROUND)
         top.pack(fill="x", pady=(0, theme.SPACE_S))
         buttons = tk.Frame(top, background=theme.GROUND)
         buttons.pack(side="right")
+        self.mode_label = tk.Label(buttons, background=theme.GROUND, font=self.fonts.small)
+        self.mode_label.pack(side="left", padx=(0, theme.SPACE_M))
         ttk.Button(buttons, text="Previous", style="Icon.TButton",
                    command=on_prev).pack(side="left")
         ttk.Button(buttons, text="Next", style="Icon.TButton",
                    command=on_next).pack(side="left", padx=(theme.SPACE_XS, 0))
-        self.edit_button = ttk.Button(buttons, text="Edit", command=self.toggle_edit)
-        self.edit_button.pack(side="left", padx=(theme.SPACE_S, 0))
 
         self.tags = tk.Frame(top, background=theme.GROUND)
         self.tags.pack(side="left")
@@ -128,9 +129,6 @@ class IssueDetail(tk.Frame):
             button = _StatusButton(row, key, self.fonts, self._on_status)
             button.pack(side="left", padx=(0, theme.SPACE_S))
             self.status_buttons.append(button)
-        self.hint = tk.Label(block, text="Read only - Edit (Ctrl+E) to change the status or the texts.",
-                             background=theme.GROUND, foreground=theme.TEXT_MUTED,
-                             font=self.fonts.small, anchor="w")
 
     def _build_texts(self):
         defect_card = theme.card(self.body)
@@ -234,22 +232,20 @@ class IssueDetail(tk.Frame):
             widget.configure(height=height)
 
     # --- editing ------------------------------------------------------------
-    def toggle_edit(self) -> None:
-        self.editing = not self.editing
+    def set_editing(self, editing: bool) -> None:
+        """Edit mode belongs to the viewer: it stays on from issue to issue."""
+        self.editing = editing
         self._paint()
         self._fit_defect()
 
     def _paint(self) -> None:
         editing = self.editing
-        self.edit_button.configure(text="Done" if editing else "Edit",
-                                   style="Accent.TButton" if editing else "TButton")
+        self.mode_label.configure(
+            text=f"✎ Edit mode {'on' if editing else 'off'} (Ctrl+E)",
+            foreground=theme.ACCENT if editing else theme.TEXT_MUTED)
         current = model.status_key(self.item) if self.item is not None else None
         for button in self.status_buttons:
             button.paint(button.key == current, editing)
-        if editing:
-            self.hint.pack_forget()
-        else:
-            self.hint.pack(fill="x", pady=(theme.SPACE_XS, 0))
         for widget in (self.defect_text, self.risk_text):
             widget.configure(
                 state="normal" if editing else "disabled",

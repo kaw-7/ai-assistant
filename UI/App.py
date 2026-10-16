@@ -38,6 +38,7 @@ class App(tk.Tk):
         self.items = items
         self.items_file_path = items_file_path
         self._changed = set()          # indexes of the issues edited since the last save
+        self.editing = False           # edit mode is for the whole viewer, not one issue
 
         self.filter_var = tk.StringVar(value=FILTER_ALL)
         self.search_var = tk.StringVar()
@@ -48,7 +49,7 @@ class App(tk.Tk):
         self._build_body()
 
         self.bind("<Control-s>", lambda _e: self._save())
-        self.bind("<Control-e>", lambda _e: self.detail.toggle_edit())
+        self.bind("<Control-e>", lambda _e: self._toggle_edit())
         self.bind("<Control-f>", lambda _e: self.search.focus_set())
         self.protocol("WM_DELETE_WINDOW", self._on_close)
 
@@ -67,6 +68,20 @@ class App(tk.Tk):
         self.dirty_label = tk.Label(header, background=theme.SURFACE,
                                     foreground=theme.WARN_TEXT, font=self.fonts.small)
         self.dirty_label.pack(side="right", padx=theme.SPACE_M)
+        # a fixed-size holder, so flipping between "Edit" and "Done" (the blue
+        # style has a bold font) does not resize the button
+        holder = tk.Frame(header, background=theme.SURFACE)
+        holder.pack(side="right", padx=(theme.SPACE_M, 0))
+        self.edit_button = ttk.Button(holder, text="Edit", command=self._toggle_edit)
+        self.edit_button.place(relwidth=1, relheight=1)
+        sizes = []
+        for text, style in (("Edit", "TButton"), ("Done", "Accent.TButton")):
+            self.edit_button.configure(text=text, style=style)
+            sizes.append((self.edit_button.winfo_reqwidth(),
+                          self.edit_button.winfo_reqheight()))
+        self.edit_button.configure(text="Edit", style="TButton")
+        holder.configure(width=max(w for w, _h in sizes),
+                         height=max(h for _w, h in sizes))
 
         self.search = ttk.Entry(header, textvariable=self.search_var, width=32)
         self.search.pack(side="right", padx=(theme.SPACE_S, theme.SPACE_S))
@@ -141,6 +156,13 @@ class App(tk.Tk):
     def _on_select(self, index):
         item = self.items[index] if index is not None else None
         self.detail.show(index, item, edited=index in self._changed)
+
+    # --- edit mode ----------------------------------------------------------
+    def _toggle_edit(self):
+        self.editing = not self.editing
+        self.edit_button.configure(text="Done" if self.editing else "Edit",
+                                   style="Accent.TButton" if self.editing else "TButton")
+        self.detail.set_editing(self.editing)
 
     # --- changes ------------------------------------------------------------
     def _on_change(self, index):

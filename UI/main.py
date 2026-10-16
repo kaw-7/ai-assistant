@@ -1,14 +1,6 @@
-def _sharp_on_high_dpi():
-    """Without this Windows scales the window up as a bitmap - blurry text."""
-    try:
-        import ctypes
-        ctypes.windll.shcore.SetProcessDpiAwareness(1)
-    except (AttributeError, OSError):    # not Windows, or older than 8.1
-        pass
-
-
 if __name__ == "__main__":
     from App import App
+    from theme import sharp_on_high_dpi
     from IssueSerializer import markup_to_issueCards, createIssuesBackUp
     import ui_config as uiConf
 
@@ -18,6 +10,6 @@ if __name__ == "__main__":
 
     if(issuesToDisplay is not None):
         createIssuesBackUp(uiConf.ISSUES_FILE, uiConf.ISSUES_BACKUP_FILE)
-        _sharp_on_high_dpi()
+        sharp_on_high_dpi()
         app = App(issuesToDisplay, uiConf.ISSUES_FILE)
         app.mainloop()

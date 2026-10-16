@@ -12,6 +12,7 @@ class ReportEngineModule(RunnableModule):
 
     id = "report_engine"
     title = "1. Issue formatter and risk assessment"
+    summary = "Release notes → AI risk assessment"
     description = (
         "Reads the release notes of the validated tool, turns them into "
         "structured issue items and lets the AI assess the risk of every item. "

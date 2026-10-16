@@ -47,6 +47,8 @@ class RunnableModule(ABC):
     title: str = ""
     #: one or two sentences shown above the configuration editor
     description: str = ""
+    #: a few words under the title in the module list - "Release notes -> risk report"
+    summary: str = ""
     #: sort order inside the module list (lower comes first)
     order: int = 100
     #: extra directories (relative to the project root) added to sys.path

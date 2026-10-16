@@ -86,10 +86,9 @@ def _family(root, wanted: str, *fallbacks: str) -> str:
     return "TkDefaultFont"
 
 
-def _fonts(root) -> Fonts:
-    family = _family(root, uiConf.FONT, "Segoe UI Variable Text", "Segoe UI")
+def _fonts(root, family: str, size: int) -> Fonts:
+    family = _family(root, family, "Segoe UI Variable Text", "Segoe UI")
     mono = _family(root, "Cascadia Mono", "Consolas", "Courier New")
-    size = int(uiConf.FONT_SIZE)
 
     def make(fam, sz, weight="normal"):
         return tkfont.Font(root, family=fam, size=sz, weight=weight)
@@ -105,9 +104,25 @@ def _fonts(root) -> Fonts:
     )
 
 
-def apply(root: tk.Misc) -> Fonts:
-    """Set up the styles on ``root`` and return the fonts the widgets use."""
-    fonts = _fonts(root)
+def sharp_on_high_dpi() -> None:
+    """Without this Windows scales the window up as a bitmap - blurry text.
+
+    Call it before the first Tk window is created.
+    """
+    try:
+        import ctypes
+        ctypes.windll.shcore.SetProcessDpiAwareness(1)
+    except (AttributeError, OSError):    # not Windows, or older than 8.1
+        pass
+
+
+def apply(root: tk.Misc, family: str | None = None, size: int | None = None) -> Fonts:
+    """Set up the styles on ``root`` and return the fonts the widgets use.
+
+    The issue viewer takes the font from ``ui_config``; the launcher, which
+    shares this look, passes its own.
+    """
+    fonts = _fonts(root, family or uiConf.FONT, int(size or uiConf.FONT_SIZE))
     root.configure(background=GROUND)
 
     style = ttk.Style(root)
@@ -125,8 +140,8 @@ def apply(root: tk.Misc) -> Fonts:
     # buttons: a white secondary one and the blue primary one
     style.configure("TButton", background=SURFACE, foreground=TEXT,
                     bordercolor=BORDER_STRONG, lightcolor=SURFACE,
-                    darkcolor=SURFACE, padding=(14, 5), relief="flat",
-                    focusthickness=0)
+                    darkcolor=SURFACE, padding=(14, 5), relief="solid",
+                    borderwidth=1, focusthickness=0)
     style.map("TButton",
               background=[("disabled", SURFACE), ("pressed", BORDER),
                           ("active", SURFACE_HOVER)],
@@ -138,10 +153,12 @@ def apply(root: tk.Misc) -> Fonts:
                     bordercolor=ACCENT, lightcolor=ACCENT, darkcolor=ACCENT,
                     font=fonts.body_bold)
     style.map("Accent.TButton",
-              background=[("pressed", ACCENT_HOVER), ("active", ACCENT_HOVER)],
-              bordercolor=[("focus", ACCENT_HOVER)],
-              lightcolor=[("active", ACCENT_HOVER)],
-              darkcolor=[("active", ACCENT_HOVER)])
+              background=[("disabled", ACCENT_RING), ("pressed", ACCENT_HOVER),
+                          ("active", ACCENT_HOVER)],
+              foreground=[("disabled", "#FFFFFF")],
+              bordercolor=[("disabled", ACCENT_RING), ("focus", ACCENT_HOVER)],
+              lightcolor=[("disabled", ACCENT_RING), ("active", ACCENT_HOVER)],
+              darkcolor=[("disabled", ACCENT_RING), ("active", ACCENT_HOVER)])
     style.configure("Icon.TButton", padding=(8, 5))
 
     # the status filter: toggle chips, dark when chosen
