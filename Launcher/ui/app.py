@@ -76,6 +76,15 @@ class LauncherApp(tk.Tk):
                            padding=(theme.SPACE_XL + 4, theme.SPACE_L + 2,
                                     theme.SPACE_XL + 4, theme.SPACE_L))
         header.pack(fill="x")
+        # the description is packed first from the bottom, so it runs below the
+        # actions over the whole width of the header
+        self.module_description = tk.Label(header, background=theme.SURFACE,
+                                           foreground=theme.TEXT_MUTED, font=self.fonts.body,
+                                           anchor="w", justify="left")
+        self.module_description.pack(side="bottom", fill="x")
+        header.bind("<Configure>", lambda e: self.module_description.configure(
+            wraplength=max(300, e.width - 2 * (theme.SPACE_XL + 4))))
+
         actions = ttk.Frame(header, style="Surface.TFrame")
         actions.pack(side="right", anchor="n")
         ttk.Button(actions, text="Save settings",
@@ -96,11 +105,8 @@ class LauncherApp(tk.Tk):
         self.module_title = tk.Label(texts, background=theme.SURFACE, foreground=theme.TEXT,
                                      font=self.fonts.title, anchor="w", justify="left")
         self.module_title.pack(fill="x", pady=(2, 4))
-        self.module_description = tk.Label(texts, background=theme.SURFACE,
-                                           foreground=theme.TEXT_MUTED, font=self.fonts.body,
-                                           anchor="w", justify="left")
-        self.module_description.pack(fill="x")
-        texts.bind("<Configure>", self._wrap_header)
+        texts.bind("<Configure>", lambda e: self.module_title.configure(
+            wraplength=max(300, e.width)))
         tk.Frame(main, height=1, background=theme.BORDER).pack(fill="x")
 
         # --- the form and, below it, the output ---
@@ -108,22 +114,20 @@ class LauncherApp(tk.Tk):
         split.pack(fill="both", expand=True)
         self.config_panel = ConfigPanel(split, self.store, self.fonts,
                                         on_change=self._on_config_changed)
-        split.add(self.config_panel, weight=3)
+        split.add(self.config_panel, weight=1)
         self.console = ConsolePane(split, self.fonts)
-        split.add(self.console, weight=1)
+        # the output keeps its height when the window is resized - the form
+        # gets the difference
+        split.add(self.console, weight=0)
+        self._split = split
 
-        # the requested sizes would give the output too much room at start -
-        # place the divider on the first real size (before, the height is 1)
+        # the output starts as its header and one line; placed on the first
+        # real size (before, the height is 1)
         def first_layout(event):
             if event.height > 1:
                 split.unbind("<Configure>", binding)
-                split.sashpos(0, int(event.height * cfg.FORM_SHARE))
+                self._show_console_rows(cfg.CONSOLE_ROWS_START)
         binding = split.bind("<Configure>", first_layout, add="+")
-
-    def _wrap_header(self, event) -> None:
-        self.module_title.configure(wraplength=max(300, event.width))
-        # long lines read badly - the description stops at about 900 pixels
-        self.module_description.configure(wraplength=max(300, min(event.width, 900)))
 
     def _fill_module_list(self) -> None:
         self._modules = self.registry.modules
@@ -206,11 +210,26 @@ class LauncherApp(tk.Tk):
         if not self._store_current_values():
             return
 
+        # a run opens the output to CONSOLE_ROWS_RUN rows and leaves it so -
+        # only ever made larger, never smaller than the user dragged it
+        self._show_console_rows(cfg.CONSOLE_ROWS_RUN, grow_only=True)
         self.store.save()
         self.console.append(
             f"\n=== {self._current.label()} ===\n", ConsolePane.TAG_INFO)
         self.runner.start(self._current.id, self.store.as_dict())
         self._set_running(True)
+
+    def _show_console_rows(self, rows: int, grow_only: bool = False) -> None:
+        split = self._split
+        wanted = self.console.height_for(rows)
+        if grow_only and self.console.winfo_height() >= wanted:
+            return
+        split.sashpos(0, max(0, split.winfo_height() - wanted))
+        # the divider itself takes some pixels from the output - give them back
+        split.update_idletasks()
+        missing = wanted - self.console.winfo_height()
+        if missing:
+            split.sashpos(0, max(0, split.sashpos(0) - missing))
 
     def _stop_module(self) -> None:
         if self.runner.is_running():

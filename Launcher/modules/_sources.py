@@ -39,6 +39,21 @@ SECTION_STEPS = "Steps"
 SECTION_TEMPLATE = "Template"
 
 
+def _preprocessor_field() -> ConfigField:
+    """The choices are the values of ``PreprocessorType`` - the enum main.py
+    matches on - so a new preprocessor shows up here by itself."""
+    try:
+        # imported here: the module imports config.py, which must not stop
+        # the launcher from starting when it is broken
+        from Preprocessor.AbstractPreprocessor import PreprocessorType
+    except Exception:
+        # no list at all rather than one that may be stale
+        return ConfigField("TOOL_PREPROCESSOR", "Preprocessor", section=SECTION_TOOL)
+    return ConfigField("TOOL_PREPROCESSOR", "Preprocessor",
+                       kind=FieldKind.CHOICE, section=SECTION_TOOL,
+                       choices=tuple(member.value for member in PreprocessorType))
+
+
 def main_config_source() -> PyModuleConfigSource:
     """``config.py`` - the issue formatter and the AI risk assessment."""
     return PyModuleConfigSource(
@@ -58,9 +73,7 @@ def main_config_source() -> PyModuleConfigSource:
             ConfigField("TOOL_NAME", "Tool name", section=SECTION_TOOL),
             ConfigField("TOOL_VERSION_START", "Version from", section=SECTION_TOOL),
             ConfigField("TOOL_VERSION_END", "Version to", section=SECTION_TOOL),
-            ConfigField("TOOL_PREPROCESSOR", "Preprocessor",
-                        kind=FieldKind.CHOICE, section=SECTION_TOOL,
-                        choices=("AI", "IAR_EmbeddedWorkbench", "Reload_Existing")),
+            _preprocessor_field(),
             ConfigField("TOOL_RELEASE_NOTES", "Release notes file",
                         kind=FieldKind.FILE, section=SECTION_TOOL),
             ConfigField("REF_PATH", "Reference report", kind=FieldKind.FILE,

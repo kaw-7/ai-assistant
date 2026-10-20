@@ -38,7 +38,6 @@ ISSUE_END_MARKER = "[[ END ISSUE ITEM ]]"
 VALID_REPORT_TEMPLATE = f'wiki/{TARGET_LOCATION}/_ValidationReportTemplate CSV' # wiki/Anomaly Reports/_PeriodicReviewTemplate
 
 # TARGET_PROJECT_ID = "ToolValidation"
-LINK_ROLE = None
 
 PLACEHOLDER = r'<span style="color: #FF0000;">[toolname]</span>'
 PLACEHOLDER_DOCSTATUS = r'<Toolname> <Version>'

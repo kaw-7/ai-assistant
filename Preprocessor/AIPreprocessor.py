@@ -31,7 +31,7 @@ class AIPreprocessor(AbstractPreprocessor):
             ai_response = self.ai_engine.generate_response(user_input=user_input)
             # --- SAVE OUTPUT ---
             self.save_output(ai_response, config.TEMP_OUTPUT_FILE, "a")
-            print("Output saved!\n")
+            print(f"✅ [1/2] Structured markup with AI saved to {config.TEMP_OUTPUT_FILE}!\n")
             
             return ai_response
         except Exception:
@@ -40,7 +40,7 @@ class AIPreprocessor(AbstractPreprocessor):
 
     def generate_input(self, release_notes_file_path):
         user_input = ""
-        print("[1/3] Generating structured markup with AI")
+        print("[1/2] Generating structured markup with AI")
         try:
             # --- PREPARE PROMPT ---
             # Read files (using 'with' ensures they close automatically)

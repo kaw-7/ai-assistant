@@ -46,10 +46,10 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
                 if(pos == -1 or pos >= len(input_data_content)):
                     break
             t.close()
-            print(f"\n[2/3] Risk Assessment Complete. Saved to: {config.RISK_ASSESSMENT_OUTPUT_FILE}\n")
+            print(f"\n✅ [2/2] Risk Assessment Complete and saved to: {config.RISK_ASSESSMENT_OUTPUT_FILE}\n")
 
         except Exception:
-            print(f"\n[ERROR] Pre-Partitioning during risk assessment failed:\n{traceback.format_exc()}")
+            print(f"\n❌ [ERROR] Pre-Partitioning during risk assessment failed:\n{traceback.format_exc()}")
             sys.exit()
     
     def _process_issues_in_chunks(self, input_data_content):
@@ -119,7 +119,7 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
             )
 
         except Exception:
-            print(f"\n[ERROR] An error occurred during input generation:\n{traceback.format_exc()}")
+            print(f"\n❌ [ERROR] An error occurred during input generation:\n{traceback.format_exc()}")
             return ""
 
         return user_input

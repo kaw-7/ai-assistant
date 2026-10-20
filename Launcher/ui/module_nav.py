@@ -10,6 +10,11 @@ import UI.theme as theme
 
 from . import launcher_config as cfg
 
+# horizontal padding of the side bar and of each module entry in it
+NAV_PADX = 6
+ENTRY_PADX = 6
+BADGE_GAP = 8
+
 _NUMBERED_TITLE = re.compile(r"^\s*(\d+)\s*[.)]\s*(.+)$")
 
 
@@ -27,7 +32,7 @@ class _ModuleEntry(tk.Frame):
     BADGE = 24
 
     def __init__(self, master, module, number: str, fonts: theme.Fonts, on_click, on_double):
-        super().__init__(master, background=cfg.COLOR_SIDEBAR, padx=8, pady=8,
+        super().__init__(master, background=cfg.COLOR_SIDEBAR, padx=ENTRY_PADX, pady=8,
                          cursor="hand2")
         self.module = module
         self.fonts = fonts
@@ -38,22 +43,25 @@ class _ModuleEntry(tk.Frame):
 
         self.badge = tk.Canvas(self, width=self.BADGE, height=self.BADGE,
                                highlightthickness=0, background=cfg.COLOR_SIDEBAR)
-        self.badge.grid(row=0, column=0, rowspan=2, sticky="n", padx=(0, 10), pady=(1, 0))
+        self.badge.grid(row=0, column=0, sticky="n", padx=(0, BADGE_GAP), pady=(1, 0))
         self._circle = self.badge.create_oval(1, 1, self.BADGE - 1, self.BADGE - 1, width=1.5)
         self._number = self.badge.create_text(self.BADGE / 2, self.BADGE / 2,
                                               text=number, font=fonts.small_bold)
 
-        wrap = cfg.SIDEBAR_WIDTH - self.BADGE - 60
-        self.name = tk.Label(self, text=name, font=fonts.body, anchor="w",
-                             justify="left", wraplength=wrap, background=cfg.COLOR_SIDEBAR)
+        # the width inside the side bar and this entry; the name stands next to
+        # the badge, the summary below both and so also under the badge
+        inner = cfg.SIDEBAR_WIDTH - 2 * (NAV_PADX + ENTRY_PADX) - 4
+        self.name = tk.Label(self, text=name, font=fonts.body, anchor="w", justify="left",
+                             wraplength=inner - self.BADGE - BADGE_GAP,
+                             background=cfg.COLOR_SIDEBAR)
         self.name.grid(row=0, column=1, sticky="w")
         summary = getattr(module, "summary", "") or ""
         if module.opens_window:
             summary = (summary + " · " if summary else "") + "opens a window"
         self.summary = tk.Label(self, text=summary, font=fonts.small, anchor="w",
-                                justify="left", wraplength=wrap, background=cfg.COLOR_SIDEBAR)
+                                justify="left", wraplength=inner, background=cfg.COLOR_SIDEBAR)
         if summary:
-            self.summary.grid(row=1, column=1, sticky="w")
+            self.summary.grid(row=1, column=0, columnspan=2, sticky="w", pady=(2, 0))
         self.columnconfigure(1, weight=1)
 
         for widget in (self, self.badge, self.name, self.summary):
@@ -95,7 +103,7 @@ class ModuleNav(tk.Frame):
 
     def __init__(self, master, fonts: theme.Fonts, on_select=None, on_activate=None):
         super().__init__(master, background=cfg.COLOR_SIDEBAR, width=cfg.SIDEBAR_WIDTH,
-                         padx=14, pady=18, takefocus=True)
+                         padx=NAV_PADX, pady=18, takefocus=True)
         self.pack_propagate(False)
         self.fonts = fonts
         self.on_select = on_select
@@ -104,7 +112,7 @@ class ModuleNav(tk.Frame):
         self._entries: list[_ModuleEntry] = []
 
         brand = tk.Frame(self, background=cfg.COLOR_SIDEBAR)
-        brand.pack(fill="x", padx=8, pady=(0, 18))
+        brand.pack(fill="x", padx=ENTRY_PADX, pady=(0, 18))
         mark = tk.Canvas(brand, width=30, height=30, highlightthickness=0,
                          background=cfg.COLOR_SIDEBAR)
         mark.create_rectangle(0, 0, 30, 30, fill=theme.ACCENT, outline=theme.ACCENT)
@@ -116,7 +124,7 @@ class ModuleNav(tk.Frame):
 
         tk.Label(self, text="PIPELINE", background=cfg.COLOR_SIDEBAR,
                  foreground=cfg.COLOR_SIDEBAR_MUTED, font=fonts.small_bold,
-                 anchor="w").pack(fill="x", padx=8, pady=(0, 6))
+                 anchor="w").pack(fill="x", padx=ENTRY_PADX, pady=(0, 6))
         self._list = tk.Frame(self, background=cfg.COLOR_SIDEBAR)
         self._list.pack(fill="x")
 
@@ -127,10 +135,10 @@ class ModuleNav(tk.Frame):
         self.changes = tk.Label(self.footer, background=cfg.COLOR_SIDEBAR,
                                 foreground=cfg.COLOR_SIDEBAR_MUTED, font=fonts.small,
                                 anchor="w", justify="left",
-                                wraplength=cfg.SIDEBAR_WIDTH - 40)
-        self.changes.pack(fill="x", padx=8, pady=(0, 10))
+                                wraplength=cfg.SIDEBAR_WIDTH - 2 * (NAV_PADX + ENTRY_PADX))
+        self.changes.pack(fill="x", padx=ENTRY_PADX, pady=(0, 10))
         self.actions = tk.Frame(self.footer, background=cfg.COLOR_SIDEBAR)
-        self.actions.pack(fill="x", padx=8)
+        self.actions.pack(fill="x", padx=ENTRY_PADX)
 
         self.bind("<Up>", lambda _e: self.step(-1))
         self.bind("<Down>", lambda _e: self.step(1))

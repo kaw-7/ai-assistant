@@ -169,7 +169,7 @@ class ConsolePane(ttk.Frame):
         body = tk.Frame(self, background=cfg.COLOR_CONSOLE_BG)
         body.pack(fill="both", expand=True)
         self.text = tk.Text(
-            body, height=cfg.CONSOLE_HEIGHT, wrap="none",
+            body, height=cfg.CONSOLE_ROWS_RUN - 1, wrap="none",
             background=cfg.COLOR_CONSOLE_BG, foreground=cfg.COLOR_CONSOLE_FG,
             insertbackground=cfg.COLOR_CONSOLE_FG, relief="flat", borderwidth=0,
             highlightthickness=0, padx=theme.SPACE_L, pady=theme.SPACE_S, spacing1=1,
@@ -180,18 +180,38 @@ class ConsolePane(ttk.Frame):
                                  style="Dark.Vertical.TScrollbar")
         x_scroll = ttk.Scrollbar(body, orient="horizontal", command=self.text.xview,
                                  style="Dark.Horizontal.TScrollbar")
-        self.text.configure(yscrollcommand=y_scroll.set, xscrollcommand=x_scroll.set)
+        self.toolbar = toolbar
+        self._x_scroll = x_scroll
+
+        # the horizontal scrollbar only shows for a line wider than the pane,
+        # so it does not take the room of a text line
+        def x_scrolled(first, last):
+            x_scroll.set(first, last)
+            fits = float(first) <= 0.0 and float(last) >= 1.0
+            if fits and x_scroll.winfo_manager():
+                x_scroll.pack_forget()
+            elif not fits and not x_scroll.winfo_manager():
+                x_scroll.pack(side="bottom", fill="x", before=y_scroll)
+        self.text.configure(yscrollcommand=y_scroll.set, xscrollcommand=x_scrolled)
 
         self.text.tag_configure(self.TAG_INFO, foreground=cfg.COLOR_CONSOLE_INFO)
         self.text.tag_configure(self.TAG_OK, foreground=cfg.COLOR_CONSOLE_OK)
         self.text.tag_configure(self.TAG_ERROR, foreground=cfg.COLOR_CONSOLE_ERROR)
 
-        x_scroll.pack(side="bottom", fill="x")
         y_scroll.pack(side="right", fill="y")
         self.text.pack(side="left", fill="both", expand=True)
 
         self._pending_return = False
         self.set_state(self.STATE_IDLE, cfg.STATE_IDLE)
+
+    def height_for(self, rows: int) -> int:
+        """Pixels the pane needs for ``rows`` rows: its header bar and
+        ``rows - 1`` lines of output."""
+        text = self.text
+        line = (int(text.tk.call("font", "metrics", text.cget("font"), "-linespace"))
+                + int(text.cget("spacing1")))
+        return (self.toolbar.winfo_reqheight() + 2 * int(text.cget("pady"))
+                + max(rows - 1, 0) * line)
 
     # --- title bar ----------------------------------------------------------
     def set_state(self, state: str, text: str) -> None:

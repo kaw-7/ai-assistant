@@ -656,7 +656,7 @@ p4.uml("vrm", "valid_report_main", 1120, 660, 520, stereo="script", file="Polari
 p4.uml("vrc", "valid_report_config", 1120, 800, 520, stereo="module", file="ValidReport/valid_report_config.py",
        attrs=["PROJECT_ID, TOOL_NAME, BUILD_VALID_REPORT",
               "VALID_REPORT_TEMPLATE, TARGET_LOCATION / _NAME_ID / _TITLE",
-              "PLACEHOLDER, PLACEHOLDER_DOCSTATUS, LINK_ROLE",
+              "PLACEHOLDER, PLACEHOLDER_DOCSTATUS",
               "DOC_NAME, DOC_INPUT_HEADING",
               "ISSUE_INPUT_FILE = final_risk_report.txt",
               "ISSUE_MARKER_BEG / _END, ISSUE_END_MARKER"],

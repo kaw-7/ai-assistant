@@ -30,7 +30,7 @@ class ValidReportBuilder(PolarionWorker):
             vr_conf.TARGET_LOCATION,
             vr_conf.TARGET_NAME_ID,
             vr_conf.TARGET_TITLE,
-            link_role=vr_conf.LINK_ROLE,
+            link_role=None,
             derived_fields=None,
         )
         
