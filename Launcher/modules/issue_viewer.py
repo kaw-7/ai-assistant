@@ -15,6 +15,7 @@ class IssueViewerModule(RunnableModule):
 
     id = "issue_viewer"
     title = "2. Issue viewer"
+    summary = "Review and edit the risk assessment"
     description = (
         "Shows the issues of a risk report, lets them be filtered and edited "
         "and writes the changes back into the report file. A backup is created "

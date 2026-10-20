@@ -7,10 +7,14 @@ selected module exposes, so a new module gets its editor for free.
 Two kinds of entries are shown:
 
 * plain values - editable straight away, stored as an override as soon as they
-  differ from what stands in the configuration file;
-* derived values (f-strings, references to other entries) - shown read only and
-  recomputed while the values they depend on are edited.  Ticking the box in
-  front of such an entry pins it to a value of its own.
+  differ from what stands in the configuration file; they are then tagged
+  "edited" and get a Reset button;
+* derived values (f-strings, references to other entries) - tagged "computed",
+  shown read only and recomputed while the values they depend on are edited.
+  Switching "Override" on pins such an entry to a value of its own.
+
+Every section is a card; the list on the left jumps to a section and follows
+the scrolling.
 """
 from __future__ import annotations
 
@@ -19,6 +23,7 @@ from pathlib import Path
 from tkinter import filedialog, ttk
 from typing import Any, Dict, List, Tuple
 
+import UI.theme as theme
 from Launcher.core.config_fields import ConfigField, FieldKind
 from Launcher.core.config_sources import ConfigSource
 from Launcher.core.project import PROJECT_ROOT
@@ -26,61 +31,122 @@ from Launcher.core.project import PROJECT_ROOT
 from . import launcher_config as cfg
 from .widgets import ScrollableFrame, Tooltip
 
+# text on the choice buttons; the stored value stays the configured one
+_CHOICE_LABELS = {"y": "Yes", "n": "No"}
+
+
+def _keep_compact(holder) -> None:
+    """The spare width goes behind the actions, not into the value widget."""
+    holder.columnconfigure(1, weight=0)
+    holder.columnconfigure(9, weight=1)
+
 
 class _FieldEditor:
-    """One row of the form: label, widget and the optional override tick."""
+    """One row of a section card: label and hint, the value, its state tags.
 
-    def __init__(self, parent, field: ConfigField, row: int, on_commit):
+    ``parent`` is the card's grid; the row takes grid rows ``2*row`` (the
+    divider) and ``2*row+1`` (the content).
+    """
+
+    def __init__(self, parent, field: ConfigField, row: int, fonts: theme.Fonts,
+                 on_commit, on_reset):
         self.field = field
+        self.fonts = fonts
         self.on_commit = on_commit
+        self.on_reset = on_reset
         self.override_var: tk.BooleanVar | None = None
         self.var: tk.Variable
+        self._choice_buttons: List[ttk.Radiobutton] = []
 
-        self.label = ttk.Label(parent, text=field.label, width=cfg.LABEL_WIDTH,
-                               anchor="w")
-        self.label.grid(row=row, column=1, sticky="w", padx=cfg.PADX, pady=1)
+        if row:
+            tk.Frame(parent, height=1, background=theme.DIVIDER).grid(
+                row=2 * row, column=0, columnspan=2, sticky="ew")
 
+        # --- left: label, state tags, hint
+        left = tk.Frame(parent, background=theme.SURFACE)
+        left.grid(row=2 * row + 1, column=0, sticky="nw", pady=theme.SPACE_S + 2,
+                  padx=(0, theme.SPACE_L))
+        line = tk.Frame(left, background=theme.SURFACE)
+        line.pack(anchor="w")
+        self.label = tk.Label(line, text=field.label, background=theme.SURFACE,
+                              foreground=theme.TEXT, font=fonts.body, anchor="w",
+                              justify="left", wraplength=cfg.LABEL_WIDTH - 80)
+        self.label.pack(side="left")
+        self.edited_tag = self._tag(line, "edited", theme.WARN_SOFT, theme.WARN_TEXT)
         if field.derived:
-            self.override_var = tk.BooleanVar(value=False)
-            check = ttk.Checkbutton(parent, variable=self.override_var,
-                                    command=self._on_override_toggled)
-            check.grid(row=row, column=0, sticky="w")
-            Tooltip(check, "This value is computed from the other settings. "
-                           "Tick to set it by hand instead.")
-        else:
-            ttk.Label(parent, text="").grid(row=row, column=0)
+            self._tag(line, "computed", theme.CHIP, theme.TEXT_SOFT).pack(
+                side="left", padx=(6, 0))
+        if field.help:
+            tk.Label(left, text=field.help, background=theme.SURFACE,
+                     foreground=theme.TEXT_MUTED, font=fonts.small, anchor="w",
+                     justify="left", wraplength=cfg.LABEL_WIDTH - 10).pack(anchor="w")
 
-        holder = ttk.Frame(parent)
-        holder.grid(row=row, column=2, sticky="ew", padx=cfg.PADX, pady=1)
-        holder.columnconfigure(0, weight=1)
+        # --- right: amber edge while edited, the value, the actions
+        holder = tk.Frame(parent, background=theme.SURFACE)
+        holder.grid(row=2 * row + 1, column=1, sticky="ew", pady=theme.SPACE_S)
+        holder.columnconfigure(1, weight=1)
+        self.edge = tk.Frame(holder, width=3, background=theme.SURFACE)
+        self.edge.grid(row=0, column=0, sticky="ns", padx=(0, 4))
         self.widget = self._build_widget(holder)
 
-        hint = field.help
-        if field.derived and not hint:
-            hint = "computed from the other settings"
-        if hint:
-            ttk.Label(parent, text=hint, foreground=cfg.COLOR_HINT,
-                      font=(cfg.FONT, cfg.FONT_SIZE - 1)).grid(
-                row=row, column=3, sticky="w", padx=cfg.PADX)
+        column = 2
+        if field.kind in (FieldKind.FILE, FieldKind.DIR):
+            browse = ttk.Button(holder, text="…", width=3, style="Icon.TButton",
+                                command=self._browse)
+            browse.grid(row=0, column=column, padx=(6, 0))
+            Tooltip(browse, "Choose the folder" if field.kind is FieldKind.DIR
+                    else "Choose the file")
+            column += 1
+        if field.derived:
+            self.override_var = tk.BooleanVar(value=False)
+            toggle = ttk.Checkbutton(holder, text="Override", style="Override.Toolbutton",
+                                     variable=self.override_var,
+                                     command=self._on_override_toggled)
+            toggle.grid(row=0, column=column, padx=(6, 0))
+            Tooltip(toggle, "This value is computed from the other settings. "
+                            "Switch Override on to set it by hand instead.")
+            column += 1
+        # shown only while a plain value differs from the file - see mark()
+        self.reset_button = ttk.Button(holder, text="Reset", style="Link.TButton",
+                                       command=lambda: self.on_reset(self))
+        self._reset_column = column
 
         self._apply_enabled_state()
+
+    def _tag(self, master, text, background, foreground) -> tk.Label:
+        return tk.Label(master, text=text, background=background, foreground=foreground,
+                        font=self.fonts.small_bold, padx=6)
 
     # --- construction -------------------------------------------------------
     def _build_widget(self, holder):
         field = self.field
         if field.kind is FieldKind.BOOL:
+            _keep_compact(holder)
             self.var = tk.BooleanVar(value=bool(field.default))
             widget = ttk.Checkbutton(holder, variable=self.var,
-                                     command=self._commit)
-            widget.grid(row=0, column=0, sticky="w")
+                                     style="Surface.TCheckbutton", command=self._commit)
+            widget.grid(row=0, column=1, sticky="w")
             return widget
 
         self.var = tk.StringVar(value=field.to_display(field.default))
 
+        if field.kind is FieldKind.CHOICE and 0 < len(field.choices) <= cfg.CHOICE_BUTTONS_MAX:
+            _keep_compact(holder)
+            # a few choices are buttons: one click, and the wheel cannot touch them
+            widget = tk.Frame(holder, background=theme.SURFACE)
+            widget.grid(row=0, column=1, sticky="w")
+            for choice in field.choices:
+                button = ttk.Radiobutton(widget, text=_CHOICE_LABELS.get(choice, choice),
+                                         value=choice, variable=self.var,
+                                         style="Chip.Toolbutton", command=self._commit)
+                button.pack(side="left", padx=(0, 6))
+                self._choice_buttons.append(button)
+            return widget
+
         if field.kind is FieldKind.CHOICE:
             widget = ttk.Combobox(holder, textvariable=self.var,
                                   values=list(field.choices), state="readonly")
-            widget.grid(row=0, column=0, sticky="ew")
+            widget.grid(row=0, column=1, sticky="ew")
             widget.bind("<<ComboboxSelected>>", lambda _e: self._commit())
             # the wheel must scroll the form, never change the selected value:
             # drop the class binding so the event reaches the scrollable frame
@@ -90,24 +156,24 @@ class _FieldEditor:
             return widget
 
         if field.kind is FieldKind.MULTILINE:
-            widget = tk.Text(holder, height=4, wrap="word",
-                             font=(cfg.MONO_FONT, cfg.MONO_FONT_SIZE))
+            widget = tk.Text(holder, height=4, wrap="word", font=self.fonts.mono,
+                             relief="flat", borderwidth=0, highlightthickness=1,
+                             highlightbackground=theme.BORDER_STRONG,
+                             highlightcolor=theme.ACCENT, padx=6, pady=4)
             widget.insert("1.0", self.var.get())
-            widget.grid(row=0, column=0, sticky="ew")
+            widget.grid(row=0, column=1, sticky="ew")
             widget.bind("<FocusOut>", lambda _e: self._commit())
             return widget
 
-        show = "*" if field.secret else ""
+        show = "•" if field.secret else ""
         widget = ttk.Entry(holder, textvariable=self.var, show=show)
-        widget.grid(row=0, column=0, sticky="ew")
+        if field.kind in (FieldKind.FILE, FieldKind.DIR):
+            widget.configure(font=self.fonts.mono)
+        widget.grid(row=0, column=1, sticky="ew")
         widget.bind("<FocusOut>", lambda _e: self._commit())
         widget.bind("<Return>", lambda _e: self._commit())
         # long values (document names, paths) may not fit - show them whole
         Tooltip(widget, self._full_value_hint)
-
-        if field.kind in (FieldKind.FILE, FieldKind.DIR):
-            ttk.Button(holder, text="...", width=3,
-                       command=self._browse).grid(row=0, column=1, padx=(4, 0))
         return widget
 
     # --- state --------------------------------------------------------------
@@ -116,8 +182,14 @@ class _FieldEditor:
             self.override_var is None or self.override_var.get()
         )
         state = "normal" if enabled else "disabled"
-        if isinstance(self.widget, ttk.Combobox):
+        if self._choice_buttons:
+            for button in self._choice_buttons:
+                button.configure(state=state)
+        elif isinstance(self.widget, ttk.Combobox):
             self.widget.configure(state="readonly" if enabled else "disabled")
+        elif isinstance(self.widget, tk.Text):
+            self.widget.configure(state=state,
+                                  background=theme.SURFACE if enabled else theme.READONLY)
         else:
             self.widget.configure(state=state)
 
@@ -196,92 +268,150 @@ class _FieldEditor:
             self._apply_enabled_state()
 
     def mark(self, overridden: bool) -> None:
-        text = self.field.label + (" *" if overridden else "")
-        self.label.configure(text=text)
+        """Show whether the value differs from the configuration file."""
+        self.edge.configure(background=theme.WARN if overridden else theme.SURFACE)
+        if overridden:
+            self.edited_tag.pack(side="left", padx=(6, 0))
+        else:
+            self.edited_tag.pack_forget()
+        # a computed value is reset by switching Override off
+        if overridden and self.override_var is None:
+            self.reset_button.grid(row=0, column=self._reset_column, padx=(4, 0))
+        else:
+            self.reset_button.grid_remove()
 
 
 class ConfigPanel(ttk.Frame):
     """Shows and collects the configuration of the selected module."""
 
-    def __init__(self, master, store, on_change=None, **kwargs):
+    def __init__(self, master, store, fonts: theme.Fonts, on_change=None, **kwargs):
         super().__init__(master, **kwargs)
         self.store = store
+        self.fonts = fonts
         self.on_change = on_change
 
-        self._scroller = ScrollableFrame(self)
-        self._scroller.pack(fill="both", expand=True)
+        self._toc = tk.Frame(self, background=theme.GROUND, width=cfg.TOC_WIDTH)
+        self._toc.pack_propagate(False)
+        self._scroller = ScrollableFrame(self, on_scroll=self._sync_toc)
+        self._scroller.pack(side="right", fill="both", expand=True)
 
         self._module = None
         self._sources: List[ConfigSource] = []
         self._editors: List[Tuple[ConfigSource, _FieldEditor]] = []
         self._file_values: Dict[str, Dict[str, Any]] = {}
+        self._sections: List[Tuple[tk.Widget, tk.Label]] = []   # card, toc entry
         self._refreshing = False
 
     # --- building -----------------------------------------------------------
     def show_module(self, module) -> None:
         self._module = module
         self._scroller.clear()
+        for child in self._toc.winfo_children():
+            child.destroy()
         self._editors = []
         self._sources = []
         self._file_values = {}
+        self._sections = []
 
         if module is None:
             return
 
         self._sources = module.config_sources()
         if not self._sources:
+            self._toc.pack_forget()
             ttk.Label(self._scroller.inner,
                       text="This module has no configurable value.",
-                      foreground=cfg.COLOR_HINT).pack(anchor="w",
-                                                      padx=cfg.SECTION_PADX,
-                                                      pady=cfg.SECTION_PADY)
+                      foreground=theme.TEXT_MUTED).pack(anchor="w", padx=theme.SPACE_XL,
+                                                        pady=theme.SPACE_XL)
             return
 
+        tk.Label(self._toc, text="SECTIONS", background=theme.GROUND,
+                 foreground=theme.TEXT_MUTED, font=self.fonts.small_bold,
+                 anchor="w").pack(fill="x", padx=10, pady=(0, 6))
         for source in self._sources:
             self._build_source(source)
+        # one section needs no table of contents
+        if len(self._sections) > 1:
+            self._toc.pack(side="left", fill="y", padx=(theme.SPACE_L, 0),
+                           pady=(theme.SPACE_L, 0), before=self._scroller)
+        else:
+            self._toc.pack_forget()
 
         self._scroller.scroll_to_top()
         self.refresh_values()
+        self.after_idle(self._sync_toc)
 
     def _build_source(self, source: ConfigSource) -> None:
+        inner = self._scroller.inner
         try:
             self._file_values[source.id] = source.evaluate({}, side_effects=False)
         except Exception as exc:
             self._file_values[source.id] = {}
-            ttk.Label(self._scroller.inner,
-                      text=f"{source.title}: could not be read ({exc})",
-                      foreground=cfg.COLOR_CONSOLE_ERROR).pack(anchor="w")
+            tk.Label(inner, text=f"{source.title}: could not be read ({exc})",
+                     background=theme.GROUND, foreground="#B42318", font=self.fonts.small,
+                     anchor="w", justify="left").pack(fill="x", padx=theme.SPACE_L,
+                                                      pady=(theme.SPACE_L, 0))
 
-        box = ttk.LabelFrame(self._scroller.inner, text=source.title)
-        box.pack(fill="x", expand=False, padx=cfg.SECTION_PADX,
-                 pady=cfg.SECTION_PADY)
-
-        header = ttk.Frame(box)
-        header.pack(fill="x")
-        # the button is packed first so that it always keeps its place
-        ttk.Button(header, text="Reset to file defaults",
-                   command=lambda s=source: self.reset_source(s)).pack(
-            side="right", padx=cfg.PADX, pady=cfg.PADY)
+        # the file the values come from, with the reset of all its values
+        header = tk.Frame(inner, background=theme.GROUND)
+        header.pack(fill="x", padx=theme.SPACE_L, pady=(theme.SPACE_L, theme.SPACE_S))
+        ttk.Button(header, text="Reset to file defaults", style="Ground.Link.TButton",
+                   command=lambda s=source: self.reset_source(s)).pack(side="right", anchor="n")
+        tk.Label(header, text=source.title, background=theme.GROUND, foreground=theme.TEXT,
+                 font=self.fonts.body_bold, anchor="w").pack(fill="x")
         if source.description:
-            ttk.Label(header, text=source.description, foreground=cfg.COLOR_HINT,
-                      wraplength=cfg.WRAP_LENGTH, justify="left").pack(
-                side="left", padx=cfg.PADX, pady=cfg.PADY)
+            description = tk.Label(header, text=source.description, background=theme.GROUND,
+                                   foreground=theme.TEXT_MUTED, font=self.fonts.small,
+                                   anchor="w", justify="left")
+            description.pack(fill="x")
+            header.bind("<Configure>", lambda e, d=description: d.configure(
+                wraplength=max(300, e.width - 200)))
 
         sections: Dict[str, List[ConfigField]] = {}
         for field in source.fields():
             sections.setdefault(field.section or "Settings", []).append(field)
 
         for section_name, fields in sections.items():
-            grid = ttk.LabelFrame(box, text=section_name)
-            grid.pack(fill="x", expand=False, padx=cfg.PADX, pady=cfg.PADY)
-            # fixed widths keep the labels of all sections aligned
-            grid.columnconfigure(0, weight=0, minsize=cfg.CHECK_WIDTH)
-            # the value widgets take the spare width so long values stay readable
-            grid.columnconfigure(2, weight=1, minsize=cfg.FIELD_WIDTH)
-            grid.columnconfigure(3, weight=0)
+            card = theme.card(inner)
+            card.pack(fill="x", padx=theme.SPACE_L, pady=(0, theme.SPACE_M))
+            tk.Label(card, text=section_name, background=theme.SURFACE,
+                     foreground=theme.TEXT, font=self.fonts.heading, anchor="w").pack(
+                fill="x", padx=theme.SPACE_L + 4, pady=(theme.SPACE_M, theme.SPACE_XS))
+            grid = tk.Frame(card, background=theme.SURFACE)
+            grid.pack(fill="x", padx=(theme.SPACE_L + 4, theme.SPACE_L),
+                      pady=(0, theme.SPACE_S))
+            # fixed label width keeps all cards aligned, the values take the rest
+            grid.columnconfigure(0, weight=0, minsize=cfg.LABEL_WIDTH)
+            grid.columnconfigure(1, weight=1, minsize=cfg.FIELD_WIDTH)
             for row, field in enumerate(fields):
-                editor = _FieldEditor(grid, field, row, self._on_editor_commit)
+                editor = _FieldEditor(grid, field, row, self.fonts,
+                                      self._on_editor_commit,
+                                      lambda e, s=source: self.reset_field(s, e))
                 self._editors.append((source, editor))
+            self._add_toc_entry(section_name, card)
+
+    def _add_toc_entry(self, name: str, card: tk.Widget) -> None:
+        entry = tk.Label(self._toc, text=name, background=theme.GROUND,
+                         foreground=theme.TEXT, font=self.fonts.body, anchor="w",
+                         padx=10, pady=5, cursor="hand2")
+        entry.pack(fill="x", pady=1)
+        entry.bind("<Button-1>", lambda _e: self._scroller.scroll_to(card))
+        self._sections.append((card, entry))
+
+    def _sync_toc(self) -> None:
+        """Highlight the section at the top of the visible part of the form."""
+        if not self._sections:
+            return
+        top = self._scroller.visible_top() + 24
+        inner_y = self._scroller.inner.winfo_rooty()
+        current = self._sections[0][0]
+        for card, _entry in self._sections:
+            if card.winfo_rooty() - inner_y <= top:
+                current = card
+        for card, entry in self._sections:
+            chosen = card is current
+            entry.configure(background=theme.ACCENT_SOFT if chosen else theme.GROUND,
+                            font=self.fonts.body_bold if chosen else self.fonts.body)
 
     # --- values -------------------------------------------------------------
     def refresh_values(self) -> None:
@@ -375,6 +505,13 @@ class ConfigPanel(ttk.Frame):
         self.refresh_values()
         if callable(self.on_change):
             self.on_change()
+
+    def reset_field(self, source: ConfigSource, editor: _FieldEditor) -> None:
+        """Put one plain value back to what stands in the configuration file."""
+        file_value = self._file_values.get(source.id, {}).get(editor.field.name,
+                                                              editor.field.default)
+        editor.set_raw_value(file_value)
+        self._on_editor_commit()
 
     # --- helpers ------------------------------------------------------------
     @staticmethod

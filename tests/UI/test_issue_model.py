@@ -61,20 +61,21 @@ class TitleAndKindTests(unittest.TestCase):
     def test_title_is_the_description(self):
         item = _item(description="Crash in importer\nsecond line",
                      defect_description="bugfix: Fixed crash")
-        self.assertEqual(model.title(item), "Crash in importer")
+        self.assertEqual(model.title(item), "Crash in importer\nsecond line")
         self.assertEqual(model.kind(item), "Bug fix")
 
-    def test_marker_takes_the_title_from_the_release_note(self):
+    def test_marker_keeps_its_description_as_title(self):
         item = _item(description="MARKER! This is an improvement/update/upgrade/etc",
                      defect_description="new: Native Rhapsody importer")
         self.assertTrue(model.is_marker(item))
-        self.assertEqual(model.title(item), "Native Rhapsody importer")
+        self.assertEqual(model.title(item),
+                         "MARKER! This is an improvement/update/upgrade/etc")
         self.assertEqual(model.kind(item), "New feature")
 
     def test_marker_without_prefix_is_an_improvement(self):
         item = _item(description="MARKER! improvement",
                      defect_description="Faster startup")
-        self.assertEqual(model.title(item), "Faster startup")
+        self.assertEqual(model.title(item), "MARKER! improvement")
         self.assertEqual(model.kind(item), "Improvement")
 
     def test_unknown_prefix_gives_no_kind(self):

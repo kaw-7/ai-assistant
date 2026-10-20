@@ -15,6 +15,7 @@ class ValidReportBuilderModule(RunnableModule):
 
     id = "valid_report_builder"
     title = "3. Issue import with possible document creation."
+    summary = "Risk report → Polarion work items"
     description = (
         "Copies the validation report template into a stand alone document "
         "for the validated tool, then parses the risk report and creates one "

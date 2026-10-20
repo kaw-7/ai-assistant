@@ -46,7 +46,7 @@ The value of each field is put on a separate, single line. The issue ends with [
 must start with [[ Description ]]. Do not plug empty lines in between [[ END ISSUE ITEM ]] and [[ Description ]].
 Do not plug empty lines in between fields - only when the field is empty.
 
-Description is a short description of the issue/bug. 
+Description is a short description of the issue/bug - maximum 120 symbols.
 If the bug is about improvements, updates, upgrades, licesning, system requirements, documentation and similar notes 
 then put: "MARKER! This is an improvement/update/upgrade/etc". If you cannot find any short description 
 in the free text document and if the issue does not fall in the cathegory defined in the previous sentence, 

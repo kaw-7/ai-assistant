@@ -15,8 +15,12 @@ from Launcher.core.process_runner import (
 from Launcher.core.registry import ModuleRegistry
 from Launcher.core.settings_store import SettingsStore
 
+import UI.theme as theme
+
 from . import launcher_config as cfg
+from . import style
 from .config_panel import ConfigPanel
+from .module_nav import ModuleNav, split_title
 from .widgets import ConsolePane
 
 UI_LAST_MODULE = "last_module"
@@ -31,15 +35,15 @@ class LauncherApp(tk.Tk):
         self.title(cfg.WINDOW_TITLE)
         self.geometry(cfg.GEOMETRY)
         self.minsize(cfg.MIN_WIDTH, cfg.MIN_HEIGHT)
-        self.option_add("*Font", (cfg.FONT, cfg.FONT_SIZE))
+        self.fonts = style.apply(self)
 
         self.registry = registry if registry is not None else ModuleRegistry().discover()
         self.store = store if store is not None else SettingsStore()
         self.runner = ProcessRunner()
         self._current = None
 
-        self._build_menu()
         self._build_layout()
+        self._bind_keys()
         self._fill_module_list()
 
         self.protocol("WM_DELETE_WINDOW", self._on_close)
@@ -50,92 +54,80 @@ class LauncherApp(tk.Tk):
                       ConsolePane.TAG_ERROR)
 
     # --- construction -------------------------------------------------------
-    def _build_menu(self) -> None:
-        menu = tk.Menu(self)
-
-        file_menu = tk.Menu(menu, tearoff=0)
-        file_menu.add_command(label="Save settings", command=self._save_settings)
-        file_menu.add_command(label="Reload settings from disk",
-                              command=self._reload_settings)
-        file_menu.add_separator()
-        file_menu.add_command(label="Rescan modules", command=self._rescan_modules)
-        file_menu.add_separator()
-        file_menu.add_command(label="Exit", command=self._on_close)
-        menu.add_cascade(label="File", menu=file_menu)
-
-        run_menu = tk.Menu(menu, tearoff=0)
-        run_menu.add_command(label="Run selected module", command=self._run_module)
-        run_menu.add_command(label="Stop", command=self._stop_module)
-        menu.add_cascade(label="Run", menu=run_menu)
-
-        help_menu = tk.Menu(menu, tearoff=0)
-        help_menu.add_command(label="About", command=self._show_about)
-        menu.add_cascade(label="Help", menu=help_menu)
-
-        self.configure(menu=menu)
+    def _bind_keys(self) -> None:
+        self.bind("<F5>", lambda _e: self._run_module())
+        self.bind("<Shift-F5>", lambda _e: self._stop_module())
+        self.bind("<Control-s>", lambda _e: self._save_settings())
 
     def _build_layout(self) -> None:
-        outer = ttk.PanedWindow(self, orient="horizontal")
-        outer.pack(fill="both", expand=True, padx=cfg.PADX, pady=cfg.PADY)
+        # --- left: the modules as the steps of the pipeline ---
+        self.nav = ModuleNav(self, self.fonts, on_select=self._on_module_selected,
+                             on_activate=lambda _m: self._run_module())
+        self.nav.pack(side="left", fill="y")
+        self.nav.add_action("Reload", self._reload_settings)
+        self.nav.add_action("Rescan modules", self._rescan_modules)
+        self.nav.add_action("About", self._show_about)
 
-        # --- left: the modules ---
-        left = ttk.LabelFrame(outer, text="Modules")
-        self.module_list = tk.Listbox(left, exportselection=False,
-                                      activestyle="dotbox",
-                                      width=cfg.MODULE_LIST_WIDTH)
-        self.module_list.pack(fill="both", expand=True, padx=cfg.PADX,
-                              pady=cfg.PADY)
-        self.module_list.bind("<<ListboxSelect>>", self._on_module_selected)
-        self.module_list.bind("<Double-Button-1>", lambda _e: self._run_module())
-        outer.add(left, weight=0)
+        main = ttk.Frame(self)
+        main.pack(side="left", fill="both", expand=True)
 
-        # --- right: configuration and output ---
-        right = ttk.PanedWindow(outer, orient="vertical")
-        outer.add(right, weight=1)
-
-        top = ttk.Frame(right)
-        right.add(top, weight=3)
-
-        header = ttk.Frame(top)
+        # --- header: what the module does and the actions ---
+        header = ttk.Frame(main, style="Surface.TFrame",
+                           padding=(theme.SPACE_XL + 4, theme.SPACE_L + 2,
+                                    theme.SPACE_XL + 4, theme.SPACE_L))
         header.pack(fill="x")
-        self.module_title = ttk.Label(header, text="",
-                                      font=(cfg.FONT, cfg.TITLE_FONT_SIZE, "bold"))
-        self.module_title.pack(anchor="w", padx=cfg.PADX, pady=(cfg.PADY, 0))
-        self.module_description = ttk.Label(header, text="", wraplength=700,
-                                            justify="left",
-                                            foreground=cfg.COLOR_HINT)
-        self.module_description.pack(anchor="w", padx=cfg.PADX, pady=(0, cfg.PADY))
-
-        toolbar = ttk.Frame(top)
-        toolbar.pack(fill="x", padx=cfg.PADX)
-        self.run_button = ttk.Button(toolbar, text="Run module",
-                                     command=self._run_module)
-        self.run_button.pack(side="left")
-        self.stop_button = ttk.Button(toolbar, text="Stop", state="disabled",
+        actions = ttk.Frame(header, style="Surface.TFrame")
+        actions.pack(side="right", anchor="n")
+        ttk.Button(actions, text="Save settings",
+                   command=self._save_settings).pack(side="left")
+        self.stop_button = ttk.Button(actions, text="Stop", state="disabled",
                                       command=self._stop_module)
-        self.stop_button.pack(side="left", padx=cfg.PADX)
-        ttk.Button(toolbar, text="Save settings",
-                   command=self._save_settings).pack(side="left", padx=cfg.PADX)
-        self.changes_label = ttk.Label(toolbar, text="", foreground=cfg.COLOR_HINT)
-        self.changes_label.pack(side="right", padx=cfg.PADX)
+        self.stop_button.pack(side="left", padx=(theme.SPACE_S, 0))
+        self.run_button = ttk.Button(actions, text="Run   F5", style="Accent.TButton",
+                                     command=self._run_module)
+        self.run_button.pack(side="left", padx=(theme.SPACE_S, 0))
 
-        self.config_panel = ConfigPanel(top, self.store,
+        texts = ttk.Frame(header, style="Surface.TFrame")
+        texts.pack(side="left", fill="x", expand=True, padx=(0, theme.SPACE_XL))
+        self.module_step = tk.Label(texts, background=theme.SURFACE,
+                                    foreground=theme.TEXT_MUTED, font=self.fonts.small_bold,
+                                    anchor="w")
+        self.module_step.pack(fill="x")
+        self.module_title = tk.Label(texts, background=theme.SURFACE, foreground=theme.TEXT,
+                                     font=self.fonts.title, anchor="w", justify="left")
+        self.module_title.pack(fill="x", pady=(2, 4))
+        self.module_description = tk.Label(texts, background=theme.SURFACE,
+                                           foreground=theme.TEXT_MUTED, font=self.fonts.body,
+                                           anchor="w", justify="left")
+        self.module_description.pack(fill="x")
+        texts.bind("<Configure>", self._wrap_header)
+        tk.Frame(main, height=1, background=theme.BORDER).pack(fill="x")
+
+        # --- the form and, below it, the output ---
+        split = ttk.PanedWindow(main, orient="vertical")
+        split.pack(fill="both", expand=True)
+        self.config_panel = ConfigPanel(split, self.store, self.fonts,
                                         on_change=self._on_config_changed)
-        self.config_panel.pack(fill="both", expand=True, padx=cfg.PADX,
-                               pady=cfg.PADY)
+        split.add(self.config_panel, weight=3)
+        self.console = ConsolePane(split, self.fonts)
+        split.add(self.console, weight=1)
 
-        self.console = ConsolePane(right)
-        right.add(self.console, weight=2)
+        # the requested sizes would give the output too much room at start -
+        # place the divider on the first real size (before, the height is 1)
+        def first_layout(event):
+            if event.height > 1:
+                split.unbind("<Configure>", binding)
+                split.sashpos(0, int(event.height * cfg.FORM_SHARE))
+        binding = split.bind("<Configure>", first_layout, add="+")
 
-        self.status = ttk.Label(self, text=cfg.STATE_IDLE, anchor="w",
-                                relief="sunken")
-        self.status.pack(fill="x", side="bottom")
+    def _wrap_header(self, event) -> None:
+        self.module_title.configure(wraplength=max(300, event.width))
+        # long lines read badly - the description stops at about 900 pixels
+        self.module_description.configure(wraplength=max(300, min(event.width, 900)))
 
     def _fill_module_list(self) -> None:
-        self.module_list.delete(0, "end")
         self._modules = self.registry.modules
-        for module in self._modules:
-            self.module_list.insert("end", "  " + module.label())
+        self.nav.set_modules(self._modules)
 
         if not self._modules:
             self._set_status("No runnable module was found in Launcher/modules")
@@ -143,15 +135,10 @@ class LauncherApp(tk.Tk):
 
         wanted = self.store.ui_value(UI_LAST_MODULE)
         index = next((i for i, m in enumerate(self._modules) if m.id == wanted), 0)
-        self.module_list.selection_set(index)
         self._select_module(self._modules[index])
 
     # --- module selection ---------------------------------------------------
-    def _on_module_selected(self, _event=None) -> None:
-        selection = self.module_list.curselection()
-        if not selection:
-            return
-        module = self._modules[selection[0]]
+    def _on_module_selected(self, module) -> None:
         if module is self._current:
             return
         # keep what was typed for the previous module before switching
@@ -160,10 +147,14 @@ class LauncherApp(tk.Tk):
 
     def _select_module(self, module) -> None:
         self._current = module
-        self.module_title.configure(text=module.label())
+        self.nav.select(module)
+        number, name = split_title(module.label())
+        self.module_step.configure(
+            text=f"STEP {number} OF {len(self._modules)}" if number else "")
+        self.module_title.configure(text=name)
         description = module.description
         if module.opens_window:
-            description += "  (opens its own window)"
+            description += "  The module opens its own window."
         self.module_description.configure(text=description)
         self.config_panel.show_module(module)
         self.store.set_ui_value(UI_LAST_MODULE, module.id)
@@ -172,11 +163,7 @@ class LauncherApp(tk.Tk):
     # --- configuration ------------------------------------------------------
     def _on_config_changed(self) -> None:
         values, _errors = self.config_panel.collect(validate=False)
-        count = sum(len(v) for v in values.values())
-        self.changes_label.configure(
-            text=f"{count} value(s) differ from the configuration files"
-            if count else "configuration files unchanged"
-        )
+        self.nav.set_changes(sum(len(v) for v in values.values()))
 
     def _store_current_values(self, silent: bool = False) -> bool:
         errors = self.config_panel.store_values()
@@ -232,11 +219,12 @@ class LauncherApp(tk.Tk):
     def _set_running(self, running: bool) -> None:
         self.run_button.configure(state="disabled" if running else "normal")
         self.stop_button.configure(state="normal" if running else "disabled")
-        self.module_list.configure(state="disabled" if running else "normal")
+        self.nav.set_enabled(not running)
         if running:
-            self._set_status(f"{cfg.STATE_RUNNING}: {self._current.label()}")
+            self.console.set_state(ConsolePane.STATE_RUNNING, cfg.STATE_RUNNING)
+            self._set_status(split_title(self._current.label())[1])
         else:
-            self._set_status(cfg.STATE_IDLE)
+            self.console.set_state(ConsolePane.STATE_IDLE, cfg.STATE_IDLE)
 
     # --- output -------------------------------------------------------------
     def _drain_queue(self) -> None:
@@ -257,13 +245,15 @@ class LauncherApp(tk.Tk):
         tag = ConsolePane.TAG_OK if code == 0 else ConsolePane.TAG_ERROR
         self.console.append(f"=== finished with exit code {code} ===\n", tag)
         self._set_running(False)
-        self._set_status(f"Last run finished with exit code {code}")
+        self.console.set_state(ConsolePane.STATE_OK if code == 0 else ConsolePane.STATE_ERROR,
+                               "Finished" if code == 0 else f"Failed \u00B7 exit code {code}")
+        self._set_status("")
 
     def _log(self, text: str, tag: str | None = None) -> None:
         self.console.append(text, tag)
 
     def _set_status(self, text: str) -> None:
-        self.status.configure(text=text)
+        self.console.set_message(text)
 
     # --- misc ---------------------------------------------------------------
     def _show_about(self) -> None:

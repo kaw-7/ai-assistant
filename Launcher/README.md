@@ -64,13 +64,22 @@ every module owns its file and nothing is shared any more except
 Two kinds of entries appear in the editor:
 
 * **plain values** - literals of the configuration file, editable straight away.
-  A value that differs from the file is marked with a `*` and stored;
+  A value that differs from the file is tagged *edited*, gets an amber edge and
+  a *Reset* button, and is stored;
 * **derived values** - entries written as f-strings or as a reference to
   another entry, for example
   `TEMP_OUTPUT_FILE = f"output/{tool_folder}/temp_output_risk.txt"`.
-  They are shown read only and recomputed while the entries they depend on are
-  edited. Tick the box in front of such an entry to pin it to a value of your
-  own.
+  They are tagged *computed*, shown read only and recomputed while the entries
+  they depend on are edited. Switch *Override* on to pin such an entry to a
+  value of your own.
+
+A choice of up to four values is shown as buttons, a longer one as a drop-down;
+the mouse wheel only scrolls the form and never changes a value. The list of
+sections next to the form jumps to a section and follows the scrolling.
+
+Keys: **F5** runs the selected module, **Shift+F5** stops it, **Ctrl+S** saves
+the settings; **Up/Down** move through the module list once it has the focus,
+**Enter** or a double click runs the selected module.
 
 Fields marked `persist=False` (the Polarion password) are kept for the running
 launcher session only and never written to the settings file.
@@ -93,7 +102,8 @@ from Launcher.core.project import project_path
 
 class MyModule(RunnableModule):
     id = "my_module"                 # stable, also the key in the settings file
-    title = "6. My module"
+    title = "6. My module"           # "N. " becomes the step number in the side bar
+    summary = "Input -> output"      # a few words under the title in the side bar
     description = "What the module does."
     order = 60                       # position in the module list
     extra_sys_path = ()              # extra folders added to sys.path, if needed

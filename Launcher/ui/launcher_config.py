@@ -1,41 +1,45 @@
 # -*- coding: utf-8 -*-
-"""Look and feel of the launcher window itself."""
+"""Look and feel of the launcher window itself.
+
+Colours, the button styles and the font fallbacks are shared with the issue
+viewer (``UI/theme.py``); only what is particular to the launcher lives here.
+"""
 
 WINDOW_TITLE = "Tool Validation Assistant - Launcher"
-GEOMETRY = "1180x820"
-MIN_WIDTH = 900
-MIN_HEIGHT = 600
+APP_NAME = "Validation Assistant"
+GEOMETRY = "1280x860"
+MIN_WIDTH = 960
+MIN_HEIGHT = 620
 
-PADX = 6
-PADY = 4
-SECTION_PADX = 8
-SECTION_PADY = 6
+FONT = "Segoe UI Variable Text"   # falls back to "Segoe UI" when missing
+FONT_SIZE = 10
 
-FONT = "Segoe UI"
-FONT_SIZE = 9
-TITLE_FONT_SIZE = 12
-MONO_FONT = "Consolas"
-MONO_FONT_SIZE = 9
+SIDEBAR_WIDTH = 260       # pixels of the module list on the left
+TOC_WIDTH = 170           # pixels of the section list next to the form
+LABEL_WIDTH = 230         # pixels reserved for the field labels and their hints
+FIELD_WIDTH = 320         # minimum pixels of the value widgets
+CHOICE_BUTTONS_MAX = 4    # up to this many choices are buttons, more a drop-down
 
-LABEL_WIDTH = 34          # characters reserved for the field labels
-CHECK_WIDTH = 24          # pixels reserved for the override tick
-FIELD_WIDTH = 380         # pixels reserved for the value widgets
-MODULE_LIST_WIDTH = 32    # characters of the module list
+# the dark side bar
+COLOR_SIDEBAR = "#1C232D"
+COLOR_SIDEBAR_HOVER = "#242D39"
+COLOR_SIDEBAR_SELECTED = "#2A3442"
+COLOR_SIDEBAR_LINE = "#3A4658"
+COLOR_SIDEBAR_TEXT = "#E6E9EE"
+COLOR_SIDEBAR_MUTED = "#8A94A3"
 
-COLOR_HINT = "#666666"
-COLOR_DERIVED = "#f2f2f2"
-COLOR_CONSOLE_BG = "#1e1e1e"
-COLOR_CONSOLE_FG = "#e8e8e8"
-COLOR_CONSOLE_INFO = "#7fb2ff"
-COLOR_CONSOLE_OK = "#7ddc7d"
-COLOR_CONSOLE_ERROR = "#ff8a8a"
+COLOR_CONSOLE_BG = "#161B22"
+COLOR_CONSOLE_BAR = "#1C232D"
+COLOR_CONSOLE_FG = "#D5DBE3"
+COLOR_CONSOLE_INFO = "#7FB2FF"
+COLOR_CONSOLE_OK = "#7DDC7D"
+COLOR_CONSOLE_ERROR = "#FF8A8A"
 
-CONSOLE_HEIGHT = 14       # text lines
+CONSOLE_HEIGHT = 8        # text lines
+FORM_SHARE = 0.78         # part of the height the form gets at start, the output the rest
 CONSOLE_MAX_LINES = 5000  # older output is dropped
 
 QUEUE_POLL_MS = 80        # how often the output queue is drained
 
 STATE_IDLE = "Idle"
 STATE_RUNNING = "Running"
-
-WRAP_LENGTH = 620         # wrapping of the description texts

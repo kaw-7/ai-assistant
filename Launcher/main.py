@@ -24,6 +24,9 @@ def main() -> int:
     from Launcher.core.registry import ModuleRegistry
     from Launcher.core.settings_store import SettingsStore
     from Launcher.ui.app import LauncherApp
+    from UI.theme import sharp_on_high_dpi
+
+    sharp_on_high_dpi()
 
     registry = ModuleRegistry().discover()
     store = SettingsStore()
