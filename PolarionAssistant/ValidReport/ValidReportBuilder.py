@@ -1,13 +1,16 @@
-import PolarionAssistant.ValidReport.valid_report_config as vr_conf
 import PolarionAssistant.Core.core_config as core_conf
 from Core.PolarionWorker import PolarionWorker
 from typing_extensions import override
 import traceback
 import sys
+from types import ModuleType
 
 class ValidReportBuilder(PolarionWorker):
-    def __init__(self):
+    def __init__(self, doc_conf: ModuleType):
+        """``doc_conf`` - valid_report_config or periodic_review_config,
+        chosen by valid_report_main.py."""
         super().__init__()
+        self.doc_conf = doc_conf
     
     @override
     def PrintDocDetails(self):
@@ -17,7 +20,7 @@ class ValidReportBuilder(PolarionWorker):
         try:
             new_doc = self._createDoc()
             if(new_doc is None):
-                raise("Could not create a stand alone copy of the template!")
+                raise("❌ Could not create a stand alone copy of the template!")
             self._changeDocToolName(new_doc)
         except Exception:
             full_error = traceback.format_exc()
@@ -26,11 +29,11 @@ class ValidReportBuilder(PolarionWorker):
             
     def _createDoc(self):
         # Reuse the template
-        return self.getTemplate(core_conf.PROJECT_ID, vr_conf.VALID_REPORT_TEMPLATE).reuse(
+        return self.getTemplate(core_conf.PROJECT_ID, self.doc_conf.VALID_REPORT_TEMPLATE).reuse(
             core_conf.PROJECT_ID,
-            vr_conf.TARGET_LOCATION,
-            vr_conf.TARGET_NAME_ID,
-            vr_conf.TARGET_TITLE,
+            self.doc_conf.TARGET_LOCATION,
+            self.doc_conf.TARGET_NAME_ID,
+            self.doc_conf.TARGET_TITLE,
             link_role=None,
             derived_fields=None,
         )
@@ -63,12 +66,12 @@ class ValidReportBuilder(PolarionWorker):
             raise("Polarion item of type Doc Status has no title!! Please fix manually!!")
             
         docStatus_text = docStatus.title
-        new_text = docStatus_text.replace(vr_conf.PLACEHOLDER_DOCSTATUS, vr_conf.TOOL_NAME)
+        new_text = docStatus_text.replace(self.doc_conf.PLACEHOLDER_DOCSTATUS, self.doc_conf.TOOL_NAME)
         print(f"DocStatus title:{new_text}")
         docStatus.title = new_text
         docStatus.save()
     
     def _ChangeItems(self, items):
-        self._ModifyItems(items, vr_conf.PLACEHOLDER, vr_conf.TOOL_NAME)
+        self._ModifyItems(items, self.doc_conf.PLACEHOLDER, self.doc_conf.TOOL_NAME)
         
 

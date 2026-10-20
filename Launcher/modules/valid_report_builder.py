@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
-"""Module 3 - validation report document and issue import into Polarion."""
+"""Module 3a - validation report document and issue import into Polarion."""
 from __future__ import annotations
 
 from pathlib import Path
 
+import importlib
+
 from Launcher.core.module_descriptor import RunnableModule
 from Launcher.core.project import PROJECT_ROOT
 
-from ._sources import polarion_env_source, valid_report_config_source
+from ._sources import REPORT_INITIAL, polarion_env_source, valid_report_config_source
 
 
 class ValidReportBuilderModule(RunnableModule):
-    """Runs ``PolarionAssistant/valid_report_main.py``."""
+    """Runs ``PolarionAssistant/valid_report_main.py initial``."""
 
     id = "valid_report_builder"
-    title = "3. Issue import with possible document creation."
+    title = "3a. Issue import with possible document creation."
     summary = "Risk report → Polarion work items"
     description = (
         "Copies the validation report template into a stand alone document "
@@ -28,12 +30,23 @@ class ValidReportBuilderModule(RunnableModule):
     extra_sys_path = ("PolarionAssistant",)
     entry_script = "PolarionAssistant/valid_report_main.py"
 
+    #: the argument of valid_report_main.py, it picks the configuration file
+    report = REPORT_INITIAL
+
+    def report_source(self):
+        """The configuration file of the report - the one the main loads."""
+        return valid_report_config_source()
+
     def config_sources(self):
-        return [valid_report_config_source(), polarion_env_source()]
+        return [self.report_source(), polarion_env_source()]
+
+    def entry_args(self):
+        return [self.report]
 
     def banner(self) -> None:
         import PolarionAssistant.Core.core_config as core_conf
-        import PolarionAssistant.ValidReport.valid_report_config as conf
+        # the configuration file of the report, as the main imports it
+        conf = importlib.import_module(self.report_source().module_name)
 
         print(f"Project        : {core_conf.PROJECT_ID}")
         print(f"Document       : {conf.DOC_NAME}")

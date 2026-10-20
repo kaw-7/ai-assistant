@@ -25,6 +25,11 @@ UI_CONFIG = "ui_config"
 POLARION_ENV = "polarion_env"
 TESTSPEC_CONFIG = "testspec_config"
 VALID_REPORT_CONFIG = "valid_report_config"
+PERIODIC_REVIEW_CONFIG = "periodic_review_config"
+
+#: argument of valid_report_main.py: which report document is worked on
+REPORT_INITIAL = "initial"
+REPORT_PERIODIC = "periodic"
 
 YES_NO = ("y", "n")
 
@@ -129,17 +134,26 @@ def main_config_source() -> PyModuleConfigSource:
 
 
 def valid_report_config_source() -> PyModuleConfigSource:
-    """``PolarionAssistant/ValidReport/valid_report_config.py`` - module 3.
+    """``PolarionAssistant/ValidReport/valid_report_config.py`` - module 3a."""
+    return _report_config_source(VALID_REPORT_CONFIG, "Validation report")
+
+
+def periodic_review_config_source() -> PyModuleConfigSource:
+    """``PolarionAssistant/ValidReport/periodic_review_config.py`` - module 3b."""
+    return _report_config_source(PERIODIC_REVIEW_CONFIG, "Periodic review")
+
+
+def _report_config_source(file_stem: str, title: str) -> PyModuleConfigSource:
+    """A configuration file of a report document; the source id is the file name.
 
     One file for both steps: the document created from the template is the
     document the issues are imported into.
     """
     return PyModuleConfigSource(
-        source_id=VALID_REPORT_CONFIG,
-        title="Validation report configuration (valid_report_config.py)",
-        module_name="PolarionAssistant.ValidReport.valid_report_config",
-        file_path=project_path("PolarionAssistant", "ValidReport",
-                               "valid_report_config.py"),
+        source_id=file_stem,
+        title=f"{title} configuration ({file_stem}.py)",
+        module_name=f"PolarionAssistant.ValidReport.{file_stem}",
+        file_path=project_path("PolarionAssistant", "ValidReport", f"{file_stem}.py"),
         description=(
             "Steps run by valid_report_main.py, the target document shared by "
             "both steps, the risk report the issues are read from and the "
@@ -147,9 +161,9 @@ def valid_report_config_source() -> PyModuleConfigSource:
             "the same output folder as the AI assistant."
         ),
         # ValidReportBuilder is also reachable through 'ValidReport.*'
-        aliases=("ValidReport.valid_report_config",),
+        aliases=(f"ValidReport.{file_stem}",),
         field_specs=[
-            ConfigField("BUILD_VALID_REPORT", "Build the validation report",
+            ConfigField("BUILD_VALID_REPORT", f"Build the {title.lower()}",
                         kind=FieldKind.CHOICE, choices=YES_NO, section=SECTION_STEPS),
 
             ConfigField("TOOL_NAME", "Tool name", section=SECTION_DOCUMENT),

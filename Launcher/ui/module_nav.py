@@ -15,7 +15,7 @@ NAV_PADX = 6
 ENTRY_PADX = 6
 BADGE_GAP = 8
 
-_NUMBERED_TITLE = re.compile(r"^\s*(\d+)\s*[.)]\s*(.+)$")
+_NUMBERED_TITLE = re.compile(r"^\s*(\d+[a-z]?)\s*[.)]\s*(.+)$")
 
 
 def split_title(title: str) -> tuple[str, str]:

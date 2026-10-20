@@ -71,6 +71,10 @@ class RunnableModule(ABC):
         """
         return []
 
+    def entry_args(self) -> List[str]:
+        """Command line arguments handed to the entry point - ``["periodic"]``."""
+        return []
+
     def banner(self) -> None:
         """Print what the module is about to work on.
 
@@ -90,12 +94,12 @@ class RunnableModule(ABC):
         argv = sys.argv
         try:
             if self.entry_module:
-                sys.argv = [self.entry_module]
+                sys.argv = [self.entry_module, *self.entry_args()]
                 runpy.run_module(self.entry_module, run_name="__main__",
                                  alter_sys=True)
             elif self.entry_script:
                 script = str(PROJECT_ROOT / self.entry_script)
-                sys.argv = [script]
+                sys.argv = [script, *self.entry_args()]
                 runpy.run_path(script, run_name="__main__")
             else:
                 raise NotImplementedError(

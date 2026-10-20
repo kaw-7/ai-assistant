@@ -57,6 +57,8 @@ DROPPED_KEYS = {
     # not edit - also catches the ones MOVED_KEYS has just brought here
     "valid_report_config": ("PROJECT_ID", "ISSUE_MARKER_BEG", "ISSUE_MARKER_END",
                             "ISSUE_END_MARKER"),
+    # the report toggle of module 3, replaced by the modules 3a and 3b
+    "report_options": ("REPORT_TYPE",),
 }
 
 
