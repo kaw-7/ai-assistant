@@ -16,9 +16,10 @@ except ImportError:
 class IssueList(ttk.Frame):
     """Shows the issues it is given; row ids are the indexes into the item list."""
 
-    def __init__(self, master, fonts: theme.Fonts, on_select=None):
+    def __init__(self, master, fonts: theme.Fonts, on_select=None, on_delete=None):
         super().__init__(master, style="Surface.TFrame")
         self.on_select = on_select
+        self.on_delete = on_delete
         self._dots = {key: theme.status_dot(self, key) for key in model.STATUS_KEYS}
 
         self.tree = ttk.Treeview(self, style="Issues.Treeview",
@@ -43,7 +44,9 @@ class IssueList(ttk.Frame):
         self.tree.pack(side="left", fill="both", expand=True,
                        padx=(theme.SPACE_XS, 0), pady=(theme.SPACE_XS, 0))
 
+        self.tree.tag_configure("improvement", foreground=theme.IMPROVEMENT)
         self.tree.bind("<<TreeviewSelect>>", self._on_tree_select)
+        self.tree.bind("<Delete>", lambda _e: callable(self.on_delete) and self.on_delete())
 
     # --- content ------------------------------------------------------------
     def set_rows(self, items: list[dict], indexes: list[int]) -> None:
@@ -51,7 +54,7 @@ class IssueList(ttk.Frame):
         for index in indexes:
             self.tree.insert("", "end", iid=str(index), **self._row(items[index]))
         self.footer.configure(text=f"{len(indexes)} of {len(items)} issues"
-                                   "  ·  ↑ ↓ move between issues")
+                                   "  ·  ↑ ↓ move between issues  ·  Del deletes (edit mode)")
 
     def update_row(self, index: int, item: dict) -> None:
         if self.tree.exists(str(index)):
@@ -64,6 +67,7 @@ class IssueList(ttk.Frame):
             "text": "  " + model.title(item),
             "image": self._dots[model.status_key(item)],
             "values": (shown_id,),
+            "tags": ("improvement",) if model.is_improvement(item) else (),
         }
 
     # --- selection ----------------------------------------------------------

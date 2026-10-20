@@ -24,6 +24,8 @@ except ImportError:
 
 DEFECT_MIN_LINES = 1
 DEFECT_MAX_LINES = 8
+# a longer title scrolls, so it cannot push the texts below out of the window
+TITLE_MAX_LINES = 3
 
 
 class _StatusButton(tk.Frame):
@@ -71,7 +73,7 @@ class _StatusButton(tk.Frame):
 class IssueDetail(tk.Frame):
 
     def __init__(self, master, fonts: theme.Fonts, on_change=None,
-                 on_prev=None, on_next=None):
+                 on_prev=None, on_next=None, on_delete=None):
         super().__init__(master, background=theme.GROUND)
         self.fonts = fonts
         self.on_change = on_change
@@ -83,12 +85,12 @@ class IssueDetail(tk.Frame):
                                background=theme.GROUND, foreground=theme.TEXT_MUTED,
                                font=fonts.body)
         self.body = tk.Frame(self, background=theme.GROUND)
-        self._build_header(on_prev, on_next)
+        self._build_header(on_prev, on_next, on_delete)
         self._build_status()
         self._build_texts()
 
     # --- construction -------------------------------------------------------
-    def _build_header(self, on_prev, on_next):
+    def _build_header(self, on_prev, on_next, on_delete):
         header = tk.Frame(self.body, background=theme.GROUND)
         header.pack(fill="x")
 
@@ -99,6 +101,9 @@ class IssueDetail(tk.Frame):
         buttons.pack(side="right")
         self.mode_label = tk.Label(buttons, background=theme.GROUND, font=self.fonts.small)
         self.mode_label.pack(side="left", padx=(0, theme.SPACE_M))
+        self.delete_button = ttk.Button(buttons, text="Delete", style="Danger.TButton",
+                                        command=on_delete, state="disabled")
+        self.delete_button.pack(side="left", padx=(0, theme.SPACE_M))
         ttk.Button(buttons, text="Previous", style="Icon.TButton",
                    command=on_prev).pack(side="left")
         ttk.Button(buttons, text="Next", style="Icon.TButton",
@@ -110,12 +115,22 @@ class IssueDetail(tk.Frame):
                                    foreground=theme.WARN_TEXT, font=self.fonts.small_bold,
                                    padx=theme.SPACE_S - 2)
 
-        # second line: the title over the whole width
-        self.title = tk.Label(header, background=theme.GROUND, foreground=theme.TEXT,
-                              font=self.fonts.title, justify="left", anchor="w")
-        self.title.pack(fill="x")
-        header.bind("<Configure>",
-                    lambda e: self.title.configure(wraplength=max(200, e.width - 4)))
+        # second line: the title over the whole width, at most TITLE_MAX_LINES
+        # high - a longer one gets a scrollbar instead of pushing the cards down
+        title_row = tk.Frame(header, background=theme.GROUND)
+        title_row.pack(fill="x")
+        self.title = tk.Text(title_row, height=1, wrap="word", font=self.fonts.title,
+                             background=theme.GROUND, foreground=theme.TEXT,
+                             relief="flat", borderwidth=0, highlightthickness=0,
+                             padx=0, pady=0, cursor="arrow",
+                             selectbackground=theme.ACCENT_SOFT,
+                             selectforeground=theme.TEXT,
+                             inactiveselectbackground=theme.ACCENT_SOFT)
+        self.title_scrollbar = ttk.Scrollbar(title_row, orient="vertical",
+                                             command=self.title.yview)
+        self.title.configure(yscrollcommand=self.title_scrollbar.set, state="disabled")
+        self.title.pack(side="left", fill="x", expand=True)
+        self.title.bind("<Configure>", lambda _e: self._fit_title())
 
     def _build_status(self):
         block = tk.Frame(self.body, background=theme.GROUND)
@@ -191,19 +206,31 @@ class IssueDetail(tk.Frame):
                      foreground=theme.TEXT_SOFT, font=self.fonts.mono,
                      padx=6, pady=1).pack(side="left", padx=(0, theme.SPACE_XS))
         kind = model.kind(item)
-        if kind:
+        if kind and model.is_improvement(item):
+            tk.Label(self.tags, text=kind, background=theme.IMPROVEMENT_SOFT,
+                     foreground=theme.IMPROVEMENT, font=self.fonts.small_bold, padx=6,
+                     highlightthickness=1, highlightbackground=theme.IMPROVEMENT
+                     ).pack(side="left", padx=(0, theme.SPACE_XS))
+        elif kind:
             tk.Label(self.tags, text=kind, background=theme.GROUND,
                      foreground=theme.TEXT_SOFT, font=self.fonts.small, padx=6,
                      highlightthickness=1, highlightbackground=theme.BORDER_STRONG
                      ).pack(side="left", padx=(0, theme.SPACE_XS))
 
-        self.title.configure(text=model.title(item))
+        self.title.configure(state="normal",
+                             foreground=theme.IMPROVEMENT if model.is_improvement(item)
+                             else theme.TEXT)
+        self.title.delete("1.0", "end")
+        self.title.insert("1.0", model.title(item))
+        self.title.configure(state="disabled")
+        self.title.yview_moveto(0.0)
         source = (item.get(uiConf.SOURCE) or "").strip()
         self.source.configure(text=f"Source: {source}" if source else "")
         self._load(self.defect_text, item.get(uiConf.DEFECT_DESCRIPTION, ""))
         self._load(self.risk_text, item.get(uiConf.RISK_ASSESSMENT, ""))
         self.mark_edited(edited)
         self._paint()
+        self._fit_title()
         self._fit_defect()
 
     def mark_edited(self, edited: bool) -> None:
@@ -221,6 +248,18 @@ class IssueDetail(tk.Frame):
         widget.yview_moveto(0.0)
         if not self.editing:
             widget.configure(state="disabled")
+
+    def _fit_title(self) -> None:
+        widget = self.title
+        lines = int(widget.tk.call(widget._w, "count", "-displaylines", "1.0", "end-1c") or 0) + 1
+        height = max(1, min(lines, TITLE_MAX_LINES))
+        if int(widget.cget("height")) != height:
+            widget.configure(height=height)
+        if lines > TITLE_MAX_LINES:
+            if not self.title_scrollbar.winfo_manager():
+                self.title_scrollbar.pack(side="right", fill="y", before=widget)
+        elif self.title_scrollbar.winfo_manager():
+            self.title_scrollbar.pack_forget()
 
     def _fit_defect(self) -> None:
         widget = self.defect_text
@@ -243,6 +282,8 @@ class IssueDetail(tk.Frame):
         self.mode_label.configure(
             text=f"✎ Edit mode {'on' if editing else 'off'} (Ctrl+E)",
             foreground=theme.ACCENT if editing else theme.TEXT_MUTED)
+        self.delete_button.configure(
+            state="normal" if editing and self.item is not None else "disabled")
         current = model.status_key(self.item) if self.item is not None else None
         for button in self.status_buttons:
             button.paint(button.key == current, editing)

@@ -35,7 +35,7 @@ ISSUE_END_MARKER = "[[ END ISSUE ITEM ]]"
 # ============================================================================
 # DOCUMENT CREATION
 # ============================================================================
-VALID_REPORT_TEMPLATE = f'wiki/{TARGET_LOCATION}/_ValidationReportTemplate CSV'
+VALID_REPORT_TEMPLATE = f'wiki/{TARGET_LOCATION}/_ValidationReportTemplate CSV' # wiki/Anomaly Reports/_PeriodicReviewTemplate
 
 # TARGET_PROJECT_ID = "ToolValidation"
 LINK_ROLE = None

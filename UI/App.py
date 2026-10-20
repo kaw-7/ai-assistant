@@ -38,6 +38,7 @@ class App(tk.Tk):
         self.items = items
         self.items_file_path = items_file_path
         self._changed = set()          # indexes of the issues edited since the last save
+        self._deleted = 0              # issues deleted since the last save
         self.editing = False           # edit mode is for the whole viewer, not one issue
 
         self.filter_var = tk.StringVar(value=FILTER_ALL)
@@ -113,10 +114,12 @@ class App(tk.Tk):
         panes = ttk.PanedWindow(self, orient="horizontal")
         panes.pack(fill="both", expand=True)
 
-        self.issue_list = IssueList(panes, self.fonts, on_select=self._on_select)
+        self.issue_list = IssueList(panes, self.fonts, on_select=self._on_select,
+                                    on_delete=self._delete_issue)
         self.detail = IssueDetail(panes, self.fonts, on_change=self._on_change,
                                   on_prev=lambda: self.issue_list.step(-1),
-                                  on_next=lambda: self.issue_list.step(1))
+                                  on_next=lambda: self.issue_list.step(1),
+                                  on_delete=self._delete_issue)
         panes.add(self.issue_list, weight=1)
         panes.add(self.detail, weight=1)
         # start with 45 % for the list - the requested sizes would make it narrow.
@@ -128,7 +131,7 @@ class App(tk.Tk):
         binding = panes.bind("<Configure>", first_layout, add="+")
 
     # --- list and filter ----------------------------------------------------
-    def _refresh_list(self):
+    def _refresh_list(self, keep=None):
         wanted = self.filter_var.get()
         query = self.search_var.get()
         indexes = [
@@ -136,7 +139,8 @@ class App(tk.Tk):
             if (wanted == FILTER_ALL or model.status_key(item) == wanted)
             and model.matches_query(item, query)
         ]
-        keep = self.detail.index
+        if keep is None:
+            keep = self.detail.index
         self.issue_list.set_rows(self.items, indexes)
         if keep in indexes:
             self.issue_list.select(keep)
@@ -173,11 +177,44 @@ class App(tk.Tk):
         self._update_counts()
         self._update_dirty()
 
+    def _delete_issue(self):
+        """Removes the shown issue from the list; the report changes on save."""
+        index = self.detail.index
+        if not self.editing or index is None:
+            return
+        if not messagebox.askyesno(
+                "Issue viewer",
+                f"Delete this issue from the report?\n\n{model.title(self.items[index])}\n\n"
+                "It is removed from the report file when you save.",
+                icon="warning", default="no", parent=self):
+            return
+        rows = self.issue_list.visible()
+        position = rows.index(index) if index in rows else 0
+        del self.items[index]
+        # the indexes behind the deleted issue move one up
+        def shift(i):
+            return i - 1 if i > index else i
+        self._changed = {shift(i) for i in self._changed if i != index}
+        rows = [shift(i) for i in rows if i != index]
+        self._deleted += 1
+        self.detail.index = None
+        self._refresh_list(keep=rows[min(position, len(rows) - 1)] if rows else None)
+        self._update_counts()
+        self._update_dirty()
+        self.issue_list.tree.focus_set()
+
+    def _unsaved(self) -> bool:
+        return bool(self._changed or self._deleted)
+
     def _update_dirty(self):
-        count = len(self._changed)
-        if count:
-            noun = "issue" if count == 1 else "issues"
-            self.dirty_label.configure(text=f"●  {count} {noun} changed, not saved",
+        parts = []
+        if self._changed:
+            count = len(self._changed)
+            parts.append(f"{count} {'issue' if count == 1 else 'issues'} changed")
+        if self._deleted:
+            parts.append(f"{self._deleted} deleted")
+        if parts:
+            self.dirty_label.configure(text=f"●  {', '.join(parts)}, not saved",
                                        foreground=theme.WARN_TEXT)
         else:
             self.dirty_label.configure(text="")
@@ -190,6 +227,7 @@ class App(tk.Tk):
                                  parent=self)
             return False
         self._changed.clear()
+        self._deleted = 0
         self.detail.mark_edited(False)
         self.dirty_label.configure(text="✓  Saved", foreground=theme.STATUS_COLORS[
             model.NO_RISK].fg)
@@ -197,10 +235,11 @@ class App(tk.Tk):
         return True
 
     def _on_close(self):
-        if self._changed:
+        if self._unsaved():
             answer = messagebox.askyesnocancel(
                 "Issue viewer",
-                f"{len(self._changed)} changed issue(s) are not saved yet.\n"
+                f"{len(self._changed)} changed and {self._deleted} deleted issue(s)"
+                " are not saved yet.\n"
                 "Save them into the report before closing?",
                 parent=self)
             if answer is None:

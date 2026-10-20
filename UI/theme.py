@@ -44,6 +44,13 @@ WARN_TEXT = "#8A5A00"
 WARN_SOFT = "#FBEED5"
 CHIP = "#ECEEF1"
 
+# issues the release notes name an improvement
+IMPROVEMENT = ACCENT
+IMPROVEMENT_SOFT = ACCENT_SOFT
+
+DANGER = "#B42318"
+DANGER_SOFT = "#FDECEA"
+
 
 @dataclass(frozen=True)
 class StatusColors:
@@ -160,6 +167,14 @@ def apply(root: tk.Misc, family: str | None = None, size: int | None = None) -> 
               lightcolor=[("disabled", ACCENT_RING), ("active", ACCENT_HOVER)],
               darkcolor=[("disabled", ACCENT_RING), ("active", ACCENT_HOVER)])
     style.configure("Icon.TButton", padding=(8, 5))
+    style.configure("Danger.TButton", foreground=DANGER, padding=(8, 5))
+    style.map("Danger.TButton",
+              background=[("disabled", SURFACE), ("pressed", BORDER),
+                          ("active", DANGER_SOFT)],
+              foreground=[("disabled", TEXT_DISABLED)],
+              bordercolor=[("disabled", BORDER), ("focus", DANGER)],
+              lightcolor=[("active", DANGER_SOFT)],
+              darkcolor=[("active", DANGER_SOFT)])
 
     # the status filter: toggle chips, dark when chosen
     style.configure("Chip.Toolbutton", background=SURFACE, foreground=TEXT,

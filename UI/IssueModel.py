@@ -100,6 +100,11 @@ def kind(item: dict) -> str:
     return "Improvement" if is_marker(item) else ""
 
 
+def is_improvement(item: dict) -> bool:
+    """Improvements are shown in blue in the list and the details."""
+    return kind(item) == "Improvement"
+
+
 def defect_ids(item: dict) -> list[str]:
     raw = item.get(uiConf.DEFECT_ID) or ""
     return [part.strip() for part in re.split(r"[,;\n]", raw) if part.strip()]
