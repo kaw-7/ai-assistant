@@ -16,7 +16,7 @@ class ValidReportBuilderModule(RunnableModule):
     """Runs ``PolarionAssistant/valid_report_main.py initial``."""
 
     id = "valid_report_builder"
-    title = "3a. Issue import with possible document creation."
+    title = "3a. Issue import for an initial validation report."
     summary = "Risk report → Polarion work items"
     description = (
         "Copies the validation report template into a stand alone document "
