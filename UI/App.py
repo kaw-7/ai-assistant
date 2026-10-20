@@ -61,7 +61,7 @@ class App(tk.Tk):
     # --- construction -------------------------------------------------------
     def _build_header(self):
         header = ttk.Frame(self, style="Surface.TFrame",
-                           padding=(theme.SPACE_XL, theme.SPACE_M))
+                           padding=(theme.SPACE_L, theme.SPACE_XS))
         header.pack(fill="x")
 
         ttk.Button(header, text="Save to report", style="Accent.TButton",
@@ -91,16 +91,18 @@ class App(tk.Tk):
 
         titles = ttk.Frame(header, style="Surface.TFrame")
         titles.pack(side="left", fill="x", expand=True)
+        # name and file on one line, so the header is only as high as its buttons
         tk.Label(titles, text="Issue viewer", background=theme.SURFACE,
-                 foreground=theme.TEXT, font=self.fonts.heading).pack(anchor="w")
+                 foreground=theme.TEXT, font=self.fonts.heading).pack(side="left")
         tk.Label(titles, text=_shorten(str(self.items_file_path)), background=theme.SURFACE,
-                 foreground=theme.TEXT_MUTED, font=self.fonts.mono).pack(anchor="w")
+                 foreground=theme.TEXT_MUTED, font=self.fonts.mono).pack(
+            side="left", padx=(theme.SPACE_M, 0))
 
         tk.Frame(self, height=1, background=theme.BORDER).pack(fill="x")
 
     def _build_filters(self):
         bar = ttk.Frame(self, style="Surface.TFrame",
-                        padding=(theme.SPACE_XL, theme.SPACE_S + 2))
+                        padding=(theme.SPACE_L, theme.SPACE_XS))
         bar.pack(fill="x")
         self.filter_buttons = {}
         for key, _label in FILTERS:
@@ -108,6 +110,17 @@ class App(tk.Tk):
                                      style="Chip.Toolbutton", command=self._refresh_list)
             button.pack(side="left", padx=(0, theme.SPACE_S))
             self.filter_buttons[key] = button
+
+        # moving through the issues and deleting one, at the filters' level so
+        # the details below keep their height for the texts
+        ttk.Button(bar, text="Next", style="Icon.TButton",
+                   command=lambda: self.issue_list.step(1)).pack(side="right")
+        ttk.Button(bar, text="Previous", style="Icon.TButton",
+                   command=lambda: self.issue_list.step(-1)).pack(
+            side="right", padx=(0, theme.SPACE_XS))
+        self.delete_button = ttk.Button(bar, text="Delete", style="Danger.TButton",
+                                        command=self._delete_issue, state="disabled")
+        self.delete_button.pack(side="right", padx=(0, theme.SPACE_M))
         tk.Frame(self, height=1, background=theme.BORDER).pack(fill="x")
 
     def _build_body(self):
@@ -116,18 +129,15 @@ class App(tk.Tk):
 
         self.issue_list = IssueList(panes, self.fonts, on_select=self._on_select,
                                     on_delete=self._delete_issue)
-        self.detail = IssueDetail(panes, self.fonts, on_change=self._on_change,
-                                  on_prev=lambda: self.issue_list.step(-1),
-                                  on_next=lambda: self.issue_list.step(1),
-                                  on_delete=self._delete_issue)
-        panes.add(self.issue_list, weight=1)
+        self.detail = IssueDetail(panes, self.fonts, on_change=self._on_change)
+        panes.add(self.issue_list, weight=0)
         panes.add(self.detail, weight=1)
-        # start with 45 % for the list - the requested sizes would make it narrow.
-        # Done on the first real size, before that the width is still 1.
+        # the list only shows the IDs - give it just their width (plus the
+        # scrollbar). Done on the first real size, before that the width is still 1.
         def first_layout(event):
             if event.width > 1:
                 panes.unbind("<Configure>", binding)
-                panes.sashpos(0, int(event.width * 0.45))
+                panes.sashpos(0, self.issue_list.winfo_reqwidth())
         binding = panes.bind("<Configure>", first_layout, add="+")
 
     # --- list and filter ----------------------------------------------------
@@ -160,6 +170,11 @@ class App(tk.Tk):
     def _on_select(self, index):
         item = self.items[index] if index is not None else None
         self.detail.show(index, item, edited=index in self._changed)
+        self._update_delete_button()
+
+    def _update_delete_button(self):
+        self.delete_button.configure(
+            state="normal" if self.editing and self.detail.item is not None else "disabled")
 
     # --- edit mode ----------------------------------------------------------
     def _toggle_edit(self):
@@ -167,6 +182,7 @@ class App(tk.Tk):
         self.edit_button.configure(text="Done" if self.editing else "Edit",
                                    style="Accent.TButton" if self.editing else "TButton")
         self.detail.set_editing(self.editing)
+        self._update_delete_button()
 
     # --- changes ------------------------------------------------------------
     def _on_change(self, index):

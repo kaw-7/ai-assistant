@@ -81,15 +81,8 @@ def _split_prefix(text: str) -> tuple[str | None, str]:
 
 
 def title(item: dict) -> str:
-    """The one line naming the issue in the list and above the details."""
-    description = (item.get(uiConf.DESCRIPTION) or "").strip()
-    if description and not is_marker(item):
-        return description.splitlines()[0]
-    # a marker carries no title of its own - the release note entry is the title
-    defect = (item.get(uiConf.DEFECT_DESCRIPTION) or "").strip()
-    _prefix, rest = _split_prefix(defect)
-    first_line = rest.strip().splitlines()[0] if rest.strip() else ""
-    return first_line or description or "(no description)"
+    """The description of the issue as it is - also a marker's "MARKER! ..."."""
+    return (item.get(uiConf.DESCRIPTION) or "").strip() or "(no description)"
 
 
 def kind(item: dict) -> str:

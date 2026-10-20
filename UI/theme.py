@@ -195,7 +195,7 @@ def apply(root: tk.Misc, family: str | None = None, size: int | None = None) -> 
               lightcolor=[("focus", ACCENT_RING)])
 
     # the issue list
-    row_height = fonts.body.metrics("linespace") + 14
+    row_height = fonts.body.metrics("linespace") + 8
     style.configure("Issues.Treeview", background=SURFACE,
                     fieldbackground=SURFACE, foreground=TEXT, font=fonts.body,
                     rowheight=row_height, borderwidth=0, relief="flat")
@@ -206,7 +206,7 @@ def apply(root: tk.Misc, family: str | None = None, size: int | None = None) -> 
     style.configure("Issues.Treeview.Heading", background=SURFACE,
                     foreground=TEXT_MUTED, font=fonts.small_bold, relief="flat",
                     borderwidth=0, bordercolor=DIVIDER, lightcolor=SURFACE,
-                    darkcolor=SURFACE, padding=(6, 6))
+                    darkcolor=SURFACE, padding=(6, 3))
     style.map("Issues.Treeview.Heading", background=[("active", SURFACE)])
 
     # slim scrollbars without arrows
