@@ -1,4 +1,5 @@
 import PolarionAssistant.ValidReport.valid_report_config as vr_conf
+import PolarionAssistant.Core.core_config as core_conf
 from Core.PolarionWorker import PolarionWorker
 from typing_extensions import override
 import traceback
@@ -25,8 +26,8 @@ class ValidReportBuilder(PolarionWorker):
             
     def _createDoc(self):
         # Reuse the template
-        return self.getTemplate(vr_conf.PROJECT_ID, vr_conf.VALID_REPORT_TEMPLATE).reuse(
-            vr_conf.PROJECT_ID,
+        return self.getTemplate(core_conf.PROJECT_ID, vr_conf.VALID_REPORT_TEMPLATE).reuse(
+            core_conf.PROJECT_ID,
             vr_conf.TARGET_LOCATION,
             vr_conf.TARGET_NAME_ID,
             vr_conf.TARGET_TITLE,

@@ -4,8 +4,10 @@
 ``config.py`` used to hold the settings of the AI assistant *and* of the
 Polarion import.  The validation report module (document creation and issue
 import) now has ``PolarionAssistant/ValidReport/valid_report_config.py`` of its
-own.  These tests keep the two files complete and compatible - a key that goes
-missing here is an ``AttributeError`` in the middle of a run against the server.
+own.  The Polarion project id and the issue markup, the same for every Polarion
+document, are in ``PolarionAssistant/Core/core_config.py``.  These tests keep
+the files complete and compatible - a key that goes missing here is an
+``AttributeError`` in the middle of a run against the server.
 """
 from __future__ import annotations
 
@@ -14,15 +16,21 @@ import unittest
 from tests.support import PROJECT_ROOT  # noqa: F401  (puts the root on sys.path)
 
 import config
+import PolarionAssistant.Core.core_config as CoreConf
+import PolarionAssistant.ValidReport.periodic_review_config as PRConf
 import PolarionAssistant.ValidReport.valid_report_config as PConf
 
-#: everything the import path reads - PolarionIssueImporter, IssueParser
-#: and IssueDAOFactory
+#: what the import path reads from the document configuration - PolarionIssueImporter
 IMPORTER_KEYS = (
-    "PROJECT_ID",
     "DOC_NAME",
     "DOC_INPUT_HEADING",
     "ISSUE_INPUT_FILE",
+)
+
+#: what PolarionIssueImporter, ValidReportBuilder, IssueParser and
+#: IssueDAOFactory read from core_config.py
+CORE_KEYS = (
+    "PROJECT_ID",
     "ISSUE_MARKER_BEG",
     "ISSUE_MARKER_END",
     "ISSUE_END_MARKER",
@@ -100,15 +108,42 @@ class ValidReportConfigTests(unittest.TestCase):
         self.assertIn(PConf.tool_folder, PConf.ISSUE_INPUT_FILE)
         self.assertTrue(PConf.ISSUE_INPUT_FILE.startswith("output/"))
 
-    def test_the_markers_are_not_empty(self):
-        for key in ("ISSUE_MARKER_BEG", "ISSUE_MARKER_END", "ISSUE_END_MARKER"):
-            with self.subTest(key=key):
-                self.assertTrue(str(getattr(PConf, key)).strip())
-
-    def test_the_document_is_addressed_by_project_name_and_heading(self):
-        self.assertTrue(PConf.PROJECT_ID)
+    def test_the_document_is_addressed_by_name_and_heading(self):
         self.assertTrue(PConf.DOC_NAME)
         self.assertTrue(PConf.DOC_INPUT_HEADING)
+
+
+class PeriodicReviewConfigTests(unittest.TestCase):
+    """``PolarionAssistant/ValidReport/periodic_review_config.py``."""
+
+    def test_has_the_same_settings_as_the_validation_report(self):
+        def names(module):
+            return {name for name in vars(module)
+                    if not name.startswith("_") and name.isupper() or name == "tool_folder"}
+        self.assertEqual(names(PRConf), names(PConf))
+
+    def test_the_import_targets_the_created_document(self):
+        self.assertEqual(PRConf.DOC_NAME,
+                         f"wiki/{PRConf.TARGET_LOCATION}/{PRConf.TARGET_NAME_ID}")
+
+
+class CoreConfigTests(unittest.TestCase):
+    """``PolarionAssistant/Core/core_config.py``."""
+
+    def test_holds_the_project_and_the_markup(self):
+        for key in CORE_KEYS:
+            with self.subTest(key=key):
+                self.assertTrue(str(getattr(CoreConf, key)).strip(),
+                                f"core_config.py has no {key}")
+
+    def test_the_document_configurations_do_not_repeat_them(self):
+        # a copy left in a document configuration would be edited by mistake
+        # and silently ignored
+        for module in (PConf, PRConf):
+            for key in CORE_KEYS:
+                with self.subTest(module=module.__name__, key=key):
+                    self.assertFalse(hasattr(module, key),
+                                     f"{module.__name__} still defines {key}")
 
 
 class MainConfigTests(unittest.TestCase):
@@ -143,7 +178,7 @@ class BothConfigurationsTests(unittest.TestCase):
     def test_the_end_marker_is_the_same_in_both_files(self):
         # the import parses what the AI assistant wrote - a different end
         # marker means the importer reads one single giant issue
-        self.assertEqual(PConf.ISSUE_END_MARKER, config.ISSUE_END_MARKER)
+        self.assertEqual(CoreConf.ISSUE_END_MARKER, config.ISSUE_END_MARKER)
 
     def test_the_import_reads_a_file_the_assistant_could_have_written(self):
         # both are 'output/<tool folder>/<name>.txt'; the tool folders may

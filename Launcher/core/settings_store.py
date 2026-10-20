@@ -53,6 +53,10 @@ RENAMED_KEYS = {
 #: Values of configuration entries that do not exist any more.
 DROPPED_KEYS = {
     "main_config": ("SKIP_ENTIRE_AI",),
+    # moved to PolarionAssistant/Core/core_config.py, which the launcher does
+    # not edit - also catches the ones MOVED_KEYS has just brought here
+    "valid_report_config": ("PROJECT_ID", "ISSUE_MARKER_BEG", "ISSUE_MARKER_END",
+                            "ISSUE_END_MARKER"),
 }
 
 

@@ -32,9 +32,10 @@ class ValidReportBuilderModule(RunnableModule):
         return [valid_report_config_source(), polarion_env_source()]
 
     def banner(self) -> None:
+        import PolarionAssistant.Core.core_config as core_conf
         import PolarionAssistant.ValidReport.valid_report_config as conf
 
-        print(f"Project        : {conf.PROJECT_ID}")
+        print(f"Project        : {core_conf.PROJECT_ID}")
         print(f"Document       : {conf.DOC_NAME}")
 
         if conf.BUILD_VALID_REPORT.lower() == "y":

@@ -1,4 +1,5 @@
 # Validation Report config - document creation and issue import
+# Polarion project id and issue markup: PolarionAssistant/Core/core_config.py
 
 # --- STEPS run by valid_report_main.py ('y' / 'n') ---
 BUILD_VALID_REPORT = 'y'  # create the validation report document from the template
@@ -6,8 +7,6 @@ BUILD_VALID_REPORT = 'y'  # create the validation report document from the templ
 # ============================================================================
 # COMMON - used by both steps
 # ============================================================================
-PROJECT_ID = 'TOV'  # e.g., 'MYPROJECT', 'Python'
-
 TOOL_NAME = "VectorCAST 2026 SP3"
 
 # --- POLARION TARGET DOCUMENT ---
@@ -25,12 +24,6 @@ DOC_INPUT_HEADING = "Bug Fixes in newer version" # currently it has to be a head
 # --- IO PATH SETTINGS ---
 tool_folder = "VectorCAST"
 ISSUE_INPUT_FILE = f"output/{tool_folder}/final_risk_report.txt" # the risk report written by the AI assistant
-
-# --- ISSUE MARKUP ---
-# has to match the markup the AI assistant produced in ISSUE_INPUT_FILE
-ISSUE_MARKER_BEG = "[["
-ISSUE_MARKER_END = "]]"
-ISSUE_END_MARKER = "[[ END ISSUE ITEM ]]"
 
 # ============================================================================
 # DOCUMENT CREATION

@@ -12,6 +12,7 @@ from PolarionAssistant.Core.ItemUtil import ItemUtil
 from PolarionAssistant.Core.IssueDAOFactory import IssueDAOFactory
 from PolarionAssistant.Core.IssueParser import IssueParser
 import PolarionAssistant.ValidReport.valid_report_config as PConf
+import PolarionAssistant.Core.core_config as CoreConf
 import time
 from typing_extensions import override
 from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
@@ -29,7 +30,7 @@ class PolarionIssueImporter(PolarionWorker):
     def GetDocItems(self) -> tuple[str, str, str, str]:
       
         # Get project
-        project = self._client.getProject(PConf.PROJECT_ID)
+        project = self._client.getProject(CoreConf.PROJECT_ID)
         
         # Get document
         doc = project.getDocument(PConf.DOC_NAME)

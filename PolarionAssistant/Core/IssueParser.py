@@ -5,7 +5,7 @@ import sys
 from typing import List
 import traceback
 
-import PolarionAssistant.ValidReport.valid_report_config as PConf
+import PolarionAssistant.Core.core_config as CoreConf
 from PolarionAssistant.Model.IssueDTO import IssueDTO, SourceDTO, StatusDTO
 from PolarionAssistant.Model.DAO.IssueFields import IssueStatus, IssueSource
 
@@ -34,13 +34,13 @@ class IssueParser():
         if(self.issues_as_string is None):
             return
         
-        start_index = self.issues_as_string.find(PConf.ISSUE_MARKER_BEG)
+        start_index = self.issues_as_string.find(CoreConf.ISSUE_MARKER_BEG)
         # Find the index of the last occurrence of "]]"
-        end_index = self.issues_as_string.rfind(PConf.ISSUE_MARKER_END)
+        end_index = self.issues_as_string.rfind(CoreConf.ISSUE_MARKER_END)
 
         if start_index != -1 and end_index != -1 and start_index < end_index:
             # Add the length of the end marker to include it in the slice
-            self.issues_as_string = self.issues_as_string[start_index : end_index + len(PConf.ISSUE_MARKER_END)]
+            self.issues_as_string = self.issues_as_string[start_index : end_index + len(CoreConf.ISSUE_MARKER_END)]
             # print(result) # Output: [[asdf]] [[gewr]]
         else:
             print("Markers not found in correct order")
@@ -48,7 +48,7 @@ class IssueParser():
     @staticmethod
     def parse_markdown_to_dto(raw_text: str) -> List[IssueDTO]:
         # Split the text into individual blocks based on the END marker
-        blocks = raw_text.split(PConf.ISSUE_END_MARKER)
+        blocks = raw_text.split(CoreConf.ISSUE_END_MARKER)
         issues = []
 
         # Regex to find content between [[ Field Name ]] and the next field or newline

@@ -152,7 +152,6 @@ def valid_report_config_source() -> PyModuleConfigSource:
             ConfigField("BUILD_VALID_REPORT", "Build the validation report",
                         kind=FieldKind.CHOICE, choices=YES_NO, section=SECTION_STEPS),
 
-            ConfigField("PROJECT_ID", "Polarion project id", section=SECTION_DOCUMENT),
             ConfigField("TOOL_NAME", "Tool name", section=SECTION_DOCUMENT),
             ConfigField("TARGET_LOCATION", "Target space", section=SECTION_DOCUMENT),
             ConfigField("TARGET_TITLE", "Document title", section=SECTION_DOCUMENT),
@@ -163,10 +162,6 @@ def valid_report_config_source() -> PyModuleConfigSource:
                         help="Sub folder of output/, as in config.py"),
             ConfigField("ISSUE_INPUT_FILE", "Issues to import",
                         kind=FieldKind.FILE, section=SECTION_FILES),
-
-            ConfigField("ISSUE_MARKER_BEG", "Marker start", section=SECTION_MARKUP),
-            ConfigField("ISSUE_MARKER_END", "Marker end", section=SECTION_MARKUP),
-            ConfigField("ISSUE_END_MARKER", "Issue end marker", section=SECTION_MARKUP),
 
             ConfigField("VALID_REPORT_TEMPLATE", "Template document",
                         section=SECTION_TEMPLATE),
