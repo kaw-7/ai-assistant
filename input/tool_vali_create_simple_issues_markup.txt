@@ -35,7 +35,7 @@ bugs and malfunctioning of that tool.
 1. **ONLY BUGS** Issues, defects, bugs and malfunctioning, which are present or fixed in the specified tool, that appeared 
 (e.g. in compiler, assembler, linker, etc.) from version $vstart to $vend are important.
 Information about improvements, updates, upgrades, licesning, system requirements, documentation and similar notes is marked
-with short text "MARKER! This is an improvement/update/upgrade/etc", in the description (first) field.
+with short text "MARKER!", in the description (first) field, set as a prefix.
 
 ### MARKUP FIELD DEFINITIONS ###
 When creating the structured markup format, use the exact headers:
@@ -46,11 +46,10 @@ The value of each field is put on a separate, single line. The issue ends with [
 must start with [[ Description ]]. Do not plug empty lines in between [[ END ISSUE ITEM ]] and [[ Description ]].
 Do not plug empty lines in between fields - only when the field is empty.
 
-Description is a short description of the issue/bug - maximum 120 symbols.
+Description is a short description of the issue/bug.
+If you cannot find any short description in the free text document, then you need to provide a short heading for that issue/bug. 
 If the bug is about improvements, updates, upgrades, licesning, system requirements, documentation and similar notes 
-then put: "MARKER! This is an improvement/update/upgrade/etc". If you cannot find any short description 
-in the free text document and if the issue does not fall in the cathegory defined in the previous sentence, 
-then you need to provide a short heading for that issue/bug. 
+then put: "MARKER!" in front of the description as a prefix text. 
 Defect ID is the issue/bug ID. If not present in the free text document, create a default one. 
 Defect Description is the actual defect description - it is usually a long description of the issue with some details, examples, etc. Do not modify this, take the specification from the free text document as it is!
 Source field has to be mapped to one of these specific values: KNOWN_PROBLEM_BY_VENDOR, KNOWN_PROBLEM_3RD_PARTY, CORRECTION_IN_REL_NOTES, KNOWN_PROBLEM_IN_NEWER_VERS, OCCURED_AT_OTTOBOCK, or OTHER_SOURCE.
