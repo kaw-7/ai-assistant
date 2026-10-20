@@ -43,12 +43,14 @@ def apply(root: tk.Misc) -> theme.Fonts:
                           ("disabled", theme.READONLY),
                           ("selected", theme.DARK), ("active", theme.SURFACE_HOVER)],
               foreground=[("disabled", theme.TEXT_DISABLED), ("selected", "#FFFFFF")])
+    # in a settings row: low, so a Yes / No row is no higher than a text value
+    style.configure("Choice.Chip.Toolbutton", padding=(10, 1), font=fonts.small)
 
     # "Override" on a computed value: a toggle, blue while it is on
     style.configure("Override.Toolbutton", background=theme.SURFACE,
                     foreground=theme.TEXT, bordercolor=theme.BORDER_STRONG,
                     lightcolor=theme.SURFACE, darkcolor=theme.SURFACE,
-                    padding=(10, 4), relief="solid", borderwidth=1)
+                    padding=(5, 3), relief="solid", borderwidth=1)
     style.map("Override.Toolbutton",
               background=[("selected", theme.ACCENT_SOFT), ("active", theme.SURFACE_HOVER)],
               foreground=[("selected", theme.ACCENT_HOVER)],
@@ -66,6 +68,10 @@ def apply(root: tk.Misc) -> theme.Fonts:
               bordercolor=[("focus", theme.ACCENT_RING)],
               lightcolor=[("active", theme.SURFACE)],
               darkcolor=[("active", theme.SURFACE)])
+    # the per value reset: just the arrow, no room around it
+    style.configure("Icon.Link.TButton", padding=(2, 0), font=fonts.body)
+    # the browse button next to a path: as high as the entry, hardly wider than "…"
+    style.configure("Browse.TButton", padding=(4, 4))
     style.configure("Ground.Link.TButton", background=theme.GROUND,
                     bordercolor=theme.GROUND, lightcolor=theme.GROUND,
                     darkcolor=theme.GROUND)

@@ -33,7 +33,7 @@ class TestSpecBuilder(PolarionWorker):
             ts_conf.TARGET_LOCATION,
             ts_conf.TARGET_NAME_ID,
             ts_conf.TARGET_TITLE,
-            link_role=ts_conf.LINK_ROLE,
+            link_role=None,
             derived_fields=None,
         )
         

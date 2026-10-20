@@ -14,8 +14,8 @@ MIN_HEIGHT = 620
 FONT = "Segoe UI Variable Text"   # falls back to "Segoe UI" when missing
 FONT_SIZE = 10
 
-SIDEBAR_WIDTH = 260       # pixels of the module list on the left
-TOC_WIDTH = 170           # pixels of the section list next to the form
+SIDEBAR_WIDTH = 228       # pixels of the module list on the left
+TOC_WIDTH = 140           # pixels of the section list next to the form
 LABEL_WIDTH = 230         # pixels reserved for the field labels and their hints
 FIELD_WIDTH = 320         # minimum pixels of the value widgets
 CHOICE_BUTTONS_MAX = 4    # up to this many choices are buttons, more a drop-down
@@ -35,8 +35,10 @@ COLOR_CONSOLE_INFO = "#7FB2FF"
 COLOR_CONSOLE_OK = "#7DDC7D"
 COLOR_CONSOLE_ERROR = "#FF8A8A"
 
-CONSOLE_HEIGHT = 8        # text lines
-FORM_SHARE = 0.78         # part of the height the form gets at start, the output the rest
+# rows of the output pane, its header bar counted as one: header and one
+# line at start, the header and 14 lines once a module is run
+CONSOLE_ROWS_START = 2
+CONSOLE_ROWS_RUN = 15
 CONSOLE_MAX_LINES = 5000  # older output is dropped
 
 QUEUE_POLL_MS = 80        # how often the output queue is drained

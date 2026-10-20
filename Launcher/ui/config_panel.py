@@ -31,6 +31,15 @@ from Launcher.core.project import PROJECT_ROOT
 from . import launcher_config as cfg
 from .widgets import ScrollableFrame, Tooltip
 
+# left and right padding of the entries of the section list
+TOC_PADX = 4
+# letters of a section name shown while the section list is collapsed
+TOC_SHORT_LETTERS = 4
+# how long the mouse may be off the expanded section list before it collapses
+TOC_COLLAPSE_MS = 120
+# above and below the value of a settings row
+ROW_PADY = 4
+
 # text on the choice buttons; the stored value stays the configured one
 _CHOICE_LABELS = {"y": "Yes", "n": "No"}
 
@@ -62,38 +71,65 @@ class _FieldEditor:
             tk.Frame(parent, height=1, background=theme.DIVIDER).grid(
                 row=2 * row, column=0, columnspan=2, sticky="ew")
 
+        # a Yes / No row (buttons or a check box) keeps its label on one line:
+        # label and value share a row of their own over both columns, the value
+        # starts at the value column or - after a longer label - right of it
+        compact = field.kind is FieldKind.BOOL or (
+            field.kind is FieldKind.CHOICE and 0 < len(field.choices) <= cfg.CHOICE_BUTTONS_MAX)
+        if compact:
+            own_row = tk.Frame(parent, background=theme.SURFACE)
+            own_row.grid(row=2 * row + 1, column=0, columnspan=2, sticky="ew")
+            own_row.columnconfigure(0, minsize=cfg.LABEL_WIDTH)
+            own_row.columnconfigure(1, weight=1)
+
+            def align(_event=None):
+                # the label column of the card may be wider than LABEL_WIDTH
+                _x, _y, width, _h = parent.grid_bbox(0, 0, 0, parent.grid_size()[1] - 1)
+                own_row.columnconfigure(0, minsize=max(cfg.LABEL_WIDTH, width))
+            parent.bind("<Configure>", align, add="+")
+            master, grid_row = own_row, 0
+        else:
+            master, grid_row = parent, 2 * row + 1
+
         # --- left: label, state tags, hint
-        left = tk.Frame(parent, background=theme.SURFACE)
-        left.grid(row=2 * row + 1, column=0, sticky="nw", pady=theme.SPACE_S + 2,
-                  padx=(0, theme.SPACE_L))
+        left = tk.Frame(master, background=theme.SURFACE)
+        if compact:
+            left.grid(row=grid_row, column=0, sticky="w", pady=ROW_PADY,
+                      padx=(0, theme.SPACE_L))
+        else:
+            left.grid(row=grid_row, column=0, sticky="nw", pady=ROW_PADY + 2,
+                      padx=(0, theme.SPACE_L))
         line = tk.Frame(left, background=theme.SURFACE)
         line.pack(anchor="w")
         self.label = tk.Label(line, text=field.label, background=theme.SURFACE,
                               foreground=theme.TEXT, font=fonts.body, anchor="w",
-                              justify="left", wraplength=cfg.LABEL_WIDTH - 80)
+                              justify="left",
+                              wraplength=0 if compact else cfg.LABEL_WIDTH - 80)
         self.label.pack(side="left")
-        self.edited_tag = self._tag(line, "edited", theme.WARN_SOFT, theme.WARN_TEXT)
-        if field.derived:
-            self._tag(line, "computed", theme.CHIP, theme.TEXT_SOFT).pack(
-                side="left", padx=(6, 0))
+        # the hint ("Relative to the project root.") shows on the label only
+        # when asked for, so the row stays one line high
         if field.help:
-            tk.Label(left, text=field.help, background=theme.SURFACE,
-                     foreground=theme.TEXT_MUTED, font=fonts.small, anchor="w",
-                     justify="left", wraplength=cfg.LABEL_WIDTH - 10).pack(anchor="w")
+            Tooltip(self.label, field.help)
+            self.label.configure(cursor="question_arrow")
+        self.edited_tag = self._tag(line, "edited", theme.WARN_SOFT, theme.WARN_TEXT)
+        # shown while the computed value is used - see mark()
+        self.computed_tag = self._tag(line, "computed", theme.CHIP, theme.TEXT_SOFT)
+        if field.derived:
+            self.computed_tag.pack(side="left", padx=(6, 0))
 
         # --- right: amber edge while edited, the value, the actions
-        holder = tk.Frame(parent, background=theme.SURFACE)
-        holder.grid(row=2 * row + 1, column=1, sticky="ew", pady=theme.SPACE_S)
+        holder = tk.Frame(master, background=theme.SURFACE)
+        holder.grid(row=grid_row, column=1, sticky="ew", pady=ROW_PADY)
         holder.columnconfigure(1, weight=1)
         self.edge = tk.Frame(holder, width=3, background=theme.SURFACE)
-        self.edge.grid(row=0, column=0, sticky="ns", padx=(0, 4))
+        self.edge.grid(row=0, column=0, sticky="ns", padx=(0, 3))
         self.widget = self._build_widget(holder)
 
         column = 2
         if field.kind in (FieldKind.FILE, FieldKind.DIR):
-            browse = ttk.Button(holder, text="…", width=3, style="Icon.TButton",
+            browse = ttk.Button(holder, text="…", width=0, style="Browse.TButton",
                                 command=self._browse)
-            browse.grid(row=0, column=column, padx=(6, 0))
+            browse.grid(row=0, column=column, padx=(3, 0))
             Tooltip(browse, "Choose the folder" if field.kind is FieldKind.DIR
                     else "Choose the file")
             column += 1
@@ -102,13 +138,14 @@ class _FieldEditor:
             toggle = ttk.Checkbutton(holder, text="Override", style="Override.Toolbutton",
                                      variable=self.override_var,
                                      command=self._on_override_toggled)
-            toggle.grid(row=0, column=column, padx=(6, 0))
+            toggle.grid(row=0, column=column, padx=(3, 0))
             Tooltip(toggle, "This value is computed from the other settings. "
                             "Switch Override on to set it by hand instead.")
             column += 1
         # shown only while a plain value differs from the file - see mark()
-        self.reset_button = ttk.Button(holder, text="Reset", style="Link.TButton",
+        self.reset_button = ttk.Button(holder, text="↺", width=0, style="Icon.Link.TButton",
                                        command=lambda: self.on_reset(self))
+        Tooltip(self.reset_button, "Reset to the value in the configuration file")
         self._reset_column = column
 
         self._apply_enabled_state()
@@ -138,7 +175,8 @@ class _FieldEditor:
             for choice in field.choices:
                 button = ttk.Radiobutton(widget, text=_CHOICE_LABELS.get(choice, choice),
                                          value=choice, variable=self.var,
-                                         style="Chip.Toolbutton", command=self._commit)
+                                         style="Choice.Chip.Toolbutton",
+                                         command=self._commit)
                 button.pack(side="left", padx=(0, 6))
                 self._choice_buttons.append(button)
             return widget
@@ -274,9 +312,14 @@ class _FieldEditor:
             self.edited_tag.pack(side="left", padx=(6, 0))
         else:
             self.edited_tag.pack_forget()
+        # a value is either computed or set by hand (Override on), not both
+        if self.field.derived and not overridden:
+            self.computed_tag.pack(side="left", padx=(6, 0))
+        else:
+            self.computed_tag.pack_forget()
         # a computed value is reset by switching Override off
         if overridden and self.override_var is None:
-            self.reset_button.grid(row=0, column=self._reset_column, padx=(4, 0))
+            self.reset_button.grid(row=0, column=self._reset_column, padx=(2, 0))
         else:
             self.reset_button.grid_remove()
 
@@ -290,10 +333,20 @@ class ConfigPanel(ttk.Frame):
         self.fonts = fonts
         self.on_change = on_change
 
-        self._toc = tk.Frame(self, background=theme.GROUND, width=cfg.TOC_WIDTH)
-        self._toc.pack_propagate(False)
+        # the section list shows the first letters of the names in a narrow
+        # slot; under the mouse it widens to cfg.TOC_WIDTH over the form
+        self._toc_slot = tk.Frame(self, background=theme.GROUND, width=40)
+        self._toc_slot.pack_propagate(False)
         self._scroller = ScrollableFrame(self, on_scroll=self._sync_toc)
         self._scroller.pack(side="right", fill="both", expand=True)
+        self._toc = tk.Frame(self, background=theme.GROUND, highlightthickness=1,
+                             highlightbackground=theme.GROUND)
+        self._toc.pack_propagate(False)
+        self._toc_narrow = 40
+        self._toc_expanded = False
+        self._toc_after = None
+        self._toc.bind("<Enter>", lambda _e: self._expand_toc(), add="+")
+        self._toc.bind("<Leave>", lambda _e: self._schedule_toc_collapse(), add="+")
 
         self._module = None
         self._sources: List[ConfigSource] = []
@@ -308,6 +361,7 @@ class ConfigPanel(ttk.Frame):
         self._scroller.clear()
         for child in self._toc.winfo_children():
             child.destroy()
+        self._collapse_toc()
         self._editors = []
         self._sources = []
         self._file_values = {}
@@ -318,24 +372,22 @@ class ConfigPanel(ttk.Frame):
 
         self._sources = module.config_sources()
         if not self._sources:
-            self._toc.pack_forget()
+            self._hide_toc()
             ttk.Label(self._scroller.inner,
                       text="This module has no configurable value.",
                       foreground=theme.TEXT_MUTED).pack(anchor="w", padx=theme.SPACE_XL,
                                                         pady=theme.SPACE_XL)
             return
 
-        tk.Label(self._toc, text="SECTIONS", background=theme.GROUND,
-                 foreground=theme.TEXT_MUTED, font=self.fonts.small_bold,
-                 anchor="w").pack(fill="x", padx=10, pady=(0, 6))
+        self._add_toc_label("SECTIONS", fg=theme.TEXT_MUTED, font=self.fonts.small_bold,
+                            pady=(0, 6))
         for source in self._sources:
             self._build_source(source)
         # one section needs no table of contents
         if len(self._sections) > 1:
-            self._toc.pack(side="left", fill="y", padx=(theme.SPACE_L, 0),
-                           pady=(theme.SPACE_L, 0), before=self._scroller)
+            self._show_toc()
         else:
-            self._toc.pack_forget()
+            self._hide_toc()
 
         self._scroller.scroll_to_top()
         self.refresh_values()
@@ -354,18 +406,11 @@ class ConfigPanel(ttk.Frame):
 
         # the file the values come from, with the reset of all its values
         header = tk.Frame(inner, background=theme.GROUND)
-        header.pack(fill="x", padx=theme.SPACE_L, pady=(theme.SPACE_L, theme.SPACE_S))
+        header.pack(fill="x", padx=theme.SPACE_L, pady=(theme.SPACE_M, theme.SPACE_XS))
         ttk.Button(header, text="Reset to file defaults", style="Ground.Link.TButton",
                    command=lambda s=source: self.reset_source(s)).pack(side="right", anchor="n")
         tk.Label(header, text=source.title, background=theme.GROUND, foreground=theme.TEXT,
                  font=self.fonts.body_bold, anchor="w").pack(fill="x")
-        if source.description:
-            description = tk.Label(header, text=source.description, background=theme.GROUND,
-                                   foreground=theme.TEXT_MUTED, font=self.fonts.small,
-                                   anchor="w", justify="left")
-            description.pack(fill="x")
-            header.bind("<Configure>", lambda e, d=description: d.configure(
-                wraplength=max(300, e.width - 200)))
 
         sections: Dict[str, List[ConfigField]] = {}
         for field in source.fields():
@@ -373,13 +418,13 @@ class ConfigPanel(ttk.Frame):
 
         for section_name, fields in sections.items():
             card = theme.card(inner)
-            card.pack(fill="x", padx=theme.SPACE_L, pady=(0, theme.SPACE_M))
+            card.pack(fill="x", padx=theme.SPACE_L, pady=(0, theme.SPACE_S))
             tk.Label(card, text=section_name, background=theme.SURFACE,
-                     foreground=theme.TEXT, font=self.fonts.heading, anchor="w").pack(
-                fill="x", padx=theme.SPACE_L + 4, pady=(theme.SPACE_M, theme.SPACE_XS))
+                     foreground=theme.TEXT, font=self.fonts.body_bold, anchor="w").pack(
+                fill="x", padx=theme.SPACE_L + 4, pady=(theme.SPACE_S, 0))
             grid = tk.Frame(card, background=theme.SURFACE)
             grid.pack(fill="x", padx=(theme.SPACE_L + 4, theme.SPACE_L),
-                      pady=(0, theme.SPACE_S))
+                      pady=(0, theme.SPACE_XS))
             # fixed label width keeps all cards aligned, the values take the rest
             grid.columnconfigure(0, weight=0, minsize=cfg.LABEL_WIDTH)
             grid.columnconfigure(1, weight=1, minsize=cfg.FIELD_WIDTH)
@@ -391,12 +436,79 @@ class ConfigPanel(ttk.Frame):
             self._add_toc_entry(section_name, card)
 
     def _add_toc_entry(self, name: str, card: tk.Widget) -> None:
-        entry = tk.Label(self._toc, text=name, background=theme.GROUND,
-                         foreground=theme.TEXT, font=self.fonts.body, anchor="w",
-                         padx=10, pady=5, cursor="hand2")
-        entry.pack(fill="x", pady=1)
+        entry = self._add_toc_label(name, fg=theme.TEXT, font=self.fonts.body, pady=1)
+        entry.configure(pady=5, cursor="hand2")
         entry.bind("<Button-1>", lambda _e: self._scroller.scroll_to(card))
         self._sections.append((card, entry))
+
+    def _add_toc_label(self, name: str, fg, font, pady) -> tk.Label:
+        """A label of the section list; it keeps its full name for expanding."""
+        label = tk.Label(self._toc, text=self._short(name), background=theme.GROUND,
+                         foreground=fg, font=font, anchor="w", padx=TOC_PADX)
+        label.full_name = name
+        label.pack(fill="x", pady=pady)
+        label.bind("<Leave>", lambda _e: self._schedule_toc_collapse(), add="+")
+        return label
+
+    # --- the collapsible section list ---------------------------------------
+    @staticmethod
+    def _short(name: str) -> str:
+        return name[:TOC_SHORT_LETTERS]
+
+    def _show_toc(self) -> None:
+        # as wide as the longest short name in bold - the current section is bold
+        self._toc_narrow = max(
+            self.fonts.body_bold.measure(self._short(label.full_name))
+            for label in self._toc.winfo_children()) + 2 * TOC_PADX + 6
+        self._toc_slot.configure(width=self._toc_narrow)
+        self._toc_slot.pack(side="left", fill="y", padx=(theme.SPACE_S, 0),
+                            pady=(theme.SPACE_L, 0), before=self._scroller)
+        self._toc.place(in_=self._toc_slot, x=0, y=0, relheight=1,
+                        width=self._toc_narrow)
+
+    def _hide_toc(self) -> None:
+        self._toc.place_forget()
+        self._toc_slot.pack_forget()
+
+    def _expand_toc(self) -> None:
+        self._cancel_toc_collapse()
+        if self._toc_expanded or not self._toc.winfo_manager():
+            return
+        self._toc_expanded = True
+        for label in self._toc.winfo_children():
+            label.configure(text=label.full_name)
+        self._toc.place_configure(width=cfg.TOC_WIDTH)
+        self._toc.configure(highlightbackground=theme.BORDER)
+        self._toc.lift()
+
+    def _collapse_toc(self) -> None:
+        self._cancel_toc_collapse()
+        self._toc_expanded = False
+        for label in self._toc.winfo_children():
+            label.configure(text=self._short(label.full_name))
+        if self._toc.winfo_manager():
+            self._toc.place_configure(width=self._toc_narrow)
+        self._toc.configure(highlightbackground=theme.GROUND)
+
+    def _schedule_toc_collapse(self) -> None:
+        # moving from one label to the next also leaves - collapse only when
+        # the mouse is really outside the list a moment later
+        self._cancel_toc_collapse()
+        self._toc_after = self.after(TOC_COLLAPSE_MS, self._collapse_if_outside)
+
+    def _cancel_toc_collapse(self) -> None:
+        if self._toc_after is not None:
+            self.after_cancel(self._toc_after)
+            self._toc_after = None
+
+    def _collapse_if_outside(self) -> None:
+        self._toc_after = None
+        x, y = self.winfo_pointerxy()
+        toc = self._toc
+        inside = (toc.winfo_rootx() <= x < toc.winfo_rootx() + toc.winfo_width()
+                  and toc.winfo_rooty() <= y < toc.winfo_rooty() + toc.winfo_height())
+        if not inside:
+            self._collapse_toc()
 
     def _sync_toc(self) -> None:
         """Highlight the section at the top of the visible part of the form."""
