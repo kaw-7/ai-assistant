@@ -21,7 +21,7 @@ class PerplexityProvider(AIProvider, AIContext):
         self.save_question(user_input)
         
         response = self.client.chat.completions.create(
-            model=config.MODEL_NAME,  # e.g., "llama-3.1-sonar-large-128k-online"
+            model="sonar",  # Perplexity model, e.g. "sonar" or "sonar-pro"
             messages=[{"role": "user", "content": user_input}],
             stream=False
         )

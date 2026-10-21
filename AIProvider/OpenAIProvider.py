@@ -19,11 +19,11 @@ class OpenAIProvider(AIProvider, AIContext):
         try:
             self.save_question(user_input)
             # Request completion from OpenAI API (you can modify the model and other parameters as needed)
-            response = openai.completions.create(
-                model=config.MODEL_NAME,  # Ensure the model name is defined in config
-                prompt=user_input
+            response = openai.chat.completions.create(
+                model="gpt-5.4-mini",  # same model as AzureOpenAIProvider
+                messages=[{"role": "user", "content": user_input}]
             )
-            ai_response = response.choices[0].text.strip()
+            ai_response = response.choices[0].message.content.strip()
 
             # Save the response
             self.save_response(ai_response)

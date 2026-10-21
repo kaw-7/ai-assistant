@@ -35,7 +35,7 @@ RISK_SUMMARY_OUTPUT_FILE = f"output/{tool_folder}/risk_summary_report.txt"
 CSV_TEMPLATE = "input/template.csv"
 
 # --- AI MODEL SETTINGS ---
-# MODEL_NAME = "gpt-5.4-mini"  "gemini-2.5-flash"
+# the model name is set in each provider (AIProvider/*Provider.py)
 
 # --- miscellaneous --- 
 ISSUE_END_MARKER = "[[ END ISSUE ITEM ]]"
