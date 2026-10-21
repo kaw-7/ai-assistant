@@ -12,7 +12,7 @@ import unittest
 
 from tests.support import captured_stdout, config_values
 
-import PolarionAssistant.ValidReport.valid_report_config as PConf
+import PolarionAssistant.Core.core_config as CoreConf
 from PolarionAssistant.Core.IssueDAOFactory import IssueDAOFactory
 from PolarionAssistant.Model.IssueDTO import IssueDTO
 
@@ -45,10 +45,10 @@ class CreateTests(unittest.TestCase):
         with captured_stdout():
             IssueDAOFactory.create(self.connector, self.issue)
 
-        self.assertEqual(self.client.projects, [PConf.PROJECT_ID])
+        self.assertEqual(self.client.projects, [CoreConf.PROJECT_ID])
 
     def test_follows_a_changed_project_id(self):
-        with config_values(PConf, PROJECT_ID="OTHER"):
+        with config_values(CoreConf, PROJECT_ID="OTHER"):
             with captured_stdout():
                 IssueDAOFactory.create(self.connector, self.issue)
 

@@ -21,9 +21,9 @@ class TestSpecBuilderModule(RunnableModule):
     summary = "Validation plan → test specification"
     description = (
         "Copies the test specification template into a stand alone document "
-        "for the validated tool, then moves the test cases of the validation "
-        "plan under the configured heading of the test specification. The "
-        "document step can be switched off and a debug run only prints the "
+        "for the validated tool, then moves the test cases, linked to requirements "
+        "from the validation plan, under the configured heading of the test specification. "
+        "The document step can be switched off and a debug run only prints the "
         "documents - both in testspec_config.py."
     )
     order = 40

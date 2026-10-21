@@ -3,7 +3,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 
 from dataclasses import dataclass
-import PolarionAssistant.ValidReport.valid_report_config as PConf
+import PolarionAssistant.Core.core_config as CoreConf
 from PolarionAssistant.Model.DAO.IssueFields import *
 
 class IssueDAOFactory():
@@ -12,7 +12,7 @@ class IssueDAOFactory():
     def create(connector, issueDTO):
         try:
             start = time.perf_counter()
-            project = connector.client.getProject(PConf.PROJECT_ID)
+            project = connector.client.getProject(CoreConf.PROJECT_ID)
             workitem = project.createWorkitem(
                 workitem_type="defect_evaluation", 
                 new_workitem_fields={

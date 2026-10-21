@@ -11,16 +11,20 @@ from PolarionAssistant.Core.PolarionConnector import PolarionConnector
 from PolarionAssistant.Core.ItemUtil import ItemUtil
 from PolarionAssistant.Core.IssueDAOFactory import IssueDAOFactory
 from PolarionAssistant.Core.IssueParser import IssueParser
-import PolarionAssistant.ValidReport.valid_report_config as PConf
+import PolarionAssistant.Core.core_config as CoreConf
 import time
 from typing_extensions import override
 from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
 import sys
+from types import ModuleType
 
 class PolarionIssueImporter(PolarionWorker):
     
-    def __init__(self):
+    def __init__(self, doc_conf: ModuleType):
+        """``doc_conf`` - valid_report_config or periodic_review_config,
+        chosen by valid_report_main.py."""
         super().__init__()
+        self.doc_conf = doc_conf
     
     @override
     def PrintDocDetails(self):
@@ -29,18 +33,18 @@ class PolarionIssueImporter(PolarionWorker):
     def GetDocItems(self) -> tuple[str, str, str, str]:
       
         # Get project
-        project = self._client.getProject(PConf.PROJECT_ID)
+        project = self._client.getProject(CoreConf.PROJECT_ID)
         
         # Get document
-        doc = project.getDocument(PConf.DOC_NAME)
+        doc = project.getDocument(self.doc_conf.DOC_NAME)
         if doc is None:
-            print(f"❌ Document '{PConf.DOC_NAME}' not found!")
+            print(f"❌ Document '{self.doc_conf.DOC_NAME}' not found!")
             sys.exit(1)
         print(f"✅ Loaded '{doc.title}'")
               
-        heading_item = ItemUtil.find_heading_item_by_name(doc, PConf.DOC_INPUT_HEADING)
+        heading_item = ItemUtil.find_heading_item_by_name(doc, self.doc_conf.DOC_INPUT_HEADING)
         if heading_item is None:
-            print(f"❌ Could not find heading: {PConf.DOC_INPUT_HEADING}!")
+            print(f"❌ Could not find heading: {self.doc_conf.DOC_INPUT_HEADING}!")
             sys.exit(1)
     
         full_name, email = self._connector.get_current_user_info()
@@ -53,7 +57,7 @@ class PolarionIssueImporter(PolarionWorker):
     def ImportIssuesInPolarion(self):
         
         print("🎉 Ready to create issues!")
-        parser = IssueParser(PConf.ISSUE_INPUT_FILE)
+        parser = IssueParser(self.doc_conf.ISSUE_INPUT_FILE)
         parser.read_file()
         
         doc, heading_item, full_name, email = self.GetDocItems()

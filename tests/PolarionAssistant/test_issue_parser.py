@@ -13,7 +13,7 @@ from tests.support import (
     issues_markup,
 )
 
-import PolarionAssistant.ValidReport.valid_report_config as PConf
+import PolarionAssistant.Core.core_config as CoreConf
 from PolarionAssistant.Core.IssueParser import IssueParser
 from PolarionAssistant.Model.DAO.IssueFields import IssueSource, IssueStatus
 from PolarionAssistant.Model.IssueDTO import SourceDTO, StatusDTO
@@ -162,8 +162,8 @@ class PreprocessInitialStringIssuesTests(QuietTestCase):
 
         parser.preprocess_initial_string_issues()
 
-        self.assertTrue(parser.issues_as_string.startswith(PConf.ISSUE_MARKER_BEG))
-        self.assertTrue(parser.issues_as_string.endswith(PConf.ISSUE_MARKER_END))
+        self.assertTrue(parser.issues_as_string.startswith(CoreConf.ISSUE_MARKER_BEG))
+        self.assertTrue(parser.issues_as_string.endswith(CoreConf.ISSUE_MARKER_END))
         self.assertNotIn("I hope this helps", parser.issues_as_string)
 
     def test_text_without_markers_is_left_alone(self):
@@ -217,7 +217,7 @@ class ReadFileTests(TempDirTestCase):
         report = self.write("report.txt",
                             issues_markup(2, end_marker="<<STOP>>"))
 
-        with config_values(PConf, ISSUE_END_MARKER="<<STOP>>"):
+        with config_values(CoreConf, ISSUE_END_MARKER="<<STOP>>"):
             parser = IssueParser(report)
             parser.read_file()
 
