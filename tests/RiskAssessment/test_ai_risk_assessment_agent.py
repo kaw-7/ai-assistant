@@ -89,7 +89,7 @@ class CountingTests(unittest.TestCase):
 
 
 class GenerateInputTests(TempDirTestCase):
-    """The prompt built from the instructions, the reference and the issues."""
+    """The prompt built from the instructions, the references and the issues."""
 
     def setUp(self):
         super().setUp()
@@ -99,6 +99,7 @@ class GenerateInputTests(TempDirTestCase):
             RISK_INSTRUCTIONS_PATH=self.write("instructions.txt",
                                               "Assess every issue."),
             REF_PATH=self.write("reference.txt", "An earlier report."),
+            REF_PATH2_OPT="",
         )
         self.overrides.__enter__()
         self.addCleanup(self.overrides.__exit__, None, None, None)
@@ -133,6 +134,35 @@ class GenerateInputTests(TempDirTestCase):
         self.assertEqual(prompt, "")
         self.assertIn("Reference file not found", printed.getvalue())
 
+    def test_without_a_2nd_reference_report_there_is_no_2nd_section(self):
+        for unset in ("", None):
+            with self.subTest(REF_PATH2_OPT=unset):
+                with config_values(config, REF_PATH2_OPT=unset):
+                    prompt = self.agent._generate_input("the issues")
+
+                self.assertIn("An earlier report.", prompt)
+                self.assertNotIn("2nd REFERENCE FILE", prompt)
+
+    def test_the_2nd_reference_report_follows_the_first_one(self):
+        with config_values(config, REF_PATH2_OPT=self.write("reference2.txt",
+                                                            "Another report.")):
+            prompt = self.agent._generate_input("the issues")
+
+        first = prompt.index("--- END OF REFERENCE FILE ---")
+        second = prompt.index("Another report.")
+        data = prompt.index("--- INPUT DATA STARTS HERE ---")
+        self.assertLess(first, second)
+        self.assertLess(second, data)
+        self.assertIn("--- END OF 2ND REFERENCE FILE ---", prompt)
+
+    def test_a_missing_2nd_reference_report_gives_no_prompt(self):
+        with config_values(config, REF_PATH2_OPT=self.path("gone.txt")):
+            with captured_stdout() as printed:
+                prompt = self.agent._generate_input("the issues")
+
+        self.assertEqual(prompt, "")
+        self.assertIn("2ndReference file not found", printed.getvalue())
+
 
 class ProcessIssuesTests(TempDirTestCase):
     """The whole assessment run against a fake AI."""
@@ -145,6 +175,7 @@ class ProcessIssuesTests(TempDirTestCase):
             config,
             RISK_INSTRUCTIONS_PATH=self.write("instructions.txt", "Assess."),
             REF_PATH=self.write("reference.txt", "Reference."),
+            REF_PATH2_OPT="",
             RISK_ASSESSMENT_OUTPUT_FILE=self.path("final_risk_report.txt"),
             ISSUE_END_MARKER=END,
             MAX_COUNT_OF_ISSUES_PROCESSED_AT_ONCE_BY_AI=2,

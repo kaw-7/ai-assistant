@@ -83,6 +83,9 @@ def main_config_source() -> PyModuleConfigSource:
                         kind=FieldKind.FILE, section=SECTION_TOOL),
             ConfigField("REF_PATH", "Reference report", kind=FieldKind.FILE,
                         section=SECTION_TOOL),
+            ConfigField("REF_PATH2_OPT", "2nd reference report (optional)",
+                        kind=FieldKind.FILE, section=SECTION_TOOL,
+                        help="Leave empty to use only the reference report."),
 
             # --- AI processing ---
             ConfigField("PROCEED_WITH_AI_RISK_ASSESSMENT",
