@@ -191,13 +191,22 @@ p1.uml("reg", "ModuleRegistry", 30, 80, W, file="registry.py",
             "- _collect(py_module)"])
 
 p1.uml("mod", "RunnableModule", 30, 360, W, stereo="abstract", file="module_descriptor.py",
-       attrs=["id: str", "title: str", "description: str", "order: int = 100",
-              "extra_sys_path: Sequence[str] = ()", "opens_window: bool = False"],
+       attrs=["id: str", "title: str", "description: str", "summary: str",
+              "order: int = 100",
+              "extra_sys_path: Sequence[str] = ()", "opens_window: bool = False",
+              "entry_script: str   relative to PROJECT_ROOT",
+              "entry_module: str   alternative to entry_script"],
        ops=["+ config_sources(): list[ConfigSource]",
-            "+ run()  {abstract}",
-            "+ label(): str"])
+            "+ entry_args(): list[str]",
+            "+ banner()   prints what the run works on",
+            "+ run()   banner(), then the entry point as __main__ (runpy)",
+            "+ label(): str",
+            "+ entry_point(): str"])
 
-p1.uml("src", "ConfigSource", 30, 700, W, stereo="abstract", file="config_sources.py",
+p1.text("modp", "module_descriptor.py imports project.PROJECT_ROOT for entry_script.",
+        30, 760, W, 20, SUB_STYLE)
+
+p1.uml("src", "ConfigSource", 30, 800, W, stereo="abstract", file="config_sources.py",
        attrs=["id: str", "title: str", "description: str"],
        ops=["+ fields(): list[ConfigField]  {abstract}",
             "+ evaluate(ovr, side_effects): dict  {abstract}",
@@ -238,13 +247,16 @@ p2.uml("src2", "ConfigSource", 240, 80, W, stereo="abstract", file="config_sourc
             "+ evaluate(ovr, side_effects): dict  {abstract}",
             "+ apply(ovr)  {abstract}"])
 
-p2.uml("py", "PyModuleConfigSource", 20, 340, W, file="config.py / ui_config.py",
+p2.uml("py", "PyModuleConfigSource", 20, 340, W, file="config.py, UI/ui_config.py, *_config.py",
        attrs=["module_name: str", "file_path: Path", "ignore: set[str]",
               "section_default: str", "show_undeclared: bool",
+              "aliases: tuple[str]   other import names of the file",
               "- _specs / _spec_order", "- _parsed: dict | None"],
        ops=["+ fields(): list[ConfigField]",
             "+ evaluate(ovr, side_effects): dict",
-            "+ apply(ovr)   setattr on the module",
+            "+ apply(ovr)   setattr on every module of the file",
+            "- _alias_modules(module): list   same file + aliases",
+            "- _read_source(): str",
             "- _parse(): dict   ast.parse + comments",
             "- _trailing_comments(source): dict",
             "- _exec_source(ovr, side_effects)",
@@ -258,7 +270,7 @@ p2.uml("env", "EnvFileConfigSource", 450, 340, W, file=".polarion.env",
             "+ apply(ovr)   -> os.environ",
             "- _read_file(): dict[str, str]"])
 
-p2.uml("ns", "_OverridingNamespace", 20, 760, W, stereo="dict", file="config_sources.py",
+p2.uml("ns", "_OverridingNamespace", 20, 840, W, stereo="dict", file="config_sources.py",
        attrs=["- _overrides: dict"],
        ops=["+ __setitem__(key, value)", "+ apply_unassigned()"])
 
@@ -293,7 +305,8 @@ p3.lane("laneL", "LAUNCHER PROCESS", 20, 80, 390, 780)
 p3.lane("laneR", "CHILD PROCESS - one per run", 430, 80, 390, 780)
 
 BW, BX = 350, 20
-p3.flow("L1", "laneL", "LauncherApp (Tk)", ["ui/app.py - module list + config editor"], BX, 50, BW, 50)
+p3.flow("L1", "laneL", "LauncherApp (Tk)", ["ui/app.py - ModuleNav, ConfigPanel, ConsolePane (page 6)"],
+        BX, 50, BW, 50)
 p3.flow("L2", "laneL", "SettingsStore.as_dict()",
         ["{source_id: {key: value}}", "stored + volatile (secrets) merged"], BX, 140, BW, 60)
 p3.flow("L3", "laneL", "ProcessRunner.start(id, overrides)",
@@ -311,8 +324,9 @@ p3.flow("R2", "laneR", "ModuleRegistry().discover() -> get(id)",
 p3.flow("R3", "laneR", "source.apply(ovr) per config source",
         ["PyModule -> setattr, Env -> os.environ", "secret fields echoed as ***"], BX, 450, BW, 60)
 p3.flow("R4", "laneR", "RunnableModule.run()",
-        ["prints, own Tk window, sys.exit - all safe", "exit 0 / 1 failed / 2 usage / 3 unknown id"],
-        BX, 560, BW, 60)
+        ["after 'starting <entry_point()>': banner(), then the main",
+         "prints, own Tk window, sys.exit - all safe", "exit 0 / 1 failed / 2 usage / 3 unknown id"],
+        BX, 560, BW, 70)
 
 p3.edge("r1", "L1", "L2")
 p3.edge("r2", "L2", "L3")
@@ -328,7 +342,8 @@ p3.edge("r8", "L4", "L5")
 p3.text("t3f",
         "project.py holds PROJECT_ROOT and SETTINGS_FILE and has no classes.   "
         "stop() -> taskkill /F /T on the whole tree.   "
-        "The overrides file is unlinked when the child exits.",
+        "The overrides file is unlinked when the child exits.   "
+        "Launcher/main.py calls UI.theme.sharp_on_high_dpi() before creating LauncherApp.",
         20, 880, 800, 40, SUB_STYLE)
 
 # ===========================================================================
@@ -344,7 +359,8 @@ p4.uml("set", "SettingsStore", 30, 80, W, file="settings_store.py",
               "- _sources: dict[str, dict]   persisted",
               "- _volatile: dict[str, dict]  session only",
               "- _ui: dict[str, Any]"],
-       ops=["+ load() / save()",
+       ops=["+ load() / save()   load() migrates an old file, then saves",
+            "- _migrate(): bool   up to SETTINGS_VERSION = 2",
             "+ overrides(source_id): dict",
             "+ set_overrides(id, values, volatile_keys)",
             "+ clear_source(source_id)",
@@ -389,8 +405,11 @@ same id share the values.
 
 persist=False fields live only in _volatile: they are
 merged into as_dict() for the child, but never written
-to launcher_settings.json.""",
-        30, 700, 370, 150)
+to launcher_settings.json.
+
+_migrate() follows the module constants MOVED_KEYS,
+RENAMED_KEYS and DROPPED_KEYS of settings_store.py.""",
+        30, 700, 370, 190)
 
 p4.edge("g1", "set", "run", "as_dict() feeds start()", EDGE,
         exit=("1", "0.25"), entry=("0", "0.25"))
@@ -399,11 +418,132 @@ p4.edge("g3", "run", "prj", "PROJECT_ROOT", EDGE_DEP, exit=("0", "0.75"), entry=
 
 
 # ===========================================================================
+# Page 5 - the runnable modules
+# ===========================================================================
+p5 = Page("5 - Runnable modules")
+p5.text("t5", "Launcher/modules - one file per entry of the module list", 30, 16, 700, 24, TITLE_STYLE)
+p5.text("t5s", "Each class points at an existing main; _sources.py builds the config sources they return.",
+        30, 42, 900, 18, SUB_STYLE)
+
+p5.uml("rm", "RunnableModule", 640, 80, W, stereo="abstract", file="core/module_descriptor.py (page 1)",
+       ops=["+ config_sources()", "+ entry_args()", "+ banner()", "+ run()"])
+
+MW, MY = 380, 300
+p5.uml("m1", "ReportEngineModule", 30, MY, MW, file="ai_risk_assessment.py",
+       attrs=["id = \"report_engine\"", "title = \"1. Issue formatter and risk assessment\"",
+              "order = 10", "entry_script = \"main.py\""],
+       ops=["+ config_sources(): [main_config_source()]", "+ banner()"])
+p5.uml("m2", "IssueViewerModule", 430, MY, MW, file="issue_viewer.py",
+       attrs=["id = \"issue_viewer\"", "title = \"2. Issue viewer\"", "order = 20",
+              "opens_window = True", "extra_sys_path = (\"UI\",)",
+              "entry_script = \"UI/main.py\""],
+       ops=["+ config_sources(): [ui_config_source()]", "+ banner()",
+            "- _resolve(raw_path): Path  {static}"])
+p5.uml("m3", "ValidReportBuilderModule", 830, MY, MW, file="valid_report_builder.py",
+       attrs=["id = \"valid_report_builder\"", "title = \"3a. Issue import for an initial ...\"",
+              "order = 30", "extra_sys_path = (\"PolarionAssistant\",)",
+              "entry_script = \"PolarionAssistant/valid_report_main.py\"",
+              "report = REPORT_INITIAL   (\"initial\")"],
+       ops=["+ report_source(): valid_report_config_source()",
+            "+ config_sources(): [report_source(), polarion_env_source()]",
+            "+ entry_args(): [report]",
+            "+ banner()   reads report_source()"])
+p5.uml("m5", "TestSpecBuilderModule", 1230, MY, MW, file="test_spec_builder.py",
+       attrs=["id = \"test_spec_builder\"", "title = \"4. Test case import ...\"",
+              "order = 40", "extra_sys_path = (\"PolarionAssistant\",)",
+              "entry_script = \"PolarionAssistant/test_spec_main.py\""],
+       ops=["+ config_sources(): [testspec_config_source(), polarion_env_source()]",
+            "+ banner()"])
+p5.uml("m4", "PeriodicReviewBuilderModule", 830, 680, MW, file="periodic_review_builder.py",
+       attrs=["id = \"periodic_review_builder\"", "title = \"3b. Issue import for a periodic review.\"",
+              "order = 35", "report = REPORT_PERIODIC   (\"periodic\")"],
+       ops=["+ report_source(): periodic_review_config_source()"])
+
+for i, cid in enumerate(["m1", "m2", "m3", "m5"]):
+    p5.edge(f"mi{i}", cid, "rm", "", EDGE_INHERIT, exit=("0.5", "0"),
+            entry=(f"{0.15 + i * 0.23:.2f}", "1"))
+p5.edge("mi4", "m4", "m3", "", EDGE_INHERIT, exit=("0.5", "0"), entry=("0.5", "1"))
+
+p5.uml("srcs", "_sources", 30, 680, 560, stereo="module", file="modules/_sources.py",
+       attrs=["MAIN_CONFIG, UI_CONFIG, POLARION_ENV, TESTSPEC_CONFIG,",
+              "VALID_REPORT_CONFIG, PERIODIC_REVIEW_CONFIG   source ids",
+              "REPORT_INITIAL = \"initial\" / REPORT_PERIODIC = \"periodic\""],
+       ops=["main_config_source(): PyModuleConfigSource   config.py",
+            "ui_config_source(): PyModuleConfigSource   UI/ui_config.py",
+            "valid_report_config_source() / periodic_review_config_source()",
+            "_report_config_source(file_stem, title)   fields shared by 3a and 3b",
+            "testspec_config_source(): PyModuleConfigSource",
+            "polarion_env_source(): EnvFileConfigSource   .polarion.env"])
+p5.text("t5f", "Files starting with '_' are skipped by ModuleRegistry, so _sources.py is a plain helper. "
+        "Every factory returns a fresh source object.", 30, 960, 700, 30, SUB_STYLE)
+p5.edge("ms", "m3", "srcs", "", EDGE_DEP, exit=("0", "0.9"), entry=("1", "0.2"))
+
+# ===========================================================================
+# Page 6 - the launcher window
+# ===========================================================================
+p6 = Page("6 - Launcher UI")
+p6.text("t6", "Launcher/ui - the window around the core", 30, 16, 700, 24, TITLE_STYLE)
+p6.text("t6s", "Tkinter. Fonts and colours come from UI/theme.py, shared with the issue viewer.",
+        30, 42, 900, 18, SUB_STYLE)
+
+p6.uml("app", "LauncherApp", 30, 80, 400, stereo="tk.Tk", file="ui/app.py",
+       attrs=["registry: ModuleRegistry", "store: SettingsStore", "runner: ProcessRunner",
+              "nav: ModuleNav", "config_panel: ConfigPanel", "console: ConsolePane",
+              "fonts: theme.Fonts"],
+       ops=["- _build_layout() / _bind_keys()",
+            "- _fill_module_list() / _select_module(module)",
+            "- _run_module() / _stop_module()",
+            "- _drain_queue()   polls runner.queue",
+            "- _on_finished(code)",
+            "- _save_settings() / _reload_settings()",
+            "- _rescan_modules()",
+            "- _on_close()"])
+p6.uml("nav", "ModuleNav", 480, 80, 360, stereo="tk.Frame", file="ui/module_nav.py",
+       ops=["+ set_modules(modules) / select(module)",
+            "+ step(delta) / set_enabled(enabled)",
+            "+ set_changes(count)",
+            "+ add_action(text, command): ttk.Button"])
+p6.uml("ent", "_ModuleEntry", 880, 80, 300, stereo="tk.Frame", file="ui/module_nav.py",
+       ops=["+ paint()"])
+p6.text("split", "split_title(title) -> (\"3a\", \"Issue import ...\")   module function; "
+        "step numbers may end in a letter", 480, 260, 700, 20, SUB_STYLE)
+p6.uml("cp", "ConfigPanel", 480, 310, 360, stereo="ttk.Frame", file="ui/config_panel.py",
+       attrs=["store: SettingsStore", "- _scroller: ScrollableFrame"],
+       ops=["+ show_module(module)",
+            "+ refresh_values() / update_derived()",
+            "+ collect(validate): (values, errors)",
+            "+ store_values() / volatile_keys(id)",
+            "+ reset_source(src) / reset_field(src, editor)"])
+p6.uml("fe", "_FieldEditor", 880, 310, 300, file="ui/config_panel.py",
+       ops=["+ raw_value() / set_raw_value(value)",
+            "+ is_overridden(file_value): bool",
+            "+ set_override_flag(flag)",
+            "+ mark(overridden)   edited / computed tag"])
+p6.uml("sf", "ScrollableFrame", 480, 620, 260, stereo="ttk.Frame", file="ui/widgets.py",
+       ops=["+ scroll_to(widget) / scroll_to_top()", "+ visible_top(): int", "+ clear()"])
+p6.uml("tt", "Tooltip", 760, 620, 180, file="ui/widgets.py", ops=["hover hint on a widget"])
+p6.uml("con", "ConsolePane", 30, 620, 400, stereo="ttk.Frame", file="ui/widgets.py",
+       ops=["+ append(chunk, tag) / clear()",
+            "+ set_state(state, text) / set_message(text)",
+            "+ height_for(rows): int"])
+p6.uml("sty", "style / launcher_config", 960, 620, 300, stereo="module", file="ui/style.py, ui/launcher_config.py",
+       ops=["style.apply(root): theme.Fonts", "launcher_config: window size, sidebar colours"])
+
+p6.edge("a1", "app", "nav", "nav", EDGE, exit=("1", "0.15"), entry=("0", "0.3"))
+p6.edge("a2", "app", "cp", "config_panel", EDGE, exit=("1", "0.6"), entry=("0", "0.3"))
+p6.edge("a3", "app", "con", "console", EDGE, exit=("0.5", "1"), entry=("0.5", "0"))
+p6.edge("a4", "nav", "ent", "0..*", EDGE, exit=("1", "0.5"), entry=("0", "0.5"))
+p6.edge("a5", "cp", "fe", "0..*", EDGE, exit=("1", "0.5"), entry=("0", "0.5"))
+p6.edge("a6", "cp", "sf", "_scroller", EDGE, exit=("0.3", "1"), entry=("0.5", "0"))
+
+# ===========================================================================
 pages = [
     (p1, "LauncherCorePage1"),
     (p2, "LauncherCorePage2"),
     (p3, "LauncherCorePage3"),
     (p4, "LauncherCorePage4"),
+    (p5, "LauncherCorePage5"),
+    (p6, "LauncherCorePage6"),
 ]
 doc = (
     '<mxfile host="Electron" agent="Claude Code" version="22.0.3" type="device">\n'

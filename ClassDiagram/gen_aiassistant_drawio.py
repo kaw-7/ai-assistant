@@ -52,13 +52,15 @@ SUB_STYLE = "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlig
 CONFIG_COLOURS = {
     "config": ("#DAE8FC", "#6C8EBF"),               # config.py - AI engine
     "testspec_config": ("#D5E8D4", "#82B366"),      # PolarionAssistant/TestSpec
-    "valid_report_config": ("#FFE6CC", "#D79B00"),  # PolarionAssistant/ValidReport
+    "doc_conf": ("#FFE6CC", "#D79B00"),             # PolarionAssistant/ValidReport
+    "core_config": ("#F8CECC", "#B85450"),          # PolarionAssistant/Core
     "ui_config": ("#E1D5E7", "#9673A6"),            # UI
 }
 CONFIG_FILES = {
     "config": "config  (config.py)",
     "testspec_config": "testspec_config  (PolarionAssistant/TestSpec)",
-    "valid_report_config": "valid_report_config  (PolarionAssistant/ValidReport)",
+    "doc_conf": "doc_conf = valid_report_config or periodic_review_config  (ValidReport)",
+    "core_config": "core_config  (PolarionAssistant/Core)",
     "ui_config": "ui_config  (UI/ui_config.py)",
 }
 
@@ -260,7 +262,8 @@ p1.note("n1",
         "(todo in code: an AI factory). That single instance is passed to\n"
         "every preprocessor and agent on page 2.\n\n"
         "Model selection\n"
-        "  OpenAI, Perplexity: config.MODEL_NAME\n"
+        "  OpenAI, Perplexity: config.MODEL_NAME - commented out in config.py,\n"
+        "    so both fail until it is set again\n"
         "  Gemini, Azure: model name hardcoded in the provider\n"
         "  Claude: SDK default, signs in with the claude.ai login",
         30, 560, 560, 180)
@@ -301,9 +304,10 @@ p2.uml("cfg", "config", 870, 80, 380, stereo="module", file="config.py",
               "PROCEED_WITH_AI_RISK_ASSESSMENT",
               "MAX_COUNT_OF_ISSUES_PROCESSED_AT_ONCE_BY_AI",
               "*_INSTRUCTIONS_PATH, REF_PATH",
+              "REF_PATH2_OPT   optional 2nd reference, \"\" = none",
               "TEMP_* / *_OUTPUT_FILE, CONTEXT_FILE",
               "CSV_TEMPLATE, ISSUE_END_MARKER",
-              "MODEL_NAME"],
+              "(MODEL_NAME - commented out)"],
        cfg='config')
 
 p2.uml("ptype", "PreprocessorType", 1330, 160, 340, stereo="Enum", file="Preprocessor/AbstractPreprocessor.py",
@@ -344,6 +348,7 @@ p2.uml("agent", "AIRiskAssessmentAgent", 410, 960, 400, file="RiskAssessment/AIR
        ops=["+ process_issues(input_data_content)",
             "- _process_issues_in_chunks(content)",
             "- _generate_input(content): str",
+            "- _create_input_for_2nd_ref(): str   \"\" without REF_PATH2_OPT",
             "- _get_up_to_nth(text, substring, n, start)",
             "- _get_total_occurances(text, substring): int"],
        uses=['config'])
@@ -535,7 +540,7 @@ p3.msg("agent", "files", "truncate RISK_ASSESSMENT_OUTPUT_FILE (final_risk_repor
 rl_top = p3.y + 14
 p3.y += 30
 p3.self_msg("agent", "_get_up_to_nth(): next MAX_COUNT_OF_ISSUES_... issues, split at ISSUE_END_MARKER")
-p3.msg("agent", "files", "_generate_input(): read RISK_INSTRUCTIONS_PATH + REF_PATH", "file")
+p3.msg("agent", "files", "_generate_input(): read RISK_INSTRUCTIONS_PATH + REF_PATH (+ REF_PATH2_OPT if set)", "file")
 p3.msg("agent", "prov", "generate_response(prompt)")
 p3.msg("prov", "llm", "query(prompt)   - transcript and context as above")
 p3.msg("llm", "prov", "text blocks", "ret")
@@ -593,7 +598,7 @@ p4.uml("item", "ItemUtil", 870, 80, 370, file="Core/ItemUtil.py",
        ops=["+ find_heading_item_by_name(document, heading_name)  {static}"])
 p4.uml("fact", "IssueDAOFactory", 870, 180, 370, file="Core/IssueDAOFactory.py",
        ops=["+ create(connector, issueDTO): work item  {static}"],
-       uses=['valid_report_config'])
+       uses=['core_config'])
 p4.uml("pars", "IssueParser", 1280, 80, 380, file="Core/IssueParser.py",
        attrs=["file_path", "issues: list[IssueDTO]", "issues_as_string: str"],
        ops=["+ read_file()",
@@ -601,7 +606,7 @@ p4.uml("pars", "IssueParser", 1280, 80, 380, file="Core/IssueParser.py",
             "+ parse_markdown_to_dto(raw_text): list[IssueDTO]  {static}",
             "- _fix_status(issue)  {static}",
             "- _fix_source(issue)  {static}"],
-       uses=['valid_report_config'])
+       uses=['core_config'])
 
 p4.lane("lts", "TestSpec", 20, 350, 1080, 270)
 p4.lane("lvr", "ValidReport", 1110, 350, 550, 270)
@@ -622,13 +627,15 @@ p4.uml("tcd", "TestCaseDebugger", 840, WY, WW, file="TestSpec/TestCaseDebugger.p
             "- _CreateDescription(desc)", "- _CreateTestAction(desc)"],
        uses=['testspec_config'])
 p4.uml("vrb", "ValidReportBuilder", 1120, WY, WW, file="ValidReport/ValidReportBuilder.py",
-       ops=["+ createFinalDoc()", "- _createDoc()", "- _changeDocToolName(report)",
+       ops=["+ __init__(doc_conf: ModuleType)",
+            "+ createFinalDoc()", "- _createDoc()", "- _changeDocToolName(report)",
             "- _ChangeDocStatus(items)", "- _ChangeItems(items)"],
-       uses=['valid_report_config'])
+       uses=['doc_conf', 'core_config'])
 p4.uml("imp", "PolarionIssueImporter", 1390, WY, WW, file="ValidReport/PolarionIssueImporter.py",
-       ops=["+ GetDocItems(): (doc, heading, name, email)",
+       ops=["+ __init__(doc_conf: ModuleType)",
+            "+ GetDocItems(): (doc, heading, name, email)",
             "+ ImportIssuesInPolarion()"],
-       uses=['valid_report_config'])
+       uses=['doc_conf', 'core_config'])
 
 for i, cid in enumerate(["tsb", "tsd", "tcb", "tcd", "vrb", "imp"]):
     p4.edge(f"wi{i}", cid, "work", "", EDGE_INHERIT, exit=("0.5", "0"), entry=(f"{0.08 + i * 0.168:.2f}", "1"))
@@ -650,16 +657,28 @@ p4.uml("tsc", "testspec_config", 580, 660, 400, stereo="module", file="TestSpec/
               "DOC_INPUT_HEADING, VALI_PLAN_EXCLUDED_HEADINGS"],
        cfg='testspec_config')
 p4.uml("vrm", "valid_report_main", 1120, 660, 520, stereo="script", file="PolarionAssistant/valid_report_main.py",
-       ops=["BUILD_VALID_REPORT=y  ->  ValidReportBuilder.createFinalDoc()",
-            "always  ->  PolarionIssueImporter.ImportIssuesInPolarion()"],
-       uses=['valid_report_config'])
-p4.uml("vrc", "valid_report_config", 1120, 800, 520, stereo="module", file="ValidReport/valid_report_config.py",
-       attrs=["TOOL_NAME, BUILD_VALID_REPORT",
-              "VALID_REPORT_TEMPLATE, TARGET_LOCATION / _NAME_ID / _TITLE",
-              "PLACEHOLDER, PLACEHOLDER_DOCSTATUS",
-              "DOC_NAME, DOC_INPUT_HEADING",
-              "ISSUE_INPUT_FILE = final_risk_report.txt"],
-       cfg='valid_report_config')
+       attrs=["REPORT_TYPES = (\"initial\", \"periodic\")"],
+       ops=["parse_args(argv): report = initial (default) | periodic",
+            "initial -> valid_report_config, periodic -> periodic_review_config",
+            "BUILD_VALID_REPORT=y  ->  ValidReportBuilder(doc_conf).createFinalDoc()",
+            "always  ->  PolarionIssueImporter(doc_conf).ImportIssuesInPolarion()"],
+       uses=['doc_conf'])
+DOC_CONF_KEYS = ["TOOL_NAME, BUILD_VALID_REPORT",
+                 "VALID_REPORT_TEMPLATE, TARGET_LOCATION / _NAME_ID / _TITLE",
+                 "PLACEHOLDER, PLACEHOLDER_DOCSTATUS",
+                 "DOC_NAME, DOC_INPUT_HEADING",
+                 "tool_folder, ISSUE_INPUT_FILE = output/{tool_folder}/final_risk_report.txt"]
+p4.uml("vrc", "valid_report_config", 1120, 900, 520, stereo="module",
+       file="ValidReport/valid_report_config.py   (report \"initial\")",
+       attrs=DOC_CONF_KEYS, cfg='doc_conf')
+p4.uml("prc", "periodic_review_config", 1120, 1090, 520, stereo="module",
+       file="ValidReport/periodic_review_config.py   (report \"periodic\")",
+       attrs=DOC_CONF_KEYS[:1] + ["same keys - TARGET_TITLE ends with the month of the run"],
+       cfg='doc_conf')
+p4.uml("cc", "core_config", 1700, 910, 520, stereo="module", file="Core/core_config.py   (not in the launcher)",
+       attrs=["PROJECT_ID",
+              "ISSUE_MARKER_BEG / ISSUE_MARKER_END, ISSUE_END_MARKER"],
+       cfg='core_config')
 
 p4.uml("dto", "IssueDTO", 1700, 80, 320, stereo="dataclass", file="Model/IssueDTO.py",
        attrs=["author_name / author_email", "polarion_username", "title / description",
@@ -688,7 +707,7 @@ p4.note("n3",
         "anything else becomes not_evaluated.",
         1700, 790, 520, 90)
 
-p4.legend("lg3", 30, 870, ["testspec_config", "valid_report_config"])
+p4.legend("lg3", 30, 870, ["testspec_config", "doc_conf", "core_config"])
 
 # ===========================================================================
 # Page 5 - issue review UI (own file)
@@ -696,65 +715,102 @@ p4.legend("lg3", 30, 870, ["testspec_config", "valid_report_config"])
 p5 = Page("Issue review UI")
 p5.text("t4", "UI - review and edit the risk report before the Polarion import", 30, 16, 800, 24, TITLE_STYLE)
 p5.text("t4s", "Tkinter. Reads ui_config.ISSUES_FILE (final_risk_report.txt), writes it back on save; "
-        "a backup is taken on start.", 30, 42, 1000, 18, SUB_STYLE)
+        "a backup is taken on start. List on the left, the selected issue on the right.",
+        30, 42, 1200, 18, SUB_STYLE)
 
 p5.uml("umain", "main", 30, 80, 380, stereo="script", file="UI/main.py",
        ops=["read ISSUES_FILE -> markup_to_issueCards()",
             "createIssuesBackUp()",
+            "sharp_on_high_dpi()   from theme",
             "App(items, ISSUES_FILE).mainloop()"],
        uses=['ui_config'])
-p5.uml("ser", "IssueSerializer", 30, 260, 380, stereo="module", file="UI/IssueSerializer.py",
+p5.uml("ser", "IssueSerializer", 30, 290, 380, stereo="module", file="UI/IssueSerializer.py",
        ops=["createIssuesBackUp(out_file, out_back)",
             "markup_to_issueCards(text): list[dict]",
-            "issueCards_to_markup(issues, out_file)   App, on save"],
+            "issueCards_to_markup(issues, out_file)   App._save()"],
        uses=['ui_config'])
-p5.uml("app", "App", 470, 80, 380, stereo="tk.Tk", file="UI/App.py",
-       attrs=["items: list[dict]", "items_file_path", "card_widgets: list[IssueCard]",
-              "filter_var", "canvas / scrollable / canvas_window"],
-       ops=["+ apply_filter()",
-            "- _on_canvas_configure(event)",
-            "- _bind_mousewheel()",
-            "- _on_mousewheel(e) / _on_mousewheel2(e)",
-            "- _on_issue_save()"],
+p5.uml("app", "App", 470, 80, 400, stereo="tk.Tk", file="UI/App.py",
+       attrs=["items: list[dict]", "items_file_path",
+              "editing: bool   edit mode for the whole viewer",
+              "_changed: set[int] / _deleted: int   unsaved",
+              "filter_var / search_var",
+              "issue_list: IssueList", "detail: IssueDetail"],
+       ops=["- _build_header() / _build_filters() / _build_body()",
+            "- _refresh_list(keep) / _update_counts()",
+            "- _on_select(index)",
+            "- _toggle_edit()   Ctrl+E",
+            "- _on_change(index)",
+            "- _delete_issue()",
+            "- _save(): bool   Ctrl+S",
+            "- _on_close()   asks to save"],
        uses=['ui_config'])
-p5.uml("card", "IssueCard", 910, 80, 400, stereo="tk.Frame", file="UI/IssueCard.py",
-       attrs=["item: dict", "header: IssueCardHeader",
-              "status_var / status_menu   editable status",
-              "desc_text / risk_text", "expanded, _edit"],
-       ops=["+ matches_filter(mode): bool",
-            "- _current_status(status_options)",
-            "- _status_pattern(mode)  {static}",
-            "- _status_matches(mode, text)",
-            "- _on_status_change(value)",
-            "- _toggle_expand() / _toggle_widget_expand(w)",
-            "- _on_edit()",
-            "- _bind_sync(widget, key) / _sync(widget, key)"],
+p5.uml("list", "IssueList", 930, 80, 400, stereo="ttk.Frame", file="UI/IssueList.py",
+       attrs=["tree: ttk.Treeview", "on_select / on_delete", "- _items: list[dict]",
+              "- _dots   status dot per key"],
+       ops=["+ set_rows(items, indexes)",
+            "+ update_row(index, item)",
+            "+ visible(): list[int] / selected(): int | None",
+            "+ select(index) / step(delta)",
+            "- _on_tree_select()",
+            "- _on_motion() / _show_tip() / _hide_tip()   title tooltip"])
+p5.uml("det", "IssueDetail", 930, 470, 400, stereo="tk.Frame", file="UI/IssueDetail.py",
+       attrs=["index: int | None / item: dict | None", "editing: bool", "on_change",
+              "title / defect_text / risk_text: tk.Text",
+              "status_buttons: list[_StatusButton]"],
+       ops=["+ show(index, item, edited)",
+            "+ set_editing(editing) / mark_edited(edited)",
+            "- _build_header() / _build_status() / _build_texts()",
+            "- _on_status(key)",
+            "- _bind_sync(widget, key)   text -> item",
+            "- _fit_title() / _fit_defect()",
+            "- _paint()"],
        uses=['ui_config'])
-p5.uml("hdr", "IssueCardHeader", 910, 560, 400, stereo="tk.Frame", file="UI/IssueCardHeader.py",
-       attrs=["edit_btn", "save_btn"],
-       ops=["__init__(master, title, on_edit, on_save)"],
+p5.uml("sbtn", "_StatusButton", 930, 900, 400, stereo="tk.Frame", file="UI/IssueDetail.py",
+       attrs=["key: str", "on_pick", "enabled: bool"],
+       ops=["+ paint(chosen, enabled)", "- _click()"])
+p5.uml("model", "IssueModel", 1390, 80, 400, stereo="module", file="UI/IssueModel.py",
+       attrs=["STATUS_KEYS = (risk_exists, no_risk, not_evaluated)",
+              "STATUS_LABELS", "MARKER_PREFIX = \"MARKER!\""],
+       ops=["status_key(item) / set_status(item, key)",
+            "title(item) / kind(item)",
+            "is_marker(item) / is_improvement(item)",
+            "defect_ids(item): list[str]",
+            "matches_query(item, query): bool"],
        uses=['ui_config'])
-p5.uml("ucfg", "ui_config", 470, 480, 380, stereo="module", file="UI/ui_config.py",
+p5.uml("theme", "theme", 1390, 420, 400, stereo="module", file="UI/theme.py   (also used by the Launcher)",
+       attrs=["colour tokens: GROUND, SURFACE, ACCENT, WARN, DANGER ...",
+              "STATUS_COLORS: dict[key, StatusColors]",
+              "Fonts   dataclass: body, small, heading, title, mono ..."],
+       ops=["apply(root, family, size): Fonts",
+            "sharp_on_high_dpi()",
+            "card(master): tk.Frame",
+            "status_dot(master, key): PhotoImage"],
+       uses=['ui_config'])
+p5.uml("ucfg", "ui_config", 470, 600, 400, stereo="module", file="UI/ui_config.py",
        attrs=["ISSUES_FILE / ISSUES_BACKUP_FILE",
               "TOKEN_BEG / TOKEN_END / END_ISSUE_TOKEN",
               "DEFECT_ID, DESCRIPTION, DEFECT_DESCRIPTION",
-              "RISK_ASSESSMENT, STATUS",
+              "RISK_ASSESSMENT, SOURCE, STATUS",
               "RISK_EXISTS / NO_RISK / NOT_EVALUATED / ALL",
-              "FONT, FONT_SIZE, GEOMETRY, PADX, PADY"],
+              "FONT, FONT_SIZE, GEOMETRY"],
        cfg='ui_config')
 
-p5.edge("u1", "umain", "app", "creates", EDGE, exit=("1", "0.5"), entry=("0", "0.2"))
+p5.edge("u1", "umain", "app", "creates", EDGE, exit=("1", "0.3"), entry=("0", "0.1"))
 p5.edge("u2", "umain", "ser", "", EDGE_DEP, exit=("0.5", "1"), entry=("0.5", "0"))
-p5.edge("u3", "app", "card", "0..*", EDGE, exit=("1", "0.3"), entry=("0", "0.3"))
-p5.edge("u4", "card", "hdr", "header", EDGE, exit=("0.5", "1"), entry=("0.5", "0"))
-p5.edge("u5", "app", "ser", "", EDGE_DEP, exit=("0", "0.85"), entry=("1", "0.8"))
+p5.edge("u3", "app", "list", "issue_list", EDGE, exit=("1", "0.2"), entry=("0", "0.3"))
+p5.edge("u4", "app", "det", "detail", EDGE, exit=("1", "0.8"), entry=("0", "0.3"))
+p5.edge("u5", "app", "ser", "_save()", EDGE_DEP, exit=("0", "0.85"), entry=("1", "0.5"))
+p5.edge("u6", "det", "sbtn", "3, one per status", EDGE, exit=("0.5", "1"), entry=("0.5", "0"))
+p5.edge("u7", "list", "model", "", EDGE_DEP, exit=("1", "0.5"), entry=("0", "0.5"))
+p5.edge("u8", "det", "theme", "", EDGE_DEP, exit=("1", "0.3"), entry=("0", "0.5"))
 p5.note("n4",
-        "Mouse wheel only scrolls the issue list - widgets\n"
-        "never change value on wheel (the status dropdown\n"
-        "included).",
-        30, 440, 380, 70)
+        "Mouse wheel only scrolls - status buttons and\n"
+        "text boxes never change value on wheel.\n\n"
+        "App, IssueList and IssueDetail all read IssueModel\n"
+        "and theme; only two of these links are drawn.",
+        30, 470, 380, 110)
 
-p5.legend("lg4", 30, 540, ["ui_config"])
+p5.legend("lg4", 30, 610, ["ui_config"])
 
 # ===========================================================================
 import xml.etree.ElementTree as ET
