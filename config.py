@@ -19,6 +19,7 @@ RISK_INSTRUCTIONS_PATH = "input/tool_vali_risk_assessment_markup.txt" #tool_vali
 RISK_SUMMARY_INSTRUCTIONS_PATH = "input/tool_vali_risk_summary.txt"
 
 REF_PATH ="input/releaseNotes/Axivion7.4/Valid_Report_Axivion_7_11_2.txt" # "input/VC24_Axivion_gold_standard.txt"
+REF_PATH2_OPT = "" # optional 2nd reference report, empty = none
 
 from pathlib import Path
 path = Path(f"output/{tool_folder}")

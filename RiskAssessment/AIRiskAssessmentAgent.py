@@ -24,11 +24,11 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
             with open(config.RISK_ASSESSMENT_OUTPUT_FILE, "w", encoding="utf-8") as f:
                 f.write("") # File is now EMPTY (0 bytes)
                 
-            print(f"\n Processing issues by count of {config.MAX_COUNT_OF_ISSUES_PROCESSED_AT_ONCE_BY_AI}.")
+            print(f"\n  Processing issues by count of {config.MAX_COUNT_OF_ISSUES_PROCESSED_AT_ONCE_BY_AI}.")
             
             pos = 0
             total_n = self._get_total_occurances(input_data_content, config.ISSUE_END_MARKER)
-            t = tqdm(total=total_n, desc="Generating Partial Risk Assessment Input and sending to AI for analysis....:")
+            t = tqdm(total=total_n, desc="  [Loop] Generating Partial Risk Assessment Input and sending to AI for analysis....:")
             t.update(pos)
             while(True):
                 (pos, input_data_content_partial) = self._get_up_to_nth(
@@ -50,7 +50,7 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
 
         except Exception:
             print(f"\n❌ [ERROR] Pre-Partitioning during risk assessment failed:\n{traceback.format_exc()}")
-            sys.exit()
+            sys.exit(1)
     
     def _process_issues_in_chunks(self, input_data_content):
         """
@@ -61,7 +61,7 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
             user_input = self._generate_input(input_data_content)
             if not user_input:
                 print("\n[ERROR] Generation of user input failed!")
-                sys.exit()  # Stop if generation failed
+                sys.exit(1)  # Stop if generation failed
 
             # Call AI
             ai_response = self.ai_engine.generate_response(user_input=user_input)
@@ -72,8 +72,8 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
                 
 
         except Exception:
-            print(f"\n[ERROR] Risk Assessment failed:\n{traceback.format_exc()}")
-            sys.exit()
+            print(f"\n❌ [ERROR] Risk Assessment failed:\n{traceback.format_exc()}")
+            sys.exit(1)
             
     def _generate_input(self, input_data_content):
         """
@@ -87,9 +87,12 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
             required_files = [
                 (config.RISK_INSTRUCTIONS_PATH, "Instructions"),
                 (config.REF_PATH, "Reference"),
+                (config.REF_PATH2_OPT, "2ndReference")
             ]
 
             for path, name in required_files:
+                if not path and name=="2ndReference":
+                    continue
                 if not os.path.exists(path):
                     print(f"[ERROR] {name} file not found at: {path}")
                     return ""
@@ -101,10 +104,13 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
             with open(config.RISK_INSTRUCTIONS_PATH, "r", encoding="utf-8") as f:
                 instructions_text = f.read()
 
-            # C. Reference File 2 (VC25)
+            # B. Reference File
             with open(config.REF_PATH, "r", encoding="utf-8", errors="replace") as f:
                 ref_content = f.read()
-
+            
+            # C. Reference File 2 (optional)
+            optional_ref_input = self._create_input_for_2nd_ref()
+                    
             # --- CONSTRUCT PROMPT ---
             user_input = (
                 f"{instructions_text}\n\n"
@@ -112,7 +118,8 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
                 f"--- REFERENCE FILE: {config.REF_PATH} ---\n"
                 f"{ref_content}\n"
                 f"--- END OF REFERENCE FILE ---\n\n"
-
+                f"{optional_ref_input}"
+                
                 f"--- INPUT DATA STARTS HERE ---\n"
                 f"{input_data_content}\n"
                 f"--- INPUT DATA ENDS HERE ---"
@@ -151,5 +158,19 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
             cur_pos += len(substring)
             counter += 1
         
-        raise Exception("Could not find total count of issues!") 
+        raise Exception("❌ Could not find total count of issues!") 
+    
+    def _create_input_for_2nd_ref(self):
+        optional_ref_input = ""
+        if config.REF_PATH2_OPT:
+            # C. Reference File 2 which is optional
+            with open(config.REF_PATH2_OPT, "r", encoding="utf-8", errors="replace") as f2:
+                ref_content_opt = f2.read()
+                
+                optional_ref_input = (
+                    f"--- 2nd REFERENCE FILE: {config.REF_PATH2_OPT} ---\n"
+                    f"{ref_content_opt}\n"
+                    f"--- END OF 2ND REFERENCE FILE ---\n\n"
+                )
+        return optional_ref_input
         
