@@ -262,9 +262,7 @@ p1.note("n1",
         "(todo in code: an AI factory). That single instance is passed to\n"
         "every preprocessor and agent on page 2.\n\n"
         "Model selection\n"
-        "  OpenAI, Perplexity: config.MODEL_NAME - commented out in config.py,\n"
-        "    so both fail until it is set again\n"
-        "  Gemini, Azure: model name hardcoded in the provider\n"
+        "  OpenAI, Azure, Perplexity, Gemini: model name hardcoded in the provider\n"
         "  Claude: SDK default, signs in with the claude.ai login",
         30, 560, 560, 180)
 p1.note("n1b",
@@ -306,8 +304,7 @@ p2.uml("cfg", "config", 870, 80, 380, stereo="module", file="config.py",
               "*_INSTRUCTIONS_PATH, REF_PATH",
               "REF_PATH2_OPT   optional 2nd reference, \"\" = none",
               "TEMP_* / *_OUTPUT_FILE, CONTEXT_FILE",
-              "CSV_TEMPLATE, ISSUE_END_MARKER",
-              "(MODEL_NAME - commented out)"],
+              "CSV_TEMPLATE, ISSUE_END_MARKER"],
        cfg='config')
 
 p2.uml("ptype", "PreprocessorType", 1330, 160, 340, stereo="Enum", file="Preprocessor/AbstractPreprocessor.py",
