@@ -26,7 +26,7 @@ path = Path(f"output/{tool_folder}")
 path.mkdir(parents=True, exist_ok=True)
 TEMP_REL_NOTES = f"output/{tool_folder}/temp_rel_notes.txt"
 TEMP_CHUNK_FILE = f"output/{tool_folder}/temp_chunk.txt"
-TEMP_OUTPUT_FILE = f"output/{tool_folder}/temp_output_risk.txt"
+TEMP_OUTPUT_FILE = f"output/{tool_folder}/temp_output.txt"
 CONTEXT_FILE = f"output/{tool_folder}/temp_context.txt"
 RISK_ASSESSMENT_OUTPUT_FILE = f"output/{tool_folder}/final_risk_report.txt"
 # RISK_ASSESSMENT_OUTPUT_FILE = f"output/EA_16_17/final_risk_report.txt"

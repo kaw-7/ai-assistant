@@ -21,7 +21,8 @@ DOC_NAME = f"wiki/{TARGET_LOCATION}/{TARGET_NAME_ID}"
 # ============================================================================
 # ISSUE IMPORT
 # ============================================================================
-DOC_INPUT_HEADING = "Published Issues and Bugs" # currently it has to be a heading
+# currently it has to be a heading
+DOC_INPUT_HEADING = "Bug Fixes in newer version" # Published Issues and Bugs
 
 # --- IO PATH SETTINGS ---
 tool_folder = "IAR_EW_8_40_1"
