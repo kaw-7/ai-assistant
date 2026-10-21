@@ -175,7 +175,7 @@
         <mxCell id="ic4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeWidth=1;fontSize=10;exitX=0.7;exitY=0;exitDx=0;exitDy=0;entryX=0.9;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="cla" target="aic">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="n1" value="Which provider runs?&lt;br&gt;main.ai_engine() constructs one by hand - today ClaudeProvider()&lt;br&gt;(todo in code: an AI factory). That single instance is passed to&lt;br&gt;every preprocessor and agent on page 2.&lt;br&gt;&lt;br&gt;Model selection&lt;br&gt;  OpenAI, Perplexity: config.MODEL_NAME&lt;br&gt;  Gemini, Azure: model name hardcoded in the provider&lt;br&gt;  Claude: SDK default, signs in with the claude.ai login" style="shape=note;whiteSpace=wrap;html=1;size=14;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
+        <mxCell id="n1" value="Which provider runs?&lt;br&gt;main.ai_engine() constructs one by hand - today ClaudeProvider()&lt;br&gt;(todo in code: an AI factory). That single instance is passed to&lt;br&gt;every preprocessor and agent on page 2.&lt;br&gt;&lt;br&gt;Model selection&lt;br&gt;  OpenAI, Perplexity: config.MODEL_NAME - commented out in config.py,&lt;br&gt;    so both fail until it is set again&lt;br&gt;  Gemini, Azure: model name hardcoded in the provider&lt;br&gt;  Claude: SDK default, signs in with the claude.ai login" style="shape=note;whiteSpace=wrap;html=1;size=14;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
           <mxGeometry x="30" y="560" width="560" height="180" as="geometry" />
         </mxCell>
         <mxCell id="n1b" value="ClaudeProvider.py - module helper&lt;br&gt;run_async(coro): runs the SDK coroutine with asyncio.run(), or on a&lt;br&gt;dedicated thread with its own Proactor loop when a loop is already&lt;br&gt;running (Spyder / Jupyter).&lt;br&gt;&lt;br&gt;Gemini and Claude also write the transcript to config.CONTEXT_FILE." style="shape=note;whiteSpace=wrap;html=1;size=14;align=left;spacingLeft=8;verticalAlign=top;" vertex="1" parent="1">
@@ -235,7 +235,7 @@
           <mxGeometry y="154" width="400" height="22" as="geometry" />
         </mxCell>
         <mxCell id="cfg" value="&amp;laquo;module&amp;raquo;&lt;br&gt;&lt;b&gt;config&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;config.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
-          <mxGeometry x="870" y="80" width="380" height="278" as="geometry" />
+          <mxGeometry x="870" y="80" width="380" height="300" as="geometry" />
         </mxCell>
         <mxCell id="cfg-a0" value="tool_folder, TOOL_NAME, TOOL_RELEASE_NOTES" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
           <mxGeometry y="58" width="380" height="22" as="geometry" />
@@ -258,14 +258,17 @@
         <mxCell id="cfg-a6" value="*_INSTRUCTIONS_PATH, REF_PATH" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
           <mxGeometry y="190" width="380" height="22" as="geometry" />
         </mxCell>
-        <mxCell id="cfg-a7" value="TEMP_* / *_OUTPUT_FILE, CONTEXT_FILE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
+        <mxCell id="cfg-a7" value="REF_PATH2_OPT   optional 2nd reference, &quot;&quot; = none" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
           <mxGeometry y="212" width="380" height="22" as="geometry" />
         </mxCell>
-        <mxCell id="cfg-a8" value="CSV_TEMPLATE, ISSUE_END_MARKER" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
+        <mxCell id="cfg-a8" value="TEMP_* / *_OUTPUT_FILE, CONTEXT_FILE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
           <mxGeometry y="234" width="380" height="22" as="geometry" />
         </mxCell>
-        <mxCell id="cfg-a9" value="MODEL_NAME" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
+        <mxCell id="cfg-a9" value="CSV_TEMPLATE, ISSUE_END_MARKER" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
           <mxGeometry y="256" width="380" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg-a10" value="(MODEL_NAME - commented out)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="cfg">
+          <mxGeometry y="278" width="380" height="22" as="geometry" />
         </mxCell>
         <mxCell id="ptype" value="&amp;laquo;Enum&amp;raquo;&lt;br&gt;&lt;b&gt;PreprocessorType&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;Preprocessor/AbstractPreprocessor.py&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;" vertex="1" parent="1">
           <mxGeometry x="1330" y="160" width="340" height="124" as="geometry" />
@@ -376,7 +379,7 @@
           <mxGeometry y="58" width="400" height="22" as="geometry" />
         </mxCell>
         <mxCell id="agent" value="&lt;b&gt;AIRiskAssessmentAgent&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;RiskAssessment/AIRiskAssessmentAgent.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
-          <mxGeometry x="410" y="960" width="400" height="198" as="geometry" />
+          <mxGeometry x="410" y="960" width="400" height="220" as="geometry" />
         </mxCell>
         <mxCell id="agent-a0" value="ai_engine: AIProvider" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="agent">
           <mxGeometry y="58" width="400" height="22" as="geometry" />
@@ -393,11 +396,14 @@
         <mxCell id="agent-o2" value="- _generate_input(content): str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="agent">
           <mxGeometry y="132" width="400" height="22" as="geometry" />
         </mxCell>
-        <mxCell id="agent-o3" value="- _get_up_to_nth(text, substring, n, start)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="agent">
+        <mxCell id="agent-o3" value="- _create_input_for_2nd_ref(): str   &quot;&quot; without REF_PATH2_OPT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="agent">
           <mxGeometry y="154" width="400" height="22" as="geometry" />
         </mxCell>
-        <mxCell id="agent-o4" value="- _get_total_occurances(text, substring): int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="agent">
+        <mxCell id="agent-o4" value="- _get_up_to_nth(text, substring, n, start)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="agent">
           <mxGeometry y="176" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="agent-o5" value="- _get_total_occurances(text, substring): int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="agent">
+          <mxGeometry y="198" width="400" height="22" as="geometry" />
         </mxCell>
         <mxCell id="summ" value="&lt;b&gt;AIRiskSummary&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;RiskAssessment/AIRiskSummary.py&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot; color=&quot;#333333&quot;&gt;&lt;i&gt;(uses config)&lt;/i&gt;&lt;/font&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=58;horizontalStack=0;resizeParent=1;resizeParentMax=0;html=1;whiteSpace=wrap;verticalAlign=top;align=center;strokeWidth=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
           <mxGeometry x="870" y="820" width="380" height="132" as="geometry" />
@@ -737,7 +743,7 @@
         <mxCell id="st29" value="29. _get_up_to_nth(): next MAX_COUNT_OF_ISSUES_... issues, split at ISSUE_END_MARKER" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
           <mxGeometry x="946" y="1654" width="300" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="m30-1710" value="30. _generate_input(): read RISK_INSTRUCTIONS_PATH + REF_PATH" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;fontSize=10;strokeColor=#6C8EBF;fontColor=#3A5A8C;" edge="1" parent="1">
+        <mxCell id="m30-1710" value="30. _generate_input(): read RISK_INSTRUCTIONS_PATH + REF_PATH (+ REF_PATH2_OPT if set)" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;fontSize=10;strokeColor=#6C8EBF;fontColor=#3A5A8C;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="910" y="1710" as="sourcePoint" />
             <mxPoint x="1510" y="1710" as="targetPoint" />
