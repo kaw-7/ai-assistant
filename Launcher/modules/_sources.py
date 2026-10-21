@@ -170,7 +170,9 @@ def _report_config_source(file_stem: str, title: str) -> PyModuleConfigSource:
                         kind=FieldKind.CHOICE, choices=YES_NO, section=SECTION_STEPS),
 
             ConfigField("TOOL_NAME", "Tool name", section=SECTION_DOCUMENT),
-            ConfigField("TARGET_LOCATION", "Target space", section=SECTION_DOCUMENT),
+            ConfigField("TARGET_LOCATION", "Target space", section=SECTION_DOCUMENT,
+                        editable=False,
+                        help="Read only - change it in the configuration file."),
             ConfigField("TARGET_TITLE", "Document title", section=SECTION_DOCUMENT),
             ConfigField("DOC_NAME", "Target document", section=SECTION_DOCUMENT),
             ConfigField("DOC_INPUT_HEADING", "Target heading", section=SECTION_DOCUMENT),
@@ -250,7 +252,9 @@ def testspec_config_source() -> PyModuleConfigSource:
 
             ConfigField("PROJECT_ID", "Polarion project id", section=SECTION_DOCUMENT),
             ConfigField("TOOL_NAME", "Tool name", section=SECTION_DOCUMENT),
-            ConfigField("TARGET_LOCATION", "Target space", section=SECTION_DOCUMENT),
+            ConfigField("TARGET_LOCATION", "Target space", section=SECTION_DOCUMENT,
+                        editable=False,
+                        help="Read only - change it in the configuration file."),
             ConfigField("TARGET_TITLE", "Document title", section=SECTION_DOCUMENT),
             ConfigField("PLAN_DOCU", "Validation plan document", section=SECTION_DOCUMENT),
             ConfigField("TEST_DOCU", "Test specification document",
