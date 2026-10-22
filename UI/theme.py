@@ -199,9 +199,13 @@ def apply(root: tk.Misc, family: str | None = None, size: int | None = None) -> 
     style.configure("Issues.Treeview", background=SURFACE,
                     fieldbackground=SURFACE, foreground=TEXT, font=fonts.body,
                     rowheight=row_height, borderwidth=0, relief="flat")
+    # no "selected" foreground anywhere in the style chain: a style map beats
+    # the item tags, so it would turn the blue of an improvement black on
+    # selection - clam maps it on Treeview, hence the override there too
+    style.map("Treeview", foreground=[("disabled", TEXT_DISABLED)])
     style.map("Issues.Treeview",
               background=[("selected", ACCENT_SOFT)],
-              foreground=[("selected", TEXT)])
+              foreground=[("disabled", TEXT_DISABLED)])
     style.layout("Issues.Treeview", [("Treeview.treearea", {"sticky": "nswe"})])
     style.configure("Issues.Treeview.Heading", background=SURFACE,
                     foreground=TEXT_MUTED, font=fonts.small_bold, relief="flat",
@@ -233,7 +237,7 @@ def card(master, **kwargs) -> tk.Frame:
                     highlightbackground=BORDER, highlightcolor=BORDER, **kwargs)
 
 
-def status_dot(master, key: str, size: int = 10) -> tk.PhotoImage:
+def status_dot(master, key: str, size: int = 14) -> tk.PhotoImage:
     """A filled circle in the colour of the status, for the issue list."""
     image = tk.PhotoImage(master=master, width=size + 6, height=size)
     color = STATUS_COLORS[key].dot

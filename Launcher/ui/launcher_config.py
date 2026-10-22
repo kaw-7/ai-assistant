@@ -7,7 +7,7 @@ viewer (``UI/theme.py``); only what is particular to the launcher lives here.
 
 WINDOW_TITLE = "Tool Validation Assistant - Launcher"
 APP_NAME = "Validation Assistant"
-GEOMETRY = "1280x860"
+GEOMETRY = "1350x900"
 MIN_WIDTH = 960
 MIN_HEIGHT = 620
 

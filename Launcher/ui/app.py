@@ -115,7 +115,8 @@ class LauncherApp(tk.Tk):
         self.config_panel = ConfigPanel(split, self.store, self.fonts,
                                         on_change=self._on_config_changed)
         split.add(self.config_panel, weight=1)
-        self.console = ConsolePane(split, self.fonts)
+        self.console = ConsolePane(split, self.fonts,
+                                   on_toggle_size=self._toggle_console_size)
         # the output keeps its height when the window is resized - the form
         # gets the difference
         split.add(self.console, weight=0)
@@ -209,6 +210,12 @@ class LauncherApp(tk.Tk):
             return
         if not self._store_current_values():
             return
+        # values the module would misuse (a '/' in a document id) - the
+        # fields are red, their tooltips say what to change
+        problems = self.config_panel.problems()
+        if problems:
+            messagebox.showerror("Cannot run", "\n\n".join(problems), parent=self)
+            return
 
         # a run opens the output to CONSOLE_ROWS_RUN rows and leaves it so -
         # only ever made larger, never smaller than the user dragged it
@@ -218,6 +225,10 @@ class LauncherApp(tk.Tk):
             f"\n=== {self._current.label()} ===\n", ConsolePane.TAG_INFO)
         self.runner.start(self._current.id, self.store.as_dict())
         self._set_running(True)
+
+    def _toggle_console_size(self) -> None:
+        self._show_console_rows(cfg.CONSOLE_ROWS_START if self.console.is_expanded()
+                                else cfg.CONSOLE_ROWS_RUN)
 
     def _show_console_rows(self, rows: int, grow_only: bool = False) -> None:
         split = self._split

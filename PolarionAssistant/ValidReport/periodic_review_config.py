@@ -1,6 +1,7 @@
 # Periodic Review config - document creation and issue import
 # Same settings as valid_report_config.py, filled for a periodic review.
 # Polarion project id and issue markup: PolarionAssistant/Core/core_config.py
+import re
 from datetime import date
 
 # --- STEPS run by valid_report_main.py ('y' / 'n') ---
@@ -15,7 +16,7 @@ TOOL_NAME = "IAR Embedded Workbench for ARM (IDE) v8.40.1"
 # created by the document step, filled by the issue import
 TARGET_LOCATION = "Anomaly Reports"
 TARGET_TITLE = f"{TOOL_NAME} Periodic Review - {date.today():%B %Y}"  # the month of the run, e.g. "October 2026"
-TARGET_NAME_ID = TARGET_TITLE.replace('.', '_')
+TARGET_NAME_ID = re.sub(r'[^\w -]', '_', TARGET_TITLE)  # only letters, digits, ' ', '_' and '-' - a '/' would open a new Polarion space
 DOC_NAME = f"wiki/{TARGET_LOCATION}/{TARGET_NAME_ID}"
 
 # ============================================================================

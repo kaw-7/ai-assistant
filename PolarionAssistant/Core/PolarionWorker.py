@@ -20,6 +20,14 @@ class PolarionWorker(ABC):
     def PrintDocDetails(self):
         pass
     
+    @staticmethod
+    def _checkDocName(name):
+        # Polarion reads a '/' in a document name as a space separator - the
+        # document would land in a new space instead of the target space
+        if "/" in name or "\\" in name:
+            raise ValueError(f"Document id '{name}' contains '/' or '\\' - Polarion would "
+                             "create it in another space. Fix TARGET_NAME_ID.")
+
     def getTemplate(self, proj_id, template_path):
         # 1. Get your project
         project = self._client.getProject(proj_id)

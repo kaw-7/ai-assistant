@@ -37,11 +37,30 @@ SECTION_TOOL = "Validated tool"
 SECTION_AI = "AI processing"
 SECTION_INSTRUCTIONS = "Instruction files"
 SECTION_OUTPUT = "Generated files"
-SECTION_DOCUMENT = "Polarion document"
+SECTION_POLARION = "Polarion"
 SECTION_MARKUP = "Issue markup"
 SECTION_FILES = "Files"
 SECTION_STEPS = "Steps"
-SECTION_TEMPLATE = "Template"
+
+
+# besides letters and digits - anything else in a document id ('/' opens a new
+# Polarion space) has to be reworked before a run
+DOCUMENT_ID_EXTRA_CHARS = " _-"
+
+
+def _document_id_problem(value: str) -> str:
+    bad = sorted({c for c in value if not (c.isalnum() or c in DOCUMENT_ID_EXTRA_CHARS)})
+    if not bad:
+        return ""
+    return (f"The document id contains {' '.join(repr(c) for c in bad)} - only letters, "
+            "digits, spaces, '_' and '-' are allowed. Rework the tool name or the "
+            "document title, or switch Override on and modify the id.")
+
+
+def _document_id_field() -> ConfigField:
+    """TARGET_NAME_ID - the name the document is created under in Polarion."""
+    return ConfigField("TARGET_NAME_ID", "Document id", section=SECTION_POLARION,
+                       check=_document_id_problem)
 
 
 def _preprocessor_field() -> ConfigField:
@@ -169,21 +188,21 @@ def _report_config_source(file_stem: str, title: str) -> PyModuleConfigSource:
             ConfigField("BUILD_VALID_REPORT", f"Build the {title.lower()}",
                         kind=FieldKind.CHOICE, choices=YES_NO, section=SECTION_STEPS),
 
-            ConfigField("TOOL_NAME", "Tool name", section=SECTION_DOCUMENT),
-            ConfigField("TARGET_LOCATION", "Target space", section=SECTION_DOCUMENT,
+            ConfigField("TOOL_NAME", "Tool name", section=SECTION_POLARION),
+            ConfigField("TARGET_TITLE", "Document title", section=SECTION_POLARION),
+            _document_id_field(),
+            ConfigField("DOC_NAME", "Target document", section=SECTION_POLARION),
+            ConfigField("DOC_INPUT_HEADING", "Target heading", section=SECTION_POLARION),
+            ConfigField("VALID_REPORT_TEMPLATE", "Template document",
+                        section=SECTION_POLARION),
+            ConfigField("TARGET_LOCATION", "Target space", section=SECTION_POLARION,
                         editable=False,
                         help="Read only - change it in the configuration file."),
-            ConfigField("TARGET_TITLE", "Document title", section=SECTION_DOCUMENT),
-            ConfigField("DOC_NAME", "Target document", section=SECTION_DOCUMENT),
-            ConfigField("DOC_INPUT_HEADING", "Target heading", section=SECTION_DOCUMENT),
 
             ConfigField("tool_folder", "Tool folder", section=SECTION_FILES,
                         help="Sub folder of output/, as in config.py"),
             ConfigField("ISSUE_INPUT_FILE", "Issues to import",
                         kind=FieldKind.FILE, section=SECTION_FILES),
-
-            ConfigField("VALID_REPORT_TEMPLATE", "Template document",
-                        section=SECTION_TEMPLATE),
         ],
         section_default="Placeholders",
     )
@@ -250,19 +269,19 @@ def testspec_config_source() -> PyModuleConfigSource:
             ConfigField("DEBUG", "Debug only (no changes in Polarion)",
                         kind=FieldKind.CHOICE, choices=YES_NO, section=SECTION_STEPS),
 
-            ConfigField("PROJECT_ID", "Polarion project id", section=SECTION_DOCUMENT),
-            ConfigField("TOOL_NAME", "Tool name", section=SECTION_DOCUMENT),
-            ConfigField("TARGET_LOCATION", "Target space", section=SECTION_DOCUMENT,
+            ConfigField("PROJECT_ID", "Polarion project id", section=SECTION_POLARION),
+            ConfigField("TOOL_NAME", "Tool name", section=SECTION_POLARION),
+            ConfigField("TARGET_TITLE", "Document title", section=SECTION_POLARION),
+            _document_id_field(),
+            ConfigField("PLAN_DOCU", "Validation plan document", section=SECTION_POLARION),
+            ConfigField("TEST_DOCU", "Test specification document",
+                        section=SECTION_POLARION),
+            ConfigField("DOC_INPUT_HEADING", "Target heading", section=SECTION_POLARION),
+            ConfigField("TEST_SPEC_TEMPLATE", "Template document",
+                        section=SECTION_POLARION),
+            ConfigField("TARGET_LOCATION", "Target space", section=SECTION_POLARION,
                         editable=False,
                         help="Read only - change it in the configuration file."),
-            ConfigField("TARGET_TITLE", "Document title", section=SECTION_DOCUMENT),
-            ConfigField("PLAN_DOCU", "Validation plan document", section=SECTION_DOCUMENT),
-            ConfigField("TEST_DOCU", "Test specification document",
-                        section=SECTION_DOCUMENT),
-            ConfigField("DOC_INPUT_HEADING", "Target heading", section=SECTION_DOCUMENT),
-
-            ConfigField("TEST_SPEC_TEMPLATE", "Template document",
-                        section=SECTION_TEMPLATE),
         ],
         # a set - a text box would turn it into a string and 'in' would then
         # match substrings of the heading titles; edit it in the file

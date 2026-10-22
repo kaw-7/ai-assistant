@@ -7,11 +7,12 @@ selected module exposes, so a new module gets its editor for free.
 Two kinds of entries are shown:
 
 * plain values - editable straight away, stored as an override as soon as they
-  differ from what stands in the configuration file; they are then tagged
-  "edited" and get a Reset button;
+  differ from what stands in the configuration file; they then get an amber
+  edge and a Reset button;
 * derived values (f-strings, references to other entries) - tagged "computed",
-  shown read only and recomputed while the values they depend on are edited.
-  Switching "Override" on pins such an entry to a value of its own.
+  shown read only and recomputed while the values they depend on are typed.
+  "Override" pins such an entry to a value of its own; the button then reads
+  "Recompute" and gives the entry back to the computation.
 
 Every section is a card; the list on the left jumps to a section and follows
 the scrolling.
@@ -39,6 +40,8 @@ TOC_SHORT_LETTERS = 4
 TOC_COLLAPSE_MS = 120
 # above and below the value of a settings row
 ROW_PADY = 4
+# pause in typing after which the computed values follow the typed one
+LIVE_SYNC_MS = 300
 
 # text on the choice buttons; the stored value stays the configured one
 _CHOICE_LABELS = {"y": "Yes", "n": "No"}
@@ -66,6 +69,10 @@ class _FieldEditor:
         self.override_var: tk.BooleanVar | None = None
         self.var: tk.Variable
         self._choice_buttons: List[ttk.Radiobutton] = []
+        self._override_button: ttk.Checkbutton | None = None
+        self._loading = False       # the value is set by the panel, not typed
+        self._sync_after = None
+        self.problem = ""           # why the value blocks a run - see mark()
 
         if row:
             tk.Frame(parent, height=1, background=theme.DIVIDER).grid(
@@ -107,11 +114,11 @@ class _FieldEditor:
                               wraplength=0 if compact else cfg.LABEL_WIDTH - 80)
         self.label.pack(side="left")
         # the hint ("Relative to the project root.") shows on the label only
-        # when asked for, so the row stays one line high
-        if field.help:
-            Tooltip(self.label, field.help)
+        # when asked for, so the row stays one line high; a value that blocks
+        # the run says why instead
+        if field.help or field.check:
+            Tooltip(self.label, lambda: self.problem or field.help)
             self.label.configure(cursor="question_arrow")
-        self.edited_tag = self._tag(line, "edited", theme.WARN_SOFT, theme.WARN_TEXT)
         # shown while the computed value is used - see mark()
         self.computed_tag = self._tag(line, "computed", theme.CHIP, theme.TEXT_SOFT)
         if field.derived:
@@ -135,12 +142,18 @@ class _FieldEditor:
             column += 1
         if field.derived:
             self.override_var = tk.BooleanVar(value=False)
-            toggle = ttk.Checkbutton(holder, text="Override", style="Override.Toolbutton",
+            # the text names what a click does: set the value by hand, or
+            # give it back to the computation
+            toggle = ttk.Checkbutton(holder, style="Override.Toolbutton", width=10,
                                      variable=self.override_var,
                                      command=self._on_override_toggled)
             toggle.grid(row=0, column=column, padx=(3, 0))
-            Tooltip(toggle, "This value is computed from the other settings. "
-                            "Switch Override on to set it by hand instead.")
+            Tooltip(toggle, lambda: (
+                "Set by hand. Click to compute it from the other settings again."
+                if self.override_var.get() else
+                "Computed from the other settings. Click to set it by hand."))
+            self._override_button = toggle
+            self._paint_override()
             column += 1
         # shown only while a plain value differs from the file - see mark()
         self.reset_button = ttk.Button(holder, text="↺", width=0, style="Icon.Link.TButton",
@@ -210,6 +223,8 @@ class _FieldEditor:
         widget.grid(row=0, column=1, sticky="ew")
         widget.bind("<FocusOut>", lambda _e: self._commit())
         widget.bind("<Return>", lambda _e: self._commit())
+        # the computed values follow while typing, not only on leaving the entry
+        self.var.trace_add("write", self._on_typed)
         # long values (document names, paths) may not fit - show them whole
         Tooltip(widget, self._full_value_hint)
         return widget
@@ -233,17 +248,34 @@ class _FieldEditor:
 
     def _on_override_toggled(self) -> None:
         self._apply_enabled_state()
+        self._paint_override()
         self._commit()
 
+    def _paint_override(self) -> None:
+        if self._override_button is not None:
+            self._override_button.configure(
+                text="Recompute" if self.override_var.get() else "Override")
+
+    def _on_typed(self, *_args) -> None:
+        if self._loading:
+            return
+        if self._sync_after is not None:
+            self.widget.after_cancel(self._sync_after)
+        self._sync_after = self.widget.after(LIVE_SYNC_MS, self._commit)
+
     def _full_value_hint(self) -> str:
-        """The value as tooltip text, but only when the entry cuts it off."""
+        """Why the value blocks a run, and the value when the entry cuts it off."""
         # the entry knows best which part of its text it shows
         first, last = self.widget.xview()
-        if first <= 0.0 and last >= 1.0:
-            return ""
-        return self.var.get()
+        cut = not (first <= 0.0 and last >= 1.0)
+        if self.problem:
+            return f"{self.problem}\n\n{self.var.get()}" if cut else self.problem
+        return self.var.get() if cut else ""
 
     def _commit(self) -> None:
+        if self._sync_after is not None:
+            self.widget.after_cancel(self._sync_after)
+            self._sync_after = None
         if callable(self.on_commit):
             self.on_commit()
 
@@ -288,7 +320,11 @@ class _FieldEditor:
             self.widget.insert("1.0", "" if value is None else str(value))
             self.widget.configure(state=state)
             return
-        self.var.set(self.field.to_display(value))
+        self._loading = True
+        try:
+            self.var.set(self.field.to_display(value))
+        finally:
+            self._loading = False
 
     def is_overridden(self, file_value: Any) -> bool:
         if self.override_var is not None:
@@ -304,14 +340,16 @@ class _FieldEditor:
         if self.override_var is not None:
             self.override_var.set(flag)
             self._apply_enabled_state()
+            self._paint_override()
 
     def mark(self, overridden: bool) -> None:
-        """Show whether the value differs from the configuration file."""
+        """Show whether the value differs from the configuration file and
+        whether it blocks a run."""
         self.edge.configure(background=theme.WARN if overridden else theme.SURFACE)
-        if overridden:
-            self.edited_tag.pack(side="left", padx=(6, 0))
-        else:
-            self.edited_tag.pack_forget()
+        self.problem = self.field.problem(self.raw_value())
+        self.label.configure(foreground=theme.DANGER if self.problem else theme.TEXT)
+        if isinstance(self.widget, ttk.Entry):
+            self.widget.configure(style="Invalid.TEntry" if self.problem else "TEntry")
         # a value is either computed or set by hand (Override on), not both
         if self.field.derived and not overridden:
             self.computed_tag.pack(side="left", padx=(6, 0))
@@ -566,9 +604,10 @@ class ConfigPanel(ttk.Frame):
                         continue
                     name = editor.field.name
                     overridden = name in values.get(source.id, {})
-                    editor.mark(overridden)
                     if editor.field.derived and not overridden:
                         editor.set_raw_value(effective.get(name, ""))
+                    # after the new value is in - mark() also checks it
+                    editor.mark(overridden)
         finally:
             self._refreshing = False
 
@@ -593,6 +632,14 @@ class ConfigPanel(ttk.Frame):
             except (TypeError, ValueError) as exc:
                 errors.append(f"{source.title} - {field.label}: {exc}")
         return values, errors
+
+    def problems(self) -> List[str]:
+        """Why the shown values cannot be run - see ConfigField.check."""
+        return [
+            f"{source.title} - {editor.field.label}: {editor.problem}"
+            for source, editor in self._editors
+            if editor.problem
+        ]
 
     def volatile_keys(self, source_id: str) -> List[str]:
         """Names of the fields that must not reach the settings file."""

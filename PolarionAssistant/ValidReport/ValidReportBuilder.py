@@ -28,6 +28,7 @@ class ValidReportBuilder(PolarionWorker):
             sys.exit(1)
             
     def _createDoc(self):
+        self._checkDocName(self.doc_conf.TARGET_NAME_ID)
         # Reuse the template
         return self.getTemplate(core_conf.PROJECT_ID, self.doc_conf.VALID_REPORT_TEMPLATE).reuse(
             core_conf.PROJECT_ID,

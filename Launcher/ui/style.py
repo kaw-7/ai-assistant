@@ -20,6 +20,16 @@ def apply(root: tk.Misc) -> theme.Fonts:
               foreground=[("disabled", theme.TEXT_SOFT)],
               bordercolor=[("disabled", theme.BORDER), ("focus", theme.ACCENT)],
               lightcolor=[("disabled", theme.READONLY), ("focus", theme.ACCENT_RING)])
+    # a value that blocks the run (see ConfigField.check) - red, also while
+    # it is a computed, read only value
+    style.configure("Invalid.TEntry", fieldbackground=theme.DANGER_SOFT,
+                    bordercolor=theme.DANGER, lightcolor=theme.DANGER_SOFT,
+                    darkcolor=theme.DANGER_SOFT)
+    style.map("Invalid.TEntry",
+              fieldbackground=[("disabled", theme.DANGER_SOFT)],
+              foreground=[("disabled", theme.TEXT_SOFT)],
+              bordercolor=[("disabled", theme.DANGER), ("focus", theme.DANGER)],
+              lightcolor=[("disabled", theme.DANGER_SOFT), ("focus", theme.DANGER_SOFT)])
     style.configure("TCombobox", fieldbackground=theme.SURFACE, background=theme.SURFACE,
                     foreground=theme.TEXT, bordercolor=theme.BORDER_STRONG,
                     lightcolor=theme.SURFACE, darkcolor=theme.SURFACE,
