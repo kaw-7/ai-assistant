@@ -118,14 +118,24 @@ class IssueDetail(tk.Frame):
         row = tk.Frame(self.body, background=theme.GROUND)
         row.pack(fill="x", pady=(theme.SPACE_M, 0))
         # all IDs of the issue, left of the status; many IDs wrap, so they
-        # never push the status buttons out of the window
-        self.ids_label = tk.Label(row, background=theme.GROUND, foreground=theme.TEXT,
-                                  font=self.fonts.small_bold, justify="left", anchor="w")
-        self.ids_label.pack(side="left", padx=(0, theme.SPACE_L))
+        # never push the status buttons out of the window. Read only text, not
+        # a label, so an ID can be selected and copied
+        self.ids_text = tk.Text(row, height=1, width=1, wrap="word",
+                                font=self.fonts.small_bold, background=theme.GROUND,
+                                foreground=theme.TEXT, relief="flat", borderwidth=0,
+                                highlightthickness=0, padx=0, pady=0, cursor="xterm",
+                                takefocus=False, selectbackground=theme.ACCENT_SOFT,
+                                selectforeground=theme.TEXT,
+                                inactiveselectbackground=theme.ACCENT_SOFT,
+                                state="disabled")
+        self.ids_text.pack(side="left", padx=(0, theme.SPACE_L))
+        # a disabled text box takes no focus on a click - Ctrl+C needs it
+        self.ids_text.bind("<Button-1>", lambda _e: self.ids_text.focus_set(), add="+")
+        self._ids_row = row
         status = tk.Frame(row, background=theme.GROUND)
         status.pack(side="left")
-        row.bind("<Configure>", lambda e: self.ids_label.configure(
-            wraplength=max(120, e.width - status.winfo_reqwidth() - theme.SPACE_L)))
+        self._ids_status = status
+        row.bind("<Configure>", lambda _e: self._fit_ids())
         tk.Label(status, text="STATUS", background=theme.GROUND, foreground=theme.TEXT_MUTED,
                  font=self.fonts.small_bold).pack(side="left", padx=(0, theme.SPACE_M))
         self.status_buttons = []
@@ -208,7 +218,8 @@ class IssueDetail(tk.Frame):
         self.body.pack(fill="both", expand=True, padx=theme.SPACE_M,
                        pady=(theme.SPACE_M, theme.SPACE_S))
 
-        self.ids_label.configure(text=", ".join(model.defect_ids(item)))
+        self._load(self.ids_text, ", ".join(model.defect_ids(item)), keep_disabled=True)
+        self._fit_ids()
         for child in self.tags.winfo_children():
             child.destroy()
         kind = model.kind(item)
@@ -241,15 +252,34 @@ class IssueDetail(tk.Frame):
         else:
             self.edited_tag.pack_forget()
 
-    def _load(self, widget: tk.Text, text: str) -> None:
+    def _load(self, widget: tk.Text, text: str, keep_disabled: bool = False) -> None:
         widget.configure(state="normal")
         widget.delete("1.0", "end")
         widget.insert("1.0", text or "")
         widget.edit_reset()
         widget.edit_modified(False)
         widget.yview_moveto(0.0)
-        if not self.editing:
+        if keep_disabled or not self.editing:
             widget.configure(state="disabled")
+
+    def _fit_ids(self) -> None:
+        """As wide as the IDs, at most what the status leaves; as high as they wrap."""
+        widget = self.ids_text
+        font = self.fonts.small_bold
+        text = widget.get("1.0", "end-1c")
+        available = max(120, self._ids_row.winfo_width()
+                        - self._ids_status.winfo_reqwidth() - theme.SPACE_L)
+        # the width of a text box counts in "0" characters
+        chars = -(-min(font.measure(text) + 2, available) // font.measure("0")) + 1
+        if int(widget.cget("width")) != chars:
+            widget.configure(width=chars)
+        widget.after_idle(self._fit_ids_height)
+
+    def _fit_ids_height(self) -> None:
+        widget = self.ids_text
+        lines = int(widget.tk.call(widget._w, "count", "-displaylines", "1.0", "end-1c") or 0) + 1
+        if int(widget.cget("height")) != lines:
+            widget.configure(height=lines)
 
     def _fit_title(self) -> None:
         widget = self.title

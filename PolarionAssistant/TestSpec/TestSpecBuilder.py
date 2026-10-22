@@ -27,6 +27,7 @@ class TestSpecBuilder(PolarionWorker):
         
     @override
     def _createDoc(self):
+        self._checkDocName(ts_conf.TARGET_NAME_ID)
         # Reuse the template
         return self.getTemplate(ts_conf.PROJECT_ID, ts_conf.TEST_SPEC_TEMPLATE).reuse(
             ts_conf.PROJECT_ID,

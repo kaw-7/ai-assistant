@@ -14,7 +14,7 @@ except ImportError:
 
 
 # the status dot, the gaps around it and a little room on the right
-DOT_AND_PADDING = 36
+DOT_AND_PADDING = 40
 # how long the mouse rests on a row before its title shows
 TOOLTIP_DELAY_MS = 450
 

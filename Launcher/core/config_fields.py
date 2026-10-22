@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Sequence
+from typing import Any, Callable, Optional, Sequence
 
 
 class FieldKind(str, Enum):
@@ -44,6 +44,8 @@ class ConfigField:
     editable  - False makes the entry read only
     persist   - False keeps the value out of the settings file (e.g. passwords)
     default   - value used when nothing has been stored yet
+    check     - returns why the value cannot be used for a run, '' when it
+                can; the editor shows the field in red and the run is refused
     """
     name: str
     label: str = ""
@@ -56,6 +58,7 @@ class ConfigField:
     editable: bool = True
     persist: bool = True
     default: Any = None
+    check: Optional[Callable[[str], str]] = None
 
     def __post_init__(self):
         if not self.label:
@@ -102,6 +105,11 @@ class ConfigField:
                 return f"{self.label}: '{text}' is not one of {', '.join(self.choices)}"
         return ""
 
+    def problem(self, raw: Any) -> str:
+        """Why the value blocks a run - see ``check`` - or an empty string."""
+        if self.check is None:
+            return ""
+        return self.check("" if raw is None else str(raw))
 
 def kind_for_value(value: Any) -> FieldKind:
     """Guess the widget kind from a literal found in a configuration file."""

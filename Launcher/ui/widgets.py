@@ -140,7 +140,7 @@ class ConsolePane(ttk.Frame):
         STATE_ERROR: cfg.COLOR_CONSOLE_ERROR,
     }
 
-    def __init__(self, master, fonts: theme.Fonts, **kwargs):
+    def __init__(self, master, fonts: theme.Fonts, on_toggle_size=None, **kwargs):
         super().__init__(master, **kwargs)
         bar_bg = cfg.COLOR_CONSOLE_BAR
 
@@ -160,6 +160,13 @@ class ConsolePane(ttk.Frame):
                                  foreground=cfg.COLOR_SIDEBAR_MUTED, font=fonts.small)
         self._message.pack(side="left", padx=(theme.SPACE_M, 0))
 
+        # switches between CONSOLE_ROWS_START and CONSOLE_ROWS_RUN rows; the
+        # text follows the height, also when the divider is dragged
+        self._size_button = ttk.Button(toolbar, style="Dark.TButton", width=9,
+                                       command=lambda: callable(on_toggle_size)
+                                       and on_toggle_size())
+        self._size_button.pack(side="right", padx=(theme.SPACE_S, 0))
+        self.bind("<Configure>", lambda _e: self._paint_size_button(), add="+")
         ttk.Button(toolbar, text="Clear", style="Dark.TButton",
                    command=self.clear).pack(side="right")
         self.autoscroll = tk.BooleanVar(value=True)
@@ -203,6 +210,16 @@ class ConsolePane(ttk.Frame):
 
         self._pending_return = False
         self.set_state(self.STATE_IDLE, cfg.STATE_IDLE)
+        self._paint_size_button()
+
+    def is_expanded(self) -> bool:
+        """Closer to CONSOLE_ROWS_RUN rows than to CONSOLE_ROWS_START."""
+        middle = (self.height_for(cfg.CONSOLE_ROWS_START)
+                  + self.height_for(cfg.CONSOLE_ROWS_RUN)) // 2
+        return self.winfo_height() >= middle
+
+    def _paint_size_button(self) -> None:
+        self._size_button.configure(text="▼ Smaller" if self.is_expanded() else "▲ Larger")
 
     def height_for(self, rows: int) -> int:
         """Pixels the pane needs for ``rows`` rows: its header bar and

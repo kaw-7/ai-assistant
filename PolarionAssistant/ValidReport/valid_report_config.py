@@ -1,5 +1,6 @@
 # Validation Report config - document creation and issue import
 # Polarion project id and issue markup: PolarionAssistant/Core/core_config.py
+import re
 
 # --- STEPS run by valid_report_main.py ('y' / 'n') ---
 BUILD_VALID_REPORT = 'y'  # create the validation report document from the template
@@ -13,7 +14,7 @@ TOOL_NAME = "VectorCAST 2026 SP3"
 # created by the document step, filled by the issue import
 TARGET_LOCATION = "Validation Reports"
 TARGET_TITLE = f"Validation Report {TOOL_NAME}"
-TARGET_NAME_ID = TARGET_TITLE.replace('.', '_')
+TARGET_NAME_ID = re.sub(r'[^\w -]', '_', TARGET_TITLE)  # only letters, digits, ' ', '_' and '-' - a '/' would open a new Polarion space
 DOC_NAME = f"wiki/{TARGET_LOCATION}/{TARGET_NAME_ID}"
 
 # ============================================================================

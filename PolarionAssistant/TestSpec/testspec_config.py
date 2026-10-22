@@ -1,4 +1,5 @@
 # Test specification config - document creation and test cases import
+import re
 
 # --- STEPS run by test_spec_main.py ('y' / 'n') ---
 CREATE_TEST_SPEC = 'y'  # create the test spec document from the template
@@ -6,7 +7,7 @@ DEBUG = 'n'# do not modify in polarion- only display document info
 
 TOOL_NAME = "Emulator Framework"
 TARGET_TITLE = f"Test Specification to {TOOL_NAME}"
-TARGET_NAME_ID = TARGET_TITLE.replace('.', '_')
+TARGET_NAME_ID = re.sub(r'[^\w -]', '_', TARGET_TITLE)  # only letters, digits, ' ', '_' and '-' - a '/' would open a new Polarion space
 
 
 PLAN_DOCU = f"wiki/Validation Plans/Validation Plan {TOOL_NAME.replace('.', '_')}"
