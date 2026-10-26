@@ -55,15 +55,18 @@ class ValidReportBuilderModule(RunnableModule):
             print(f"Template       : {conf.VALID_REPORT_TEMPLATE}")
             print(f"Document title : {conf.TARGET_TITLE}")
 
-        # the issue import always runs
-        issue_file = Path(conf.ISSUE_INPUT_FILE)
-        if not issue_file.is_absolute():
-            issue_file = PROJECT_ROOT / issue_file
-        if not issue_file.exists():
-            raise FileNotFoundError(
-                f"The issue file does not exist: {issue_file}\n"
-                "Run the issue formatter first or correct 'Issues to import'."
-            )
+        # the issue import always runs - None means nothing to import
+        issue_file = None
+        if conf.ISSUE_INPUT_FILE is not None:
+            issue_file = Path(conf.ISSUE_INPUT_FILE)
+            if not issue_file.is_absolute():
+                issue_file = PROJECT_ROOT / issue_file
+            # is_file: an empty name resolves to the project folder
+            if not issue_file.is_file():
+                raise FileNotFoundError(
+                    f"The issue file does not exist: {issue_file}\n"
+                    "Run the issue formatter first or correct 'Issues to import'."
+                )
 
         print(f"Heading        : {conf.DOC_INPUT_HEADING}")
-        print(f"Issues         : {issue_file}")
+        print(f"Issues         : {issue_file or 'none (nothing to import)'}")

@@ -56,6 +56,10 @@ class PolarionIssueImporter(PolarionWorker):
     
     def ImportIssuesInPolarion(self):
         
+        if not self.doc_conf.ISSUE_INPUT_FILE:
+            print("Nothing to import (zero issues found)!")
+            return
+        
         print("🎉 Ready to create issues!")
         parser = IssueParser(self.doc_conf.ISSUE_INPUT_FILE)
         parser.read_file()

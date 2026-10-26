@@ -157,9 +157,8 @@ class SettingsStore:
         """
         volatile_keys = set(volatile_keys)
         stored, volatile = {}, {}
+        # None is a value too ('None' typed into a field that allows it)
         for key, value in values.items():
-            if value is None:
-                continue
             (volatile if key in volatile_keys else stored)[key] = value
 
         if stored:
