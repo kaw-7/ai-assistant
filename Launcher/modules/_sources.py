@@ -57,6 +57,13 @@ def _document_id_problem(value: str) -> str:
             "document title, or switch Override on and modify the id.")
 
 
+def _issue_file_problem(value: str) -> str:
+    if value.strip():
+        return ""
+    return ("Enter the risk report the issues are read from, or None when there "
+            "are no issues to import.")
+
+
 def _document_id_field() -> ConfigField:
     """TARGET_NAME_ID - the name the document is created under in Polarion."""
     return ConfigField("TARGET_NAME_ID", "Document id", section=SECTION_POLARION,
@@ -202,7 +209,9 @@ def _report_config_source(file_stem: str, title: str) -> PyModuleConfigSource:
             ConfigField("tool_folder", "Tool folder", section=SECTION_FILES,
                         help="Sub folder of output/, as in config.py"),
             ConfigField("ISSUE_INPUT_FILE", "Issues to import",
-                        kind=FieldKind.FILE, section=SECTION_FILES),
+                        kind=FieldKind.FILE, section=SECTION_FILES,
+                        allow_none=True, check=_issue_file_problem,
+                        help="None when there are no issues to import."),
         ],
         section_default="Placeholders",
     )

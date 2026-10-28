@@ -46,6 +46,7 @@ class ConfigField:
     default   - value used when nothing has been stored yet
     check     - returns why the value cannot be used for a run, '' when it
                 can; the editor shows the field in red and the run is refused
+    allow_none - the text 'None' (any case) stands for the python None
     """
     name: str
     label: str = ""
@@ -59,6 +60,7 @@ class ConfigField:
     persist: bool = True
     default: Any = None
     check: Optional[Callable[[str], str]] = None
+    allow_none: bool = False
 
     def __post_init__(self):
         if not self.label:
@@ -70,6 +72,8 @@ class ConfigField:
     # --- conversion helpers -------------------------------------------------
     def to_python(self, raw: Any) -> Any:
         """Convert the raw widget content into the value the module expects."""
+        if self.allow_none and (raw is None or str(raw).strip().lower() == "none"):
+            return None
         if self.kind is FieldKind.BOOL:
             if isinstance(raw, bool):
                 return raw
@@ -85,7 +89,7 @@ class ConfigField:
     def to_display(self, value: Any) -> str:
         """Convert a stored value into the text shown by the widget."""
         if value is None:
-            return ""
+            return "None" if self.allow_none else ""
         if self.kind is FieldKind.BOOL:
             return "True" if value else "False"
         return str(value)

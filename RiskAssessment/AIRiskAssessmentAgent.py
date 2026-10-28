@@ -25,10 +25,11 @@ class AIRiskAssessmentAgent(AbstractRiskAssessmentAgent):
                 f.write("") # File is now EMPTY (0 bytes)
                 
             print(f"\n  Processing issues by count of {config.MAX_COUNT_OF_ISSUES_PROCESSED_AT_ONCE_BY_AI}.")
+            print("\n  [Loop] Generating Partial Risk Assessment Input and sending to AI for analysis....:")
             
             pos = 0
             total_n = self._get_total_occurances(input_data_content, config.ISSUE_END_MARKER)
-            t = tqdm(total=total_n, desc="  [Loop] Generating Partial Risk Assessment Input and sending to AI for analysis....:")
+            t = tqdm(total=total_n, desc="    ")
             t.update(pos)
             while(True):
                 (pos, input_data_content_partial) = self._get_up_to_nth(
