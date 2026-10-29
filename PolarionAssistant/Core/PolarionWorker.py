@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-import sys
+import sys, re
 try:
     from PolarionAssistant.Core.PolarionConnector import PolarionConnector
 except:
@@ -38,15 +38,20 @@ class PolarionWorker(ABC):
         return template
         
     def _ModifyItems(self, items, placeholder, substitute):
-        # Check for correct test attributes
+        is_regex = isinstance(placeholder, re.Pattern)
+    
         for item in items:
             if not hasattr(item, 'description') or item.description is None:
-                continue # skip
+                continue  # skip
             if not hasattr(item.description, 'content') or item.description.content is None:
-                continue # skip
-                
+                continue  # skip
+    
             item_text = item.description.content
-            new_text = item_text.replace(placeholder, substitute)
+            if is_regex:
+                new_text = placeholder.sub(lambda m: substitute, item_text)
+            else:
+                new_text = item_text.replace(placeholder, substitute)
+    
             print(f"Test content:{new_text}")
             item.description.content = new_text
             item.save()

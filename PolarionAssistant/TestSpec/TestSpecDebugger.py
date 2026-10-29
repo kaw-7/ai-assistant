@@ -25,15 +25,18 @@ class TestSpecDebugger(PolarionWorker):
         # Iterate through items and discover docStatus item
         docStatus = None
         for item in items:
-            if(item.type and item.type.id == 'docstatus_vertestspec'):
+            if(item.type and item.type.id.find('status') != -1 ): #'docstatus_vertestspec'
                 docStatus = item
                 print(item)
         
+        if docStatus is None:
+            raise ValueError("Could not find doc status item!")
+
         # Check for correct item attributes
-        if not hasattr(item, 'title') or docStatus.description is None:
-            raise("Polarion item of type Doc Status has no description!! Please fix manually!!")
+        if not hasattr(docStatus, 'title') or docStatus.description is None:
+            raise ValueError("Polarion item of type Doc Status has no description!! Please fix manually!!")
         if not hasattr(docStatus.description, 'content'):
-            raise("Polarion item of type Doc Status has no content!!! Please fix manually!!!")
+            raise ValueError("Polarion item of type Doc Status has no content!!! Please fix manually!!!")
             
         docStatus_text = docStatus.title
         new_text = docStatus_text.replace(ts_conf.PLACEHOLDER_DOCSTATUS, ts_conf.TOOL_NAME)

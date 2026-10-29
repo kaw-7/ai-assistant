@@ -662,7 +662,7 @@ p4.uml("vrm", "valid_report_main", 1120, 660, 520, stereo="script", file="Polari
        uses=['doc_conf'])
 DOC_CONF_KEYS = ["TOOL_NAME, BUILD_VALID_REPORT",
                  "VALID_REPORT_TEMPLATE, TARGET_LOCATION / _NAME_ID / _TITLE",
-                 "PLACEHOLDER, PLACEHOLDER_DOCSTATUS",
+                 "PLACEHOLDER   (doc status title := TARGET_TITLE)",
                  "DOC_NAME, DOC_INPUT_HEADING",
                  "tool_folder, ISSUE_INPUT_FILE = output/{tool_folder}/final_risk_report.txt"]
 p4.uml("vrc", "valid_report_config", 1120, 900, 520, stereo="module",
@@ -670,7 +670,8 @@ p4.uml("vrc", "valid_report_config", 1120, 900, 520, stereo="module",
        attrs=DOC_CONF_KEYS, cfg='doc_conf')
 p4.uml("prc", "periodic_review_config", 1120, 1090, 520, stereo="module",
        file="ValidReport/periodic_review_config.py   (report \"periodic\")",
-       attrs=DOC_CONF_KEYS[:1] + ["same keys - TARGET_TITLE ends with the month of the run"],
+       attrs=DOC_CONF_KEYS[:1] + ["same keys - TARGET_TITLE ends with the month of the run",
+                                  "PLACEHOLDER = re.compile(...)   any hex-colored tool name span"],
        cfg='doc_conf')
 p4.uml("cc", "core_config", 1700, 910, 520, stereo="module", file="Core/core_config.py   (not in the launcher)",
        attrs=["PROJECT_ID",
