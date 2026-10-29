@@ -8,10 +8,12 @@ only has to offer what the code really uses: ``description.content``,
 """
 from __future__ import annotations
 
+import re
 import unittest
 
 from tests.support import captured_stdout
 
+import PolarionAssistant.ValidReport.periodic_review_config as PRConf
 from PolarionAssistant.Core.ItemUtil import ItemUtil
 from PolarionAssistant.Core.PolarionWorker import PolarionWorker
 
@@ -89,6 +91,33 @@ class ModifyItemsTests(unittest.TestCase):
         self._modify(items, "[toolname]", "X")
 
         self.assertEqual(items[0].description.content, "nothing to replace")
+
+    def test_a_compiled_pattern_replaces_every_match(self):
+        items = [FakeItem(content="<b>[toolname]</b> and <i>[Tool Name]</i>")]
+
+        self._modify(items, re.compile(r"\[tool ?name\]", re.IGNORECASE), "X")
+
+        self.assertEqual(items[0].description.content, "<b>X</b> and <i>X</i>")
+
+    def test_a_pattern_substitute_is_taken_literally(self):
+        # a backslash in the tool name must not be read as a group reference
+        items = [FakeItem(content="[toolname]")]
+
+        self._modify(items, re.compile(r"\[toolname\]"), r"C:\tools\1")
+
+        self.assertEqual(items[0].description.content, r"C:\tools\1")
+
+    def test_the_periodic_review_placeholder_matches_the_template_span(self):
+        items = [FakeItem(content='Tool: <span style="color: #FF0000;">[toolname]</span>.'),
+                 FakeItem(content='<span style="color:#f00;">[Tool Name]</span>'),
+                 FakeItem(content='<span style="color: #FF0000;">other</span>')]
+
+        self._modify(items, PRConf.PLACEHOLDER, "Axivion 7.4")
+
+        self.assertEqual(items[0].description.content, "Tool: Axivion 7.4.")
+        self.assertEqual(items[1].description.content, "Axivion 7.4")
+        self.assertEqual(items[2].description.content,
+                         '<span style="color: #FF0000;">other</span>')
 
 
 class FakeDocument:

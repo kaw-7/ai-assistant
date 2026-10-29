@@ -64,12 +64,9 @@ class ValidReportBuilder(PolarionWorker):
         
         # Check for correct item attributes
         if not hasattr(docStatus, 'title') or docStatus.title is None:
-            raise("Polarion item of type Doc Status has no title!! Please fix manually!!")
+            raise ValueError("Polarion item of type Doc Status has no title!! Please fix manually!!")
             
-        docStatus_text = docStatus.title
-        new_text = docStatus_text.replace(self.doc_conf.PLACEHOLDER_DOCSTATUS, self.doc_conf.TOOL_NAME)
-        print(f"DocStatus title:{new_text}")
-        docStatus.title = new_text
+        docStatus.title = self.doc_conf.TARGET_TITLE
         docStatus.save()
     
     def _ChangeItems(self, items):

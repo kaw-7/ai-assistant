@@ -45,7 +45,6 @@ DOC_CREATION_KEYS = (
     "TARGET_NAME_ID",
     "TARGET_TITLE",
     "PLACEHOLDER",
-    "PLACEHOLDER_DOCSTATUS",
 )
 
 #: everything main.py and the preprocessors read from config.py
