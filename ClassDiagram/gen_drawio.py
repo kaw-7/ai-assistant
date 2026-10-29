@@ -215,7 +215,8 @@ p1.uml("src", "ConfigSource", 30, 800, W, stereo="abstract", file="config_source
 p1.uml("fld", "ConfigField", 440, 360, W, stereo="dataclass", file="config_fields.py",
        attrs=["name: str", "label: str", "kind: FieldKind", "choices: Sequence[str]",
               "help / section: str", "secret / derived: bool",
-              "editable / persist: bool", "default: Any"],
+              "editable / persist: bool", "default: Any",
+              "open_in_editor: bool   pen button -> Notepad++"],
        ops=["+ to_python(raw): Any",
             "+ to_display(value): str",
             "+ validate(raw): str",
@@ -527,7 +528,7 @@ p6.uml("con", "ConsolePane", 30, 620, 400, stereo="ttk.Frame", file="ui/widgets.
             "+ set_state(state, text) / set_message(text)",
             "+ height_for(rows): int"])
 p6.uml("sty", "style / launcher_config", 960, 620, 300, stereo="module", file="ui/style.py, ui/launcher_config.py",
-       ops=["style.apply(root): theme.Fonts", "launcher_config: window size, sidebar colours"])
+       ops=["style.apply(root): theme.Fonts", "launcher_config: window size, sidebar colours, TEXT_EDITORS"])
 
 p6.edge("a1", "app", "nav", "nav", EDGE, exit=("1", "0.15"), entry=("0", "0.3"))
 p6.edge("a2", "app", "cp", "config_panel", EDGE, exit=("1", "0.6"), entry=("0", "0.3"))

@@ -47,6 +47,7 @@ class ConfigField:
     check     - returns why the value cannot be used for a run, '' when it
                 can; the editor shows the field in red and the run is refused
     allow_none - the text 'None' (any case) stands for the python None
+    open_in_editor - a text file: a pen button opens it in Notepad++
     """
     name: str
     label: str = ""
@@ -61,6 +62,7 @@ class ConfigField:
     default: Any = None
     check: Optional[Callable[[str], str]] = None
     allow_none: bool = False
+    open_in_editor: bool = False
 
     def __post_init__(self):
         if not self.label:

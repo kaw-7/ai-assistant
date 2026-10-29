@@ -41,6 +41,7 @@ SECTION_POLARION = "Polarion"
 SECTION_MARKUP = "Issue markup"
 SECTION_FILES = "Files"
 SECTION_STEPS = "Steps"
+SECTION_TOOL_FOLDER = "Tool folder"
 
 
 # besides letters and digits - anything else in a document id ('/' opens a new
@@ -99,8 +100,6 @@ def main_config_source() -> PyModuleConfigSource:
         ),
         field_specs=[
             # --- validated tool ---
-            ConfigField("tool_folder", "Tool folder", section=SECTION_TOOL,
-                        help="Sub folder of input/releaseNotes and output/"),
             ConfigField("TOOL_NAME", "Tool name", section=SECTION_TOOL),
             ConfigField("TOOL_VERSION_START", "Version from", section=SECTION_TOOL),
             ConfigField("TOOL_VERSION_END", "Version to", section=SECTION_TOOL),
@@ -112,6 +111,10 @@ def main_config_source() -> PyModuleConfigSource:
             ConfigField("REF_PATH2_OPT", "2nd reference report (optional)",
                         kind=FieldKind.FILE, section=SECTION_TOOL,
                         help="Leave empty to use only the reference report."),
+
+            # --- tool folder ---
+            ConfigField("tool_folder", "Tool folder", section=SECTION_TOOL_FOLDER,
+                        help="Sub folder of input/releaseNotes and output/"),
 
             # --- AI processing ---
             ConfigField("PROCEED_WITH_AI_RISK_ASSESSMENT",
@@ -128,31 +131,43 @@ def main_config_source() -> PyModuleConfigSource:
 
             # --- instructions ---
             ConfigField("INSTRUCTIONS_PATH", "Issue creation instructions",
-                        kind=FieldKind.FILE, section=SECTION_INSTRUCTIONS),
+                        kind=FieldKind.FILE, section=SECTION_INSTRUCTIONS,
+                        open_in_editor=True),
             ConfigField("INSTRUCTIONS_CHUNKING_PATH", "Chunking instructions",
-                        kind=FieldKind.FILE, section=SECTION_INSTRUCTIONS),
+                        kind=FieldKind.FILE, section=SECTION_INSTRUCTIONS,
+                        open_in_editor=True),
             ConfigField("RISK_INSTRUCTIONS_PATH", "Risk assessment instructions",
-                        kind=FieldKind.FILE, section=SECTION_INSTRUCTIONS),
+                        kind=FieldKind.FILE, section=SECTION_INSTRUCTIONS,
+                        open_in_editor=True),
             ConfigField("RISK_SUMMARY_INSTRUCTIONS_PATH", "Risk summary instructions",
-                        kind=FieldKind.FILE, section=SECTION_INSTRUCTIONS),
+                        kind=FieldKind.FILE, section=SECTION_INSTRUCTIONS,
+                        open_in_editor=True),
             ConfigField("CSV_TEMPLATE", "CSV template", kind=FieldKind.FILE,
-                        section=SECTION_INSTRUCTIONS),
+                        section=SECTION_INSTRUCTIONS,
+                        open_in_editor=True),
 
             # --- generated files ---
             ConfigField("TEMP_REL_NOTES", "Preprocessed release notes",
-                        kind=FieldKind.FILE, section=SECTION_OUTPUT),
+                        kind=FieldKind.FILE, section=SECTION_OUTPUT,
+                        open_in_editor=True),
             ConfigField("TEMP_CHUNK_FILE", "Chunk file", kind=FieldKind.FILE,
-                        section=SECTION_OUTPUT),
+                        section=SECTION_OUTPUT,
+                        open_in_editor=True),
             ConfigField("TEMP_OUTPUT_FILE", "Structured issues",
-                        kind=FieldKind.FILE, section=SECTION_OUTPUT),
+                        kind=FieldKind.FILE, section=SECTION_OUTPUT,
+                        open_in_editor=True),
             ConfigField("CONTEXT_FILE", "AI context file", kind=FieldKind.FILE,
-                        section=SECTION_OUTPUT),
+                        section=SECTION_OUTPUT,
+                        open_in_editor=True),
             ConfigField("RISK_ASSESSMENT_OUTPUT_FILE", "Final risk report",
-                        kind=FieldKind.FILE, section=SECTION_OUTPUT),
+                        kind=FieldKind.FILE, section=SECTION_OUTPUT,
+                        open_in_editor=True),
             ConfigField("RISK_ASSESSMENT_OUTPUT_FILE_BACK_UP", "Risk report backup",
-                        kind=FieldKind.FILE, section=SECTION_OUTPUT),
+                        kind=FieldKind.FILE, section=SECTION_OUTPUT,
+                        open_in_editor=True),
             ConfigField("RISK_SUMMARY_OUTPUT_FILE", "Risk summary report",
-                        kind=FieldKind.FILE, section=SECTION_OUTPUT),
+                        kind=FieldKind.FILE, section=SECTION_OUTPUT,
+                        open_in_editor=True),
 
             # --- markup ---
             ConfigField("ISSUE_END_MARKER", "Issue end marker", section=SECTION_MARKUP),

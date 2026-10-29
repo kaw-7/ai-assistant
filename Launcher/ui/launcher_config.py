@@ -20,6 +20,14 @@ LABEL_WIDTH = 230         # pixels reserved for the field labels and their hints
 FIELD_WIDTH = 320         # minimum pixels of the value widgets
 CHOICE_BUTTONS_MAX = 4    # up to this many choices are buttons, more a drop-down
 
+# the pen button of a text file opens it here; the first one found is used,
+# a name without a folder is looked up on the PATH
+TEXT_EDITORS = (
+    r"C:\Program Files\Notepad++\notepad++.exe",
+    r"C:\Program Files (x86)\Notepad++\notepad++.exe",
+    "notepad++",
+)
+
 # the dark side bar
 COLOR_SIDEBAR = "#1C232D"
 COLOR_SIDEBAR_HOVER = "#242D39"

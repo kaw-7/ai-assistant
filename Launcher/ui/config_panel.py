@@ -21,13 +21,14 @@ from __future__ import annotations
 
 import tkinter as tk
 from pathlib import Path
-from tkinter import filedialog, ttk
+from tkinter import filedialog, messagebox, ttk
 from typing import Any, Dict, List, Tuple
 
 import UI.theme as theme
 from Launcher.core.config_fields import ConfigField, FieldKind
 from Launcher.core.config_sources import ConfigSource
 from Launcher.core.project import PROJECT_ROOT
+from Launcher.core.text_editor import open_in_editor
 
 from . import launcher_config as cfg
 from .widgets import ScrollableFrame, Tooltip
@@ -139,6 +140,12 @@ class _FieldEditor:
             browse.grid(row=0, column=column, padx=(3, 0))
             Tooltip(browse, "Choose the folder" if field.kind is FieldKind.DIR
                     else "Choose the file")
+            column += 1
+        if field.open_in_editor:
+            pen = ttk.Button(holder, text="✎", width=0, style="Browse.TButton",
+                             command=self._open_in_editor)
+            pen.grid(row=0, column=column, padx=(3, 0))
+            Tooltip(pen, "Open the file in Notepad++")
             column += 1
         if field.derived:
             self.override_var = tk.BooleanVar(value=False)
@@ -305,6 +312,13 @@ class _FieldEditor:
             self.override_var.set(True)
             self._apply_enabled_state()
         self._commit()
+
+    def _open_in_editor(self) -> None:
+        # the value shown - typed, or computed from the other settings
+        problem = open_in_editor(str(self.raw_value()), cfg.TEXT_EDITORS)
+        if problem:
+            messagebox.showinfo("Cannot open the file", problem,
+                                parent=self.widget.winfo_toplevel())
 
     # --- values -------------------------------------------------------------
     def raw_value(self) -> Any:
