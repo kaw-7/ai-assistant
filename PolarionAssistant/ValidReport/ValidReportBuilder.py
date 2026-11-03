@@ -42,7 +42,7 @@ class ValidReportBuilder(PolarionWorker):
     def _changeDocToolName(self, valid_report):        
         # Retrieve all items from the validation report
         items = valid_report.getWorkitems()
-        print(f"Scanning {len(items)} items to debug...\n")
+        print(f"Scanning {len(items)} items to modify...\n")
         
         self._ChangeDocStatus(items)
         self._ChangeItems(items)
@@ -52,7 +52,6 @@ class ValidReportBuilder(PolarionWorker):
         # Iterate through items and discover docStatus item
         docStatus = None
         for item in items:
-            print(item)
             if(item.type and item.type.id == 'docstatus_sds'):
                 docStatus = item
                 print(item)

@@ -45,14 +45,17 @@ class PolarionWorker(ABC):
                 continue  # skip
             if not hasattr(item.description, 'content') or item.description.content is None:
                 continue  # skip
-    
+                
+            print(item)
             item_text = item.description.content
             if is_regex:
                 new_text = placeholder.sub(lambda m: substitute, item_text)
             else:
                 new_text = item_text.replace(placeholder, substitute)
-    
-            print(f"Test content:{new_text}")
+            if (new_text == item_text):
+                continue
+            
+            print(f"Content modified:{new_text}")
             item.description.content = new_text
             item.save()
             
