@@ -33,5 +33,10 @@ VALID_REPORT_TEMPLATE = f'wiki/{TARGET_LOCATION}/_ValidationReportTemplate CSV' 
 
 # TARGET_PROJECT_ID = "ToolValidation"
 
-PLACEHOLDER = r'<span style="color: #FF0000;">[toolname]</span>'
+PLACEHOLDER = re.compile(
+    r'<span style="color:\s*#[0-9A-Fa-f]{3,8};">'   # 1. color + 2. ;">
+    r'[^<]*tool ?name[^<]*'                           # 3. tool.name, dot = optional space
+    r'</span>',
+    re.IGNORECASE
+)
 
