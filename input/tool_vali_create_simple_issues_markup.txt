@@ -6,6 +6,7 @@ the rule defined earlier in the document override the later defined one.
 
 ## STRICT OUTPUT RULES ###
 1. **NO TRUNCATION:** Do not skip issues. You MUST process the input file from the very first line to the very last line and extract relevant bug/issue information.
+Nevertheless if an issue has been included in a previous report (see reference files/input), and that/these report(s) concern the same tool, do not append it to the current markup output.
 Show error if you cannot process the whole free text format file for some reason (e.g. because of token limit, unable to process user input, etc.)
 
 2. **NO SUMMARIZATION:** Do not give examples. Do not say "and so on". Output every single defect found.

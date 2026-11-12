@@ -6,7 +6,7 @@ import traceback
 import time
 import sys
 
-REPORT_TYPES = ("initial", "periodic")
+REPORT_TYPES = ("initial", "periodic", "periodic_soup")
 
 
 def parse_args(argv=None):
@@ -24,6 +24,8 @@ if __name__ == "__main__":
         import PolarionAssistant.ValidReport.valid_report_config as doc_conf
     elif args.report == REPORT_TYPES[1]:
         import PolarionAssistant.ValidReport.periodic_review_config as doc_conf
+    elif args.report == REPORT_TYPES[2]:
+        import PolarionAssistant.ValidReport.periodic_review_soup_config as doc_conf
     else:
         raise("Import doc configuration error!")
     start = time.perf_counter()

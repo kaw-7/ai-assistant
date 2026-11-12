@@ -26,10 +26,12 @@ POLARION_ENV = "polarion_env"
 TESTSPEC_CONFIG = "testspec_config"
 VALID_REPORT_CONFIG = "valid_report_config"
 PERIODIC_REVIEW_CONFIG = "periodic_review_config"
+PERIODIC_REVIEW_SOUP_CONFIG = "periodic_review_soup_config"
 
 #: argument of valid_report_main.py: which report document is worked on
 REPORT_INITIAL = "initial"
 REPORT_PERIODIC = "periodic"
+REPORT_PERIODIC_SOUP = "periodic_soup"
 
 YES_NO = ("y", "n")
 
@@ -185,6 +187,11 @@ def valid_report_config_source() -> PyModuleConfigSource:
 def periodic_review_config_source() -> PyModuleConfigSource:
     """``PolarionAssistant/ValidReport/periodic_review_config.py`` - module 3b."""
     return _report_config_source(PERIODIC_REVIEW_CONFIG, "Periodic review")
+
+
+def periodic_review_soup_config_source() -> PyModuleConfigSource:
+    """``PolarionAssistant/ValidReport/periodic_review_soup_config.py`` - module 3c."""
+    return _report_config_source(PERIODIC_REVIEW_SOUP_CONFIG, "Periodic review SOUP")
 
 
 def _report_config_source(file_stem: str, title: str) -> PyModuleConfigSource:
