@@ -18,6 +18,7 @@ from tests.support import PROJECT_ROOT  # noqa: F401  (puts the root on sys.path
 import config
 import PolarionAssistant.Core.core_config as CoreConf
 import PolarionAssistant.ValidReport.periodic_review_config as PRConf
+import PolarionAssistant.ValidReport.periodic_review_soup_config as PRSConf
 import PolarionAssistant.ValidReport.valid_report_config as PConf
 
 #: what the import path reads from the document configuration - PolarionIssueImporter
@@ -127,6 +128,20 @@ class PeriodicReviewConfigTests(unittest.TestCase):
                          f"wiki/{PRConf.TARGET_LOCATION}/{PRConf.TARGET_NAME_ID}")
 
 
+class PeriodicReviewSoupConfigTests(unittest.TestCase):
+    """``PolarionAssistant/ValidReport/periodic_review_soup_config.py``."""
+
+    def test_has_the_same_settings_as_the_validation_report(self):
+        def names(module):
+            return {name for name in vars(module)
+                    if not name.startswith("_") and name.isupper() or name == "tool_folder"}
+        self.assertEqual(names(PRSConf), names(PConf))
+
+    def test_the_import_targets_the_created_document(self):
+        self.assertEqual(PRSConf.DOC_NAME,
+                         f"wiki/{PRSConf.TARGET_LOCATION}/{PRSConf.TARGET_NAME_ID}")
+
+
 class CoreConfigTests(unittest.TestCase):
     """``PolarionAssistant/Core/core_config.py``."""
 
@@ -139,7 +154,7 @@ class CoreConfigTests(unittest.TestCase):
     def test_the_document_configurations_do_not_repeat_them(self):
         # a copy left in a document configuration would be edited by mistake
         # and silently ignored
-        for module in (PConf, PRConf):
+        for module in (PConf, PRConf, PRSConf):
             for key in CORE_KEYS:
                 with self.subTest(module=module.__name__, key=key):
                     self.assertFalse(hasattr(module, key),

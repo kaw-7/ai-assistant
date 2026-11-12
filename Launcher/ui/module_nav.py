@@ -27,7 +27,7 @@ def split_title(title: str) -> tuple[str, str]:
 
 
 class _ModuleEntry(tk.Frame):
-    """Number badge, name and one line summary - one per module."""
+    """Number badge and name - one per module."""
 
     BADGE = 24
 
@@ -49,22 +49,15 @@ class _ModuleEntry(tk.Frame):
                                               text=number, font=fonts.small_bold)
 
         # the width inside the side bar and this entry; the name stands next to
-        # the badge, the summary below both and so also under the badge
+        # the badge - no summary line, so the whole list stays visible
         inner = cfg.SIDEBAR_WIDTH - 2 * (NAV_PADX + ENTRY_PADX) - 4
         self.name = tk.Label(self, text=name, font=fonts.body, anchor="w", justify="left",
                              wraplength=inner - self.BADGE - BADGE_GAP,
                              background=cfg.COLOR_SIDEBAR)
         self.name.grid(row=0, column=1, sticky="w")
-        summary = getattr(module, "summary", "") or ""
-        if module.opens_window:
-            summary = (summary + " · " if summary else "") + "opens a window"
-        self.summary = tk.Label(self, text=summary, font=fonts.small, anchor="w",
-                                justify="left", wraplength=inner, background=cfg.COLOR_SIDEBAR)
-        if summary:
-            self.summary.grid(row=1, column=0, columnspan=2, sticky="w", pady=(2, 0))
         self.columnconfigure(1, weight=1)
 
-        for widget in (self, self.badge, self.name, self.summary):
+        for widget in (self, self.badge, self.name):
             widget.bind("<Button-1>", lambda _e: on_click(self.module))
             widget.bind("<Double-Button-1>", lambda _e: on_double(self.module))
             widget.bind("<Enter>", lambda _e: self._set_hover(True))
@@ -82,7 +75,7 @@ class _ModuleEntry(tk.Frame):
             ground = cfg.COLOR_SIDEBAR_HOVER
         else:
             ground = cfg.COLOR_SIDEBAR
-        for widget in (self, self.badge, self.name, self.summary):
+        for widget in (self, self.badge, self.name):
             widget.configure(background=ground)
         self.configure(cursor="hand2" if self.enabled else "")
 
@@ -95,7 +88,6 @@ class _ModuleEntry(tk.Frame):
             self.badge.itemconfigure(self._number, fill="#C3CAD4")
             self.name.configure(foreground=cfg.COLOR_SIDEBAR_TEXT if self.enabled
                                 else cfg.COLOR_SIDEBAR_MUTED, font=self.fonts.body)
-        self.summary.configure(foreground="#A9B3C1" if self.selected else cfg.COLOR_SIDEBAR_MUTED)
 
 
 class ModuleNav(tk.Frame):
